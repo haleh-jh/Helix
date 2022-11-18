@@ -17,8 +17,11 @@ const kIconColor = Color(0xff6f64b7);
 const kBackgroundColor = Color(0xfff6f5fb);                  
 const kCursorTextFieldColor = Color(0xff9896be);
 const kOrangeColor = Color(0xffff9f00);
+const kDeleteIconColor = Color(0xffff4343);
+const kEditIconColor = Color(0xff19e9aa);
 
 // const Color green300 = Color(0xFF81C784);
 // const Color green400 = Color(0xFF66BB6A);
 
 const defaultPadding = 16.0;
+

@@ -18,7 +18,7 @@ class DashboardScreen extends StatelessWidget {
             padding: EdgeInsets.all(defaultPadding),
             child: Column(
               children: [
-                Header(),
+                Header(title: "Telescops",),
                 SizedBox(height: defaultPadding),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +29,7 @@ class DashboardScreen extends StatelessWidget {
                         children: [
                           MyFiles(),
                           SizedBox(height: defaultPadding),
-                          RecentFiles(),
+                        //  RecentFiles(),
                           if (Responsive.isMobile(context))
                             SizedBox(height: defaultPadding),
                           if (Responsive.isMobile(context)) StarageDetails(),

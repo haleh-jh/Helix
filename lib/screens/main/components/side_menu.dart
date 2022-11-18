@@ -1,10 +1,17 @@
+import 'package:admin/controllers/DataController.dart';
+import 'package:admin/controllers/MenuController.dart';
+import 'package:admin/controllers/ProgressController.dart';
 import 'package:admin/screens/dashboard/telescop_screen.dart';
+import 'package:admin/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class SideMenu extends StatelessWidget {
+  final int selectedIndex;
+  final Function(int) onTap;
   const SideMenu({
-    Key? key,
+    Key? key, required this.selectedIndex, required this.onTap,
   }) : super(key: key);
 
   @override
@@ -12,53 +19,65 @@ class SideMenu extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          DrawerHeader(
-            child: Image.asset("assets/images/logo.png"),
-          ),
+          // DrawerHeader(
+          //   child: Image.asset("assets/images/logo.png"),
+          // ),
+          SizedBox(height: 30,),
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashbord.svg",
             press: () {
-              
+              onTap(dashboardIndex);
             },
           ),
           DrawerListTile(
             title: "Telescops",
             svgSrc: "assets/icons/menu_tran.svg",
             press: () {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => TelescopScreen()));
+                onTap(telescopsIndex);
             },
           ),
           DrawerListTile(
             title: "Detectors",
             svgSrc: "assets/icons/menu_task.svg",
-            press: () {},
+            press: () {
+              onTap(detectorsIndex);
+            },
           ),
           DrawerListTile(
             title: "Objects",
             svgSrc: "assets/icons/menu_doc.svg",
-            press: () {},
+            press: () {
+              onTap(objectsIndex);
+            },
           ),
           DrawerListTile(
             title: "Frames",
             svgSrc: "assets/icons/menu_store.svg",
-            press: () {},
+            press: () {
+              onTap(framesIndex);
+            },
           ),
           DrawerListTile(
             title: "Users",
             svgSrc: "assets/icons/menu_notification.svg",
-            press: () {},
+            press: () {
+              onTap(usersIndex);
+            },
           ),
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
-            press: () {},
+            press: () {
+              onTap(profileIndex);
+            },
           ),
           DrawerListTile(
             title: "Settings",
             svgSrc: "assets/icons/menu_setting.svg",
-            press: () {},
+            press: () {
+              onTap(settingsIndex);
+            },
           ),
         ],
       ),

@@ -1,19 +1,21 @@
 import 'dart:convert';
 
 import 'package:admin/common/custom_snackbar.dart';
+import 'package:admin/common/pref.dart';
+import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
-import 'package:admin/controllers/ProgressController.dart';
+import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/data.dart';
+import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/dashboard/components/header.dart';
+import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
-import '../../constants.dart';
-import 'components/header.dart';
-import 'components/recent_files.dart';
 import 'package:provider/provider.dart';
 
-class TelescopScreen extends StatelessWidget {
+class DetectorScreen extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class TelescopScreen extends StatelessWidget {
         body: SingleChildScrollView(
           primary: false,
           padding: EdgeInsets.all(defaultPadding),
-          child: TelescopWidget(
+          child: DetectorWidget(
             scaffoldKey: _scaffoldKey,
           ),
         ),
@@ -33,8 +35,8 @@ class TelescopScreen extends StatelessWidget {
   }
 }
 
-class TelescopWidget extends StatefulWidget {
-  TelescopWidget({
+class DetectorWidget extends StatefulWidget {
+  DetectorWidget({
     Key? key,
     required this.scaffoldKey,
   }) : super(key: key);
@@ -42,16 +44,16 @@ class TelescopWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
-  State<TelescopWidget> createState() => _TelescopWidgetState();
+  State<DetectorWidget> createState() => _DetectorWidgetState();
 }
 
-class _TelescopWidgetState extends State<TelescopWidget> {
+class _DetectorWidgetState extends State<DetectorWidget> {
   late final myProvider;
-  String telescope = "Telescopes";
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
+  final String detector = "Detectors";
 
   void addResult(Data data) async {
     try {
@@ -60,9 +62,9 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         "name": "${data.name}",
         "type": "${data.type}",
       });
-      await myProvider.addNew(telescope, formData).then((value) {
+      await myProvider.addNew(detector, formData).then((value) {
         var res = Data.fromJson(value);
-        myProvider.addData(res, myProvider.getTelescopeList);
+        myProvider.addData(res, myProvider.getDetectorsList);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -86,11 +88,11 @@ class _TelescopWidgetState extends State<TelescopWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
-    myProvider.getAll(context, myProvider.getTelescopeList, telescope);
+    myProvider.getAll(context, myProvider.getDetectorsList, detector);
     return Column(
       children: [
         Header(
-          title: telescope,
+          title: detector,
         ),
         SizedBox(height: defaultPadding),
         Row(
@@ -121,9 +123,9 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                   ),
                   SizedBox(height: defaultPadding),
                   RecentFiles(
-                      title: "Recent $telescope",
+                      title: "Recent Detectors",
                       scaffoldKey: widget.scaffoldKey,
-                      path: telescope,
+                      path: detector,
                       editFunction: (value) {
                         EditResult(value as Data);
                       },
@@ -131,7 +133,7 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                         DeleteResult(value as Data);
                       },
                       progressController: progressController,
-                      list: myProvider.getTelescopeList),
+                      list: myProvider.getDetectorsList),
                 ],
               ),
             ),
@@ -145,8 +147,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
     try {
       var formData =
           json.encode({"id": data.id, "name": data.name, "type": data.type});
-      await myProvider.updateData(telescope, data, formData).then((value) {
-        myProvider.updateList(value, myProvider.getTelescopeList);
+      await myProvider.updateData(detector, data, formData).then((value) {
+        myProvider.updateList(value, myProvider.getDetectorsList);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -166,8 +168,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(telescope, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getTelescopeList);
+      await myProvider.deleteData(detector, data.id).then((value) {
+        myProvider.deleteList(data, myProvider.getDetectorsList);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -187,7 +189,7 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         context: c,
         builder: (context) {
           return CustomDialog(
-            path: telescope,
+            path: detector,
             formKey: _formKey,
             scaffoldKey: key,
             c: context,

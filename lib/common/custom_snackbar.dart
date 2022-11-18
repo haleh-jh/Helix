@@ -5,21 +5,19 @@ class CustomSnackbar {
   static SnackBar customErrorSnackbar(String text, BuildContext context) {
     return SnackBar(
       backgroundColor: kOrangeColor,
-      content: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Row(
-            children: [
-              Icon(
-            Icons.error,
-            color: Colors.white,
+      content: Row(
+        children: [
+          Icon(
+        Icons.error,
+        color: Colors.white,
+      ),
+      SizedBox(width: 4,),
+          Expanded(
+            child: Container(
+              child: Text(text, style: Theme.of(context).textTheme.headline6!.copyWith(color: kMainLightColor), ),),
           ),
-          SizedBox(width: 4,),
-              Expanded(
-                child: Container(
-                  child: Text(text, style: Theme.of(context).textTheme.headline6!.copyWith(color: kMainLightColor),),),
-              ),
-            ],
-          )),
+        ],
+      ),
       behavior: SnackBarBehavior.floating,
     
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class LoginController with ChangeNotifier, DiagnosticableTreeMixin {
+class ProgressController with ChangeNotifier, DiagnosticableTreeMixin {
    bool _listenableValue = false;
    bool get listenableValue => _listenableValue;
 
