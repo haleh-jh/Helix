@@ -71,7 +71,6 @@ class _TelescopWidgetState extends State<TelescopWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-         Header(title: "Setting",),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,

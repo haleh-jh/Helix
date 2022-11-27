@@ -4,16 +4,15 @@ import 'package:admin/common/custom_snackbar.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
-import 'package:admin/data/models/user.dart';
+import 'package:admin/data/models/observation.dart';
 import 'package:admin/responsive.dart';
-import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class UsersScreen extends StatelessWidget {
+class ObservationsScreen extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class UsersScreen extends StatelessWidget {
         body: SingleChildScrollView(
           primary: false,
           padding: EdgeInsets.all(defaultPadding),
-          child: UsersWidget(
+          child: ObservationsWidget(
             scaffoldKey: _scaffoldKey,
           ),
         ),
@@ -33,8 +32,8 @@ class UsersScreen extends StatelessWidget {
   }
 }
 
-class UsersWidget extends StatefulWidget {
-  UsersWidget({
+class ObservationsWidget extends StatefulWidget {
+  ObservationsWidget({
     Key? key,
     required this.scaffoldKey,
   }) : super(key: key);
@@ -42,28 +41,30 @@ class UsersWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
-  State<UsersWidget> createState() => _UsersWidgetState();
+  State<ObservationsWidget> createState() => _ObservationsWidgetState();
 }
 
-class _UsersWidgetState extends State<UsersWidget> {
+class _ObservationsWidgetState extends State<ObservationsWidget> {
   late final myProvider;
-  String Users = "Users";
+  String Observations = "Observations";
+  String ObservationsPath = "ObservationSubmissions";
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
 
-  void addResult(User data) async {
+  void addResult(ObservationsModel data) async {
     try {
       var formData = {
         "id": "0",
-        "name": "${data.userName}",
-        "type": "${data.type}",
+        // "name": "${data.name}",
+        // "type": "${data.type}",
+        // "filter": "${data.filter}",
       };
-      await myProvider.addNew(Users, json.encode(formData)).then((value) {
+      await myProvider.addNew(ObservationsPath, json.encode(formData)).then((value) {
         print("vv: $value");
-        var res = User.fromJson(value);
-        myProvider.addData(res, myProvider.getUsersList);
+        var res = ObservationsModel.fromJson(value);
+        myProvider.addData(res, myProvider.getObservationsList);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -89,12 +90,9 @@ class _UsersWidgetState extends State<UsersWidget> {
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
 
-    myProvider.getAll(context, myProvider.getUsersList, Users);
+    myProvider.getAll(context, myProvider.getObservationsList, ObservationsPath);
     return Column(
       children: [
-        // Header(
-        //   title: Users,
-        // ),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,9 +101,13 @@ class _UsersWidgetState extends State<UsersWidget> {
               flex: 5,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                 Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        Observations,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       ElevatedButton.icon(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -122,19 +124,19 @@ class _UsersWidgetState extends State<UsersWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: defaultPadding),
+                  SizedBox(height: height),
                   RecentFiles(
-                    title: "Recent $Users",
+                    title: "Recent $Observations",
                     scaffoldKey: widget.scaffoldKey,
-                    path: Users,
+                    path: Observations,
                     editFunction: (value) {
-                      EditResult(value as User);
+                      EditResult(value as ObservationsModel);
                     },
                     deleteFunction: (value) {
-                      DeleteResult(value as User);
+                      DeleteResult(value as ObservationsModel);
                     },
                     progressController: progressController,
-                    list: myProvider.getUsersList,
+                    list: myProvider.getObservationsList,
                     isObject: false,
                   ),
                 ],
@@ -146,18 +148,19 @@ class _UsersWidgetState extends State<UsersWidget> {
     );
   }
 
-  void EditResult(User data) async {
+  void EditResult(ObservationsModel data) async {
     try {
       var formData = {
         "id": data.id,
-        "name": "${data.userName}",
-        "type": "${data.type}",
+        // "name": "${data.name}",
+        // "type": "${data.type}",
+        // "filter": "${data.filter}",
       };
       await myProvider
-          .updateData(Users, data, json.encode(formData))
+          .updateData(Observations, data, json.encode(formData))
           .then((value) {
         print("ss: ${value.toString()}");
-        myProvider.updateList(value, myProvider.getUsersList);
+        myProvider.updateList(value, myProvider.getObservationsList);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -172,13 +175,13 @@ class _UsersWidgetState extends State<UsersWidget> {
     }
   }
 
-  void DeleteResult(User data) async {
+  void DeleteResult(ObservationsModel data) async {
     CustomAlertDialog.alertstateSetter!(
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(Users, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getUsersList);
+      await myProvider.deleteData(Observations, data.id).then((value) {
+        myProvider.deleteList(data, myProvider.getObservationsList);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -197,36 +200,21 @@ class _UsersWidgetState extends State<UsersWidget> {
     showDialog(
         context: c,
         builder: (context) {
-          return CustomDialog(
-              path: Users,
-              formKey: _formKey,
-              scaffoldKey: key,
-              c: context,
-              f: addResult,
-              btnTitle: "Add",
-              progressController: progressController,
-              data: User(
-                id: "",
-                userName: "",
-                normalizedUserName: "",
-                email: "",
-                normalizedEmail: "",
-                emailConfirmed: false,
-                passwordHash: "",
-                securityStamp: "",
-                concurrencyStamp: "",
-                phoneNumber: "",
-                phoneNumberConfirmed: false,
-                twoFactorEnabled: false,
-                lockoutEnd: "",
-                lockoutEnabled: false,
-                accessFailedCount: "",
-                type: "",
-                surname: "",
-                lastName: "",
-                institution: "",
-                dec: "",
-              ));
+          return Container();
+          //  CustomDialog(
+          //     path: Observations,
+          //     formKey: _formKey,
+          //     scaffoldKey: key,
+          //     c: context,
+          //     f: addResult,
+          //     btnTitle: "Add",
+          //     progressController: progressController,
+          //     data: ObservationsModel(
+          //       id: 0,
+          //       name: "",
+          //       type: "",
+          //       filter: "",
+          //     ));
         });
   }
 }

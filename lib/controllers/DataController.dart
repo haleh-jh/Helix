@@ -5,6 +5,7 @@ import 'package:admin/common/pref.dart';
 import 'package:admin/data/models/data.dart';
 import 'package:admin/data/models/frames.dart';
 import 'package:admin/data/models/object.dart';
+import 'package:admin/data/models/observation.dart';
 import 'package:admin/data/models/user.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,9 @@ class DataController with ChangeNotifier {
 
   static List<FramesModel> _FramesList = [];
   List<FramesModel> get getFramesList => _FramesList;
+
+   static List<ObservationsModel> _ObservationsList = [];
+  List<ObservationsModel> get getObservationsList => _ObservationsList;
 
   static List<User> _UsersList = [];
   List<User> get getUsersList => _UsersList;

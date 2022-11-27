@@ -11,7 +11,9 @@ class SideMenu extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;
   const SideMenu({
-    Key? key, required this.selectedIndex, required this.onTap,
+    Key? key,
+    required this.selectedIndex,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,9 @@ class SideMenu extends StatelessWidget {
           // DrawerHeader(
           //   child: Image.asset("assets/images/logo.png"),
           // ),
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           DrawerListTile(
             title: "Dashboard",
             svgSrc: "assets/icons/menu_dashbord.svg",
@@ -34,7 +38,7 @@ class SideMenu extends StatelessWidget {
             title: "Telescopes",
             svgSrc: "assets/icons/menu_tran.svg",
             press: () {
-                onTap(telescopsIndex);
+              onTap(telescopsIndex);
             },
           ),
           DrawerListTile(
@@ -56,6 +60,13 @@ class SideMenu extends StatelessWidget {
             svgSrc: "assets/icons/menu_store.svg",
             press: () {
               onTap(framesIndex);
+            },
+          ),
+          DrawerListTile(
+            title: "Observations",
+            svgSrc: "assets/icons/menu_store.svg",
+            press: () {
+              onTap(observationsIndex);
             },
           ),
           DrawerListTile(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
 import 'chart.dart';
@@ -21,37 +22,49 @@ class StarageDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Storage Details",
+            "Search",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(height: defaultPadding),
-          Chart(),
+          //  Chart(),
           StorageInfoCard(
             svgSrc: "assets/icons/Documents.svg",
-            title: "Documents Files",
-            amountOfFiles: "1.3GB",
-            numOfFiles: 1328,
+            title: "Telescope",
           ),
           StorageInfoCard(
             svgSrc: "assets/icons/media.svg",
-            title: "Media Files",
-            amountOfFiles: "15.3GB",
-            numOfFiles: 1328,
+            title: "Detector",
           ),
           StorageInfoCard(
             svgSrc: "assets/icons/folder.svg",
-            title: "Other Files",
-            amountOfFiles: "1.3GB",
-            numOfFiles: 1328,
+            title: "Object",
           ),
           StorageInfoCard(
             svgSrc: "assets/icons/unknown.svg",
-            title: "Unknown",
-            amountOfFiles: "1.3GB",
-            numOfFiles: 140,
+            title: "Frame",
+          ),
+
+          SizedBox(height: defaultPadding),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  padding: EdgeInsets.all(defaultPadding * 0.75),
+                  margin: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: SvgPicture.asset("assets/icons/Search.svg"),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -6,13 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
-//bool logged = false;
-late ValueNotifier<bool> logged = ValueNotifier(false);
+bool logged = false;
+String token ="";
+// late ValueNotifier<bool> logged = ValueNotifier(false);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PreferenceUtils.init();
-  if (await PreferenceUtils.getString("token") != null) {
-    logged.value = true;
+  if (PreferenceUtils.getString("token") != null && PreferenceUtils.getString("token")!.length>0) {
+    logged = true;
+    token = PreferenceUtils.getString("token")!;
+    print("main1: $token");
   }
   runApp(MyApp());
 }
@@ -33,7 +36,7 @@ class MyApp extends StatelessWidget {
           ),
           home: 
          //  MainScreen()
-           logged.value? MainScreen() : LoginScreen(),
+           logged? MainScreen() : LoginScreen(),
           );
     });
   }

@@ -24,21 +24,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     var providerType = Provider.of<DataController>(context);
     return SafeArea(
-        child: Scaffold(
-          key: _scaffoldKey,
-          body: SingleChildScrollView(
-            primary: false,
-            padding: EdgeInsets.all(defaultPadding),
-            child: TelescopWidget(scaffoldKey: _scaffoldKey,),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: SingleChildScrollView(
+          primary: false,
+          padding: EdgeInsets.all(defaultPadding),
+          child: TelescopWidget(
+            scaffoldKey: _scaffoldKey,
           ),
         ),
-      );
+      ),
+    );
   }
 }
 
 class TelescopWidget extends StatefulWidget {
   TelescopWidget({
-    Key? key, required this.scaffoldKey,
+    Key? key,
+    required this.scaffoldKey,
   }) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -55,7 +58,7 @@ class _TelescopWidgetState extends State<TelescopWidget> {
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
 
-   void addResult(Data data){
+  void addResult(Data data) {
     print(data.name);
   }
 
@@ -63,51 +66,23 @@ class _TelescopWidgetState extends State<TelescopWidget> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-         Header(title: "Profile",),
-        SizedBox(height: defaultPadding),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 5,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton.icon(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: defaultPadding * 1.5,
-                            vertical: defaultPadding /
-                                (Responsive.isMobile(context) ? 2 : 1),
-                          ),
-                        ),
-                        onPressed: () {
-                        },
-                        icon: Icon(Icons.add),
-                        label: Text("Add New"),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: defaultPadding),
-                   Text(
-                    "Profile",
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  // if (Responsive.isMobile(context))
-                  //   SizedBox(height: defaultPadding),
-                ],
-              ),
+            Text(
+              "Profile",
+              style: Theme.of(context).textTheme.headline6,
             ),
+    
           ],
-        )
-      ],
+        ),
+        SizedBox(height: height),
+ ],
     );
   }
-
 }

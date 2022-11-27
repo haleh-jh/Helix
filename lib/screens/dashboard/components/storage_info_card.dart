@@ -8,12 +8,9 @@ class StorageInfoCard extends StatelessWidget {
     Key? key,
     required this.title,
     required this.svgSrc,
-    required this.amountOfFiles,
-    required this.numOfFiles,
   }) : super(key: key);
 
-  final String title, svgSrc, amountOfFiles;
-  final int numOfFiles;
+  final String title, svgSrc;
 
   @override
   Widget build(BuildContext context) {
@@ -39,25 +36,26 @@ class StorageInfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    "$numOfFiles Files",
-                    style: Theme.of(context)
-                        .textTheme
-                        .caption!
-                        .copyWith(color: Colors.white70),
+                  DropdownButton(
+                    hint: Text(title), // Not necessary for Option 1
+                    value: '',
+                    isExpanded: true,
+                    onChanged: (newValue) {},
+                    items: [].map((location) {
+                      return DropdownMenuItem(
+                        child: new Text(location),
+                        value: location,
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
             ),
           ),
-          Text(amountOfFiles)
         ],
       ),
     );
   }
+
+  void dropDownCallBack(String? value) {}
 }

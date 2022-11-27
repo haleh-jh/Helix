@@ -3,6 +3,7 @@ import 'package:admin/common/pref.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/controllers/ProgressController.dart';
 import 'package:admin/data/repo/login_repository.dart';
+import 'package:admin/main.dart';
 import 'package:admin/screens/login/components/input_box.dart';
 import 'package:admin/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,7 @@ class _LoginPanelWidgetState extends State<LoginPanelWidget> {
   //     );
 
 }
+
 //
 class LoginButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -143,15 +145,17 @@ Future<void> login(GlobalKey<ScaffoldState> scaffoldKey, String userName,
   try {
     var token = await loginRepository
         .login(userName: userName, password: password)
-        .then((value) {
+        .then((value) async {
+      await PreferenceUtils.setString("token", value);
+      await PreferenceUtils.reload();
+      logged = true;
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => MainScreen()));
-      PreferenceUtils.setString("token", value);
-      PreferenceUtils.reload();
     });
   } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-          CustomSnackbar.customErrorSnackbar("An error has occurred", context));
+    print(e.toString());
+    ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbar.customErrorSnackbar("An error has occurred", context));
   }
   context.read<ProgressController>().setValue(false);
 }

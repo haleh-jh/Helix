@@ -33,6 +33,7 @@ class LoginRemoteDataSource
 
   @override
   Future<User> getUser(String token) async {
+    print("getUser token: $token");
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     final response = await httpClient.get("api/UserProfile/GetUser");

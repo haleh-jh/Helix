@@ -3,6 +3,7 @@ import 'package:admin/common/pref.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/controllers/progressController.dart';
+import 'package:admin/data/models/user.dart';
 import 'package:admin/data/repo/login_repository.dart';
 import 'package:admin/main.dart';
 import 'package:admin/responsive.dart';
@@ -10,6 +11,7 @@ import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/dashboard/detectors_screen.dart';
 import 'package:admin/screens/dashboard/frames_screen.dart';
 import 'package:admin/screens/dashboard/objects_screen.dart';
+import 'package:admin/screens/dashboard/observations_screen.dart';
 import 'package:admin/screens/dashboard/profile_screen.dart';
 import 'package:admin/screens/dashboard/settings_screen.dart';
 import 'package:admin/screens/dashboard/telescop_screen.dart';
@@ -30,9 +32,12 @@ const int telescopsIndex = 1;
 const int detectorsIndex = 2;
 const int objectsIndex = 3;
 const int framesIndex = 4;
-const int usersIndex = 5;
-const int profileIndex = 6;
-const int settingsIndex = 7;
+const int observationsIndex = 5;
+const int usersIndex = 6;
+const int profileIndex = 7;
+const int settingsIndex = 8;
+
+ValueNotifier<String> UserData = ValueNotifier('');
 
 class _MainScreenState extends State<MainScreen> {
   @override
@@ -58,7 +63,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  int selectedScreenIndex = dashboardIndex;
+  static int selectedScreenIndex = dashboardIndex;
 
   List<int> _history = [];
 
@@ -71,6 +76,8 @@ class _BodyState extends State<Body> {
   GlobalKey<NavigatorState> _objectsKey = GlobalKey();
 
   GlobalKey<NavigatorState> _framesKey = GlobalKey();
+
+  GlobalKey<NavigatorState> _observationsKey = GlobalKey();
 
   GlobalKey<NavigatorState> _usersKey = GlobalKey();
 
@@ -109,7 +116,7 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
 
-    if(logged.value){
+    if(logged){
          getUser();
     }
     super.initState();
@@ -123,13 +130,7 @@ class _BodyState extends State<Body> {
         key: context.read<MenuController>().scaffoldKey,
         drawer: SideMenu(
           selectedIndex: selectedScreenIndex,
-          onTap: ((index) {
-            _history.remove(selectedScreenIndex);
-            _history.add(selectedScreenIndex);
-            setState(() {
-              selectedScreenIndex = index;
-            });
-          }),
+          onTap: changeScreen,
         ),
         body: SafeArea(
           child: Row(
@@ -142,13 +143,7 @@ class _BodyState extends State<Body> {
                   // and it takes 1/6 part of the screen
                   child: SideMenu(
                     selectedIndex: selectedScreenIndex,
-                    onTap: ((index) {
-                      _history.remove(selectedScreenIndex);
-                      _history.add(selectedScreenIndex);
-                      setState(() {
-                        selectedScreenIndex = index;
-                      });
-                    }),
+                    onTap: changeScreen,
                   ),
                 ),
               Expanded(
@@ -158,13 +153,14 @@ class _BodyState extends State<Body> {
                     index: selectedScreenIndex,
                     children: [
                       _navigator(
-                          _dashboardKey, dashboardIndex, DashboardScreen()),
+                          _dashboardKey, dashboardIndex, DashboardScreen(profileSelected: changeScreen,)),
                       _navigator(
                           _telescopsKey, telescopsIndex, TelescopScreen()),
                       _navigator(
                           _detectorsKey, detectorsIndex, DetectorScreen()),
                       _navigator(_objectsKey, objectsIndex, ObjectsScreen()),
                       _navigator(_framesKey, framesIndex, FramesScreen()),
+                      _navigator(_observationsKey, observationsIndex, ObservationsScreen()),
                       _navigator(_usersKey, usersIndex, UsersScreen()),
                       _navigator(_profileKey, profileIndex, ProfileScreen()),
                       _navigator(_settingsKey, settingsIndex, SettingsScreen()),
@@ -175,6 +171,15 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
+  }
+
+  changeScreen(int index){
+    print("changeScreen $index");
+  _history.remove(selectedScreenIndex);
+            _history.add(selectedScreenIndex);
+            setState(() {
+              selectedScreenIndex = index;
+            });
   }
 
   Widget _navigator(GlobalKey key, int index, Widget child) {
@@ -191,12 +196,14 @@ class _BodyState extends State<Body> {
 
   Future<void> getUser() async {
   try {
-    var token = await loginRepository
-        .getUser()
+    var token = PreferenceUtils.getString("token");
+      print("main2: $token");
+      await loginRepository
+        .getUser(token!)
         .then((user) {
+           print("user: ${user.lastName}");
+          UserData.value = "${user.surname} ${user.lastName}" ;
           PreferenceUtils.saveUserData(user);
-          print("user: $user");
-
     });
   } catch (e) {
     print("catch: ${e.toString()}");

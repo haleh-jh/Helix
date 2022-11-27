@@ -1,8 +1,10 @@
 import 'package:admin/common/custom_text_field.dart';
 import 'package:admin/common/pref.dart';
 import 'package:admin/controllers/MenuController.dart';
+import 'package:admin/data/models/user.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/profile_screen.dart';
+import 'package:admin/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +13,11 @@ import '../../../constants.dart';
 
 class Header extends StatelessWidget {
   final String title;
-  const Header({
+    Function profileSelected;
+
+ Header({
     Key? key, required this.title,
+    required this.profileSelected
   }) : super(key: key);
 
   @override
@@ -31,16 +36,18 @@ class Header extends StatelessWidget {
           ),
         if (!Responsive.isMobile(context))
         Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
-        Expanded(child: SearchField()),
-        ProfileCard()
+        Expanded(child: Container()),
+        ProfileCard(profileSelected: profileSelected,)
       ],
     );
   }
 }
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({
+  Function profileSelected;
+   ProfileCard({
     Key? key,
+    required this.profileSelected
   }) : super(key: key);
 
   @override
@@ -59,7 +66,8 @@ class ProfileCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ProfileScreen()));
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ProfileScreen()));
+          // profileSelected();
         },
         child: Row(
           children: [
@@ -74,7 +82,10 @@ class ProfileCard extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-                child: Text(name),
+                child: 
+                ValueListenableBuilder<String>(valueListenable: UserData, builder: (context, val, _){
+                  return Text("${UserData.value}");
+                })
               ),
             Icon(Icons.keyboard_arrow_down),
           ],
