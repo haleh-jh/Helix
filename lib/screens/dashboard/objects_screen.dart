@@ -61,15 +61,11 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
 
   void addResult(SObjects data) async {
     try {
-      var coordinate = {
-        "id": "0",
-        "ra": "${data.coordinate!.ra}",
-        "dec": "${data.coordinate!.dec}",
-      };
       var formData = {
         "id": "0",
         "name": "${data.name}",
-        "coordinate": "$coordinate",
+        "ra": "${data.coordinate!.ra}",
+        "dec": "${data.coordinate!.dec}",
       };
       await myProvider.addNew(Objects, json.encode(formData)).then((value) {
         var res = SObjects.fromJson(value);
@@ -101,9 +97,6 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
     myProvider.getAll(context, myProvider.getSObjectsList, Objects);
     return Column(
       children: [
-        Header(
-          title: ObjectsTitle,
-        ),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,8 +106,12 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        ObjectsTitle,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       ElevatedButton.icon(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -131,7 +128,7 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: defaultPadding),
+                  SizedBox(height: height),
                   RecentFiles(
                     title: "Recent $ObjectsTitle",
                     scaffoldKey: widget.scaffoldKey,

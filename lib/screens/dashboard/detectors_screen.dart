@@ -91,9 +91,6 @@ class _DetectorWidgetState extends State<DetectorWidget> {
     myProvider.getAll(context, myProvider.getDetectorsList, detector);
     return Column(
       children: [
-        Header(
-          title: detector,
-        ),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,8 +100,12 @@ class _DetectorWidgetState extends State<DetectorWidget> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        detector,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       ElevatedButton.icon(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -121,8 +122,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: defaultPadding),
-                  RecentFiles(
+                  SizedBox(height: height),
+                   RecentFiles(
                       title: "Recent Detectors",
                       scaffoldKey: widget.scaffoldKey,
                       path: detector,

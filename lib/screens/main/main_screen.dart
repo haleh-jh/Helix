@@ -1,8 +1,10 @@
 import 'package:admin/common/custom_snackbar.dart';
+import 'package:admin/common/pref.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/repo/login_repository.dart';
+import 'package:admin/main.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/dashboard/detectors_screen.dart';
@@ -12,6 +14,7 @@ import 'package:admin/screens/dashboard/profile_screen.dart';
 import 'package:admin/screens/dashboard/settings_screen.dart';
 import 'package:admin/screens/dashboard/telescop_screen.dart';
 import 'package:admin/screens/dashboard/users_screen.dart';
+import 'package:admin/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +108,10 @@ class _BodyState extends State<Body> {
 
   @override
   void initState() {
-  //  getUser();
+
+    if(logged.value){
+         getUser();
+    }
     super.initState();
   }
 
@@ -183,16 +189,22 @@ class _BodyState extends State<Body> {
                     )));
   }
 
-//   Future<void> getUser() async {
-//   try {
-//     var token = await loginRepository
-//         .getUser()
-//         .then((value) {
-//           print("user: $value");
-//     });
-//   } catch (e) {
-//           ScaffoldMessenger.of(context).showSnackBar(
-//           CustomSnackbar.customErrorSnackbar("An error has occurred", context));
-//   }
-// }
+  Future<void> getUser() async {
+  try {
+    var token = await loginRepository
+        .getUser()
+        .then((user) {
+          PreferenceUtils.saveUserData(user);
+          print("user: $user");
+
+    });
+  } catch (e) {
+    print("catch: ${e.toString()}");
+     Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                            (route) => false);
+  }
+}
 }

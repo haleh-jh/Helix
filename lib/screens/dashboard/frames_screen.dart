@@ -96,9 +96,6 @@ class _FramesWidgetState extends State<FramesWidget> {
     myProvider.getAll(context, myProvider.getFramesList, Frames);
     return Column(
       children: [
-        Header(
-          title: Frames,
-        ),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,9 +104,13 @@ class _FramesWidgetState extends State<FramesWidget> {
               flex: 5,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                 Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        Frames,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       ElevatedButton.icon(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -126,7 +127,7 @@ class _FramesWidgetState extends State<FramesWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: defaultPadding),
+                  SizedBox(height: height),
                   RecentFiles(
                     title: "Recent $Frames",
                     scaffoldKey: widget.scaffoldKey,

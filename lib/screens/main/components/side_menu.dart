@@ -31,7 +31,7 @@ class SideMenu extends StatelessWidget {
             },
           ),
           DrawerListTile(
-            title: "Telescops",
+            title: "Telescopes",
             svgSrc: "assets/icons/menu_tran.svg",
             press: () {
                 onTap(telescopsIndex);

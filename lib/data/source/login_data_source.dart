@@ -5,16 +5,16 @@ import 'package:dio/dio.dart';
 
 abstract class ILoginDataSource {
   Future<String> login({required String userName, required String password});
-  Future<User> getUser();
+  Future<User> getUser(String token);
 }
 
 class LoginRemoteDataSource
     with HttpResponseValidator
     implements ILoginDataSource {
   final Dio httpClient;
-  final String token;
+  //final String token;
 
-  LoginRemoteDataSource(this.httpClient, this.token);
+  LoginRemoteDataSource(this.httpClient,);
 
   @override
   Future<String> login(
@@ -32,10 +32,11 @@ class LoginRemoteDataSource
   }
 
   @override
-  Future<User> getUser() async {
+  Future<User> getUser(String token) async {
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     final response = await httpClient.get("api/UserProfile/GetUser");
+    print("res: $response");
     validateResponse(response);
     User user = User.fromJson(response.data);
     return user;

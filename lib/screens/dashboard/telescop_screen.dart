@@ -89,9 +89,6 @@ class _TelescopWidgetState extends State<TelescopWidget> {
     myProvider.getAll(context, myProvider.getTelescopeList, telescope);
     return Column(
       children: [
-        Header(
-          title: telescope,
-        ),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,8 +98,12 @@ class _TelescopWidgetState extends State<TelescopWidget> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        telescope,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       ElevatedButton.icon(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -119,7 +120,7 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: defaultPadding),
+                  SizedBox(height: height),
                   RecentFiles(
                       title: "Recent $telescope",
                       scaffoldKey: widget.scaffoldKey,

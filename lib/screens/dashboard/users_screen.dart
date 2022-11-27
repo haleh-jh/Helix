@@ -220,7 +220,7 @@ class _UsersWidgetState extends State<UsersWidget> {
                 twoFactorEnabled: false,
                 lockoutEnd: "",
                 lockoutEnabled: false,
-                accessFailedCount: 0,
+                accessFailedCount: "",
                 type: "",
                 surname: "",
                 lastName: "",

@@ -1,4 +1,5 @@
 
+import 'package:admin/data/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class PreferenceUtils{
 
@@ -37,7 +38,7 @@ class PreferenceUtils{
 
   static int? getInt(String key) => _prefs!.getInt(key);
 
-  static String? getString(String key) => _prefs!.getString(key);
+  static String? getString(String key) => _prefs!.getString(key) ?? '';
 
   static List<String>? getStringList(String key) => _prefs!.getStringList(key);
 
@@ -45,4 +46,18 @@ class PreferenceUtils{
   static Future<bool> remove(String key) async => await _prefs!.remove(key);
 
   static Future<bool> clear() async => await _prefs!.clear();
+
+
+ static saveUserData(User user) async {
+   await setString("id", user.id);
+   await setString("userName", user.userName);
+   await setString("email", user.email);
+   await setString("type", user.type);
+   await setString("surname", user.surname);
+   await setString("lastName", user.lastName);
+   await setString("institution", user.institution);
+   await setString("phoneNumber", user.phoneNumber);
+   await setBool("emailConfirmed", user.emailConfirmed);
+   await setBool("phoneNumberConfirmed", user.phoneNumberConfirmed);
+  }
 }

@@ -13,7 +13,7 @@ class User {
   bool twoFactorEnabled;
   String lockoutEnd;
   bool lockoutEnabled;
-  int accessFailedCount;
+  String accessFailedCount;
   String type;
   String surname;
   String lastName;

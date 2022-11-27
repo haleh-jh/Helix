@@ -24,4 +24,5 @@ const kEditIconColor = Color(0xff19e9aa);
 // const Color green400 = Color(0xFF66BB6A);
 
 const defaultPadding = 16.0;
+const height = 40.0;
 
