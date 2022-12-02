@@ -11,6 +11,7 @@ import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
+import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +105,7 @@ class _FramesWidgetState extends State<FramesWidget> {
               flex: 5,
               child: Column(
                 children: [
-                 Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -128,19 +129,32 @@ class _FramesWidgetState extends State<FramesWidget> {
                     ],
                   ),
                   SizedBox(height: height),
+                  // RecentFiles(
+                  //   title: "Recent $Frames",
+                  //   scaffoldKey: widget.scaffoldKey,
+                  //   path: Frames,
+                  //   editFunction: (value) {
+                  //     EditResult(value as FramesModel);
+                  //   },
+                  //   deleteFunction: (value) {
+                  //     DeleteResult(value as FramesModel);
+                  //   },
+                  //   progressController: progressController,
+                  //   list: myProvider.getFramesList,
+                  //   isObject: false,
+                  // ),
                   RecentFiles(
-                    title: "Recent $Frames",
+                    title: "Recent Detectors",
                     scaffoldKey: widget.scaffoldKey,
-                    path: Frames,
-                    editFunction: (value) {
-                      EditResult(value as FramesModel);
-                    },
-                    deleteFunction: (value) {
-                      DeleteResult(value as FramesModel);
-                    },
                     progressController: progressController,
                     list: myProvider.getFramesList,
-                    isObject: false,
+                    dataRowList: FrameDataRow(
+                        myProvider.getFramesList.length,
+                        myProvider.getFramesList,
+                        context,
+                        onPressedDeleteButton,
+                        onPressedEditButton),
+                    dataColumnList: FramesDataTable(),
                   ),
                 ],
               ),
@@ -149,6 +163,36 @@ class _FramesWidgetState extends State<FramesWidget> {
         )
       ],
     );
+  }
+
+  onPressedEditButton(BuildContext c, var data) {
+    showDialog(
+        context: c,
+        builder: (context) {
+          return CustomDialog(
+              path: Frames,
+              formKey: _formKey,
+              scaffoldKey: widget.scaffoldKey,
+              c: context,
+              f: EditResult,
+              progressController: progressController,
+              btnTitle: "Edit",
+              data: data);
+        });
+  }
+
+  onPressedDeleteButton(BuildContext c, var data) async {
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return CustomAlertDialog(
+              path: Frames,
+              c: context,
+              deleteFunction: DeleteResult,
+              progressController: progressController,
+              title: 'Are you sure you want to delete this object?',
+              data: data);
+        });
   }
 
   void EditResult(FramesModel data) async {

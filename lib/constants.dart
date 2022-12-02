@@ -26,3 +26,5 @@ const kEditIconColor = Color(0xff19e9aa);
 const defaultPadding = 16.0;
 const height = 40.0;
 
+String defaultError = "An error has occurred";
+

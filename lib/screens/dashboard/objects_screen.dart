@@ -13,6 +13,7 @@ import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
+import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -130,18 +131,18 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
                   ),
                   SizedBox(height: height),
                   RecentFiles(
-                    title: "Recent $ObjectsTitle",
+                    title: "Recent Objectss",
                     scaffoldKey: widget.scaffoldKey,
-                    path: Objects,
-                    editFunction: (value) {
-                      EditResult(value as SObjects);
-                    },
-                    deleteFunction: (value) {
-                      DeleteResult(value as SObjects);
-                    },
                     progressController: progressController,
                     list: myProvider.getSObjectsList,
-                    isObject: true,
+                    dataRowList: SObjectDataRow(
+                        myProvider.getSObjectsList.length,
+                        myProvider.getSObjectsList,
+                        context,
+                        onPressedDeleteButton,
+                        onPressedEditButton,
+                        ),
+                    dataColumnList: SObjectsDataTable(),
                   ),
                 ],
               ),
@@ -150,6 +151,36 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
         )
       ],
     );
+  }
+
+  onPressedEditButton(BuildContext c, var data) {
+    showDialog(
+        context: c,
+        builder: (context) {
+          return CustomDialog(
+              path: ObjectsTitle,
+              formKey: _formKey,
+              scaffoldKey: widget.scaffoldKey,
+              c: context,
+              f: EditResult,
+              progressController: progressController,
+              btnTitle: "Edit",
+              data: data);
+        });
+  }
+
+  onPressedDeleteButton(BuildContext c, var data) async {
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return CustomAlertDialog(
+              path: ObjectsTitle,
+              c: context,
+              deleteFunction: DeleteResult,
+              progressController: progressController,
+              title: 'Are you sure you want to delete this object?',
+              data: data);
+        });
   }
 
   void EditResult(SObjects data) async {

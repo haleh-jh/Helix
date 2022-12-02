@@ -18,6 +18,7 @@ class User {
   String surname;
   String lastName;
   String institution;
+  String des;
 
   User(
       {required this.id,
@@ -38,12 +39,14 @@ class User {
       required this.type,
       required this.surname,
       required this.lastName,
-      required this.institution, required dec,
+      required this.institution,
+      required this.des,
+
       });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(id: json['id']??"", userName: json['userName']?? "", accessFailedCount: json['accessFailedCount']?? "", concurrencyStamp: json['concurrencyStamp']?? "",
-     dec: json['dec']??"", email: json['email']?? "", emailConfirmed: json['emailConfirmed'] ?? false, institution: json['institution']?? "", lastName: json['lastName']??"",
+     des: json['dec']??"", email: json['email']?? "", emailConfirmed: json['emailConfirmed'] ?? false, institution: json['institution']?? "", lastName: json['lastName']??"",
       lockoutEnabled: json['lockoutEnabled']?? false, lockoutEnd: json['lockoutEnd']?? "", normalizedEmail: json['normalizedEmail']?? "", normalizedUserName: json['normalizedUserName']?? "",
        passwordHash: json['passwordHash']?? "", phoneNumber: json['phoneNumber']?? "", phoneNumberConfirmed: json['phoneNumberConfirmed']?? false, securityStamp: json['securityStamp']?? "", surname: json['surname']??"",
         twoFactorEnabled: json['twoFactorEnabled']?? false, type: json['type']?? "", );

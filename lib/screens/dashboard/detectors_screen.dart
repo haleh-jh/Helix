@@ -10,6 +10,7 @@ import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
+import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -123,18 +124,20 @@ class _DetectorWidgetState extends State<DetectorWidget> {
                     ],
                   ),
                   SizedBox(height: height),
-                   RecentFiles(
-                      title: "Recent Detectors",
-                      scaffoldKey: widget.scaffoldKey,
-                      path: detector,
-                      editFunction: (value) {
-                        EditResult(value as Data);
-                      },
-                      deleteFunction: (value) {
-                        DeleteResult(value as Data);
-                      },
-                      progressController: progressController,
-                      list: myProvider.getDetectorsList),
+                  RecentFiles(
+                    title: "Recent Detectors",
+                    scaffoldKey: widget.scaffoldKey,
+                    progressController: progressController,
+                    list: myProvider.getDetectorsList,
+                    dataRowList: TelescopeDataRow(
+                        myProvider.getDetectorsList.length,
+                        myProvider.getDetectorsList,
+                        context,
+                        onPressedDeleteButton,
+                        onPressedEditButton,
+                        ),
+                    dataColumnList: TelescopDataTable(),
+                  ),
                 ],
               ),
             ),
@@ -142,6 +145,36 @@ class _DetectorWidgetState extends State<DetectorWidget> {
         )
       ],
     );
+  }
+
+  onPressedEditButton(BuildContext c, var data) {
+    showDialog(
+        context: c,
+        builder: (context) {
+          return CustomDialog(
+              path: detector,
+              formKey: _formKey,
+              scaffoldKey: widget.scaffoldKey,
+              c: context,
+              f: EditResult,
+              progressController: progressController,
+              btnTitle: "Edit",
+              data: data);
+        });
+  }
+
+  onPressedDeleteButton(BuildContext c, var data) async {
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return CustomAlertDialog(
+              path: detector,
+              c: context,
+              deleteFunction: DeleteResult,
+              progressController: progressController,
+              title: 'Are you sure you want to delete this object?',
+              data: data);
+        });
   }
 
   void EditResult(Data data) async {

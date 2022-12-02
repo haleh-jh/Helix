@@ -45,6 +45,21 @@ List<DataColumn> FramesDataTable() {
   ];
 }
 
+
+List<DataColumn> ObservationDataTable() {
+  return [
+    DataColumn(
+      label: Text("Name"),
+    ),
+    DataColumn(
+      label: Text("Phone"),
+    ),
+    DataColumn(
+      label: Text("Actions"),
+    ),
+  ];
+}
+
 List<DataColumn> UsersDataTable() {
   return [
     DataColumn(
@@ -59,3 +74,211 @@ List<DataColumn> UsersDataTable() {
   ];
 }
 
+List<DataRow2> TelescopeDataRow(int length, var fileInfo, BuildContext context,
+    Function deleteOnTap, Function editOnTap) {
+  return List.generate(length, (index) {
+    return DataRow2(
+      cells: [
+        DataCell(
+          Row(
+            children: [
+              Text(fileInfo[index].name!),
+            ],
+          ),
+        ),
+        DataCell(Text(fileInfo[index].type!)),
+        DataCell(
+          RecentFileActionRow(
+            deleteOnTap: (info) {
+              deleteOnTap!(context, info);
+            },
+            editOnTap: (info) {
+              editOnTap!(context, info);
+            },
+            fileInfo: fileInfo[index],
+          ),
+        ),
+      ],
+    );
+    ;
+  });
+}
+
+List<DataRow2> UserDataRow(int length, var fileInfo, BuildContext context,
+    Function deleteOnTap, Function editOnTap) {
+  return List.generate(length, (index) {
+    return DataRow2(
+      cells: [
+        DataCell(
+          Row(
+            children: [
+              Text("${fileInfo[index].userName} ${fileInfo[index].lastName}")
+            ],
+          ),
+        ),
+        DataCell(Text(fileInfo[index].phoneNumber)),
+        DataCell(
+          RecentFileActionRow(
+            deleteOnTap: (info) {
+              deleteOnTap!(context, info);
+            },
+            editOnTap: (info) {
+              editOnTap!(context, info);
+            },
+            fileInfo: fileInfo[index],
+          ),
+        ),
+      ],
+    );
+  });
+}
+
+List<DataRow2> SObjectDataRow(int length, var fileInfo, BuildContext context,
+    Function deleteOnTap, Function editOnTap) {
+  return List.generate(length, (index) {
+    return DataRow2(
+      cells: [
+        DataCell(
+          Row(
+            children: [Text(fileInfo[index].name!)],
+          ),
+        ),
+        DataCell(Text(
+            "${fileInfo[index].coordinate!.ra} ; ${fileInfo[index].coordinate!.dec}")),
+        DataCell(
+          RecentFileActionRow(
+            deleteOnTap: (info) {
+              deleteOnTap!(context, info);
+            },
+            editOnTap: (info) {
+              editOnTap!(context, info);
+            },
+            fileInfo: fileInfo[index],
+          ),
+        ),
+      ],
+    );
+    ;
+  });
+}
+
+List<DataRow2> FrameDataRow(int length, var fileInfo, BuildContext context,
+    Function deleteOnTap, Function editOnTap) {
+  return List.generate(length, (index) {
+    return DataRow2(
+      cells: [
+        DataCell(
+          Row(
+            children: [
+              Text(fileInfo[index].name!),
+            ],
+          ),
+        ),
+        DataCell(Text("${fileInfo[index].type} ; ${fileInfo[index].filter}")),
+        DataCell(
+          RecentFileActionRow(
+            deleteOnTap: (info) {
+              deleteOnTap!(context, info);
+            },
+            editOnTap: (info) {
+              editOnTap!(context, info);
+            },
+            fileInfo: fileInfo[index],
+          ),
+        ),
+      ],
+    );
+    ;
+  });
+}
+
+List<DataRow2> ObservationDataRow(int length, var fileInfo, BuildContext context,
+    Function deleteOnTap, Function editOnTap) {
+  return List.generate(length, (index) {
+    return DataRow2(
+      cells: [
+        DataCell(
+          Row(
+            children: [
+              Text(fileInfo[index].name!),
+            ],
+          ),
+        ),
+        DataCell(Text("${fileInfo[index].type} ; ${fileInfo[index].filter}")),
+        DataCell(
+          RecentFileActionRow(
+            deleteOnTap: (info) {
+              deleteOnTap!(context, info);
+            },
+            editOnTap: (info) {
+              editOnTap!(context, info);
+            },
+            fileInfo: fileInfo[index],
+          ),
+        ),
+      ],
+    );
+    ;
+  });
+}
+
+// selectedId = fileInfo.id;
+// onPressedButton(context, fileInfo);
+
+// selectedId = fileInfo.id;
+// onPressedDeleteButton(context, fileInfo);
+
+class RecentFileActionRow extends StatelessWidget {
+  Function(dynamic info)? deleteOnTap;
+  Function(dynamic info)? editOnTap;
+  var fileInfo;
+  RecentFileActionRow(
+      {Key? key, this.deleteOnTap, this.editOnTap, this.fileInfo})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+              color: kEditIconColor,
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+            ),
+            child: InkWell(
+              onTap: () {
+                editOnTap!(fileInfo);
+              },
+              child: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: 20,
+              ),
+            )),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+          child: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                color: kDeleteIconColor,
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+              ),
+              child: InkWell(
+                onTap: () {
+                  print("eh: ${fileInfo}");
+                  deleteOnTap!(fileInfo);
+                },
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              )),
+        ),
+      ],
+    );
+  }
+}

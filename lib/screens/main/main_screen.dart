@@ -38,6 +38,7 @@ const int profileIndex = 7;
 const int settingsIndex = 8;
 
 ValueNotifier<String> UserData = ValueNotifier('');
+ValueNotifier<String> UserType = ValueNotifier('GENERAL');
 
 class _MainScreenState extends State<MainScreen> {
   @override
@@ -153,7 +154,16 @@ class _BodyState extends State<Body> {
                     index: selectedScreenIndex,
                     children: [
                       _navigator(
-                          _dashboardKey, dashboardIndex, DashboardScreen(profileSelected: changeScreen,)),
+                          _dashboardKey, dashboardIndex, DashboardScreen(profileSelected: changeScreen, logout: (){
+                              PreferenceUtils.clear();
+                              PreferenceUtils.reload();
+                                  logged = false;
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                  (route) => true);
+                          },)),
                       _navigator(
                           _telescopsKey, telescopsIndex, TelescopScreen()),
                       _navigator(
@@ -161,7 +171,7 @@ class _BodyState extends State<Body> {
                       _navigator(_objectsKey, objectsIndex, ObjectsScreen()),
                       _navigator(_framesKey, framesIndex, FramesScreen()),
                       _navigator(_observationsKey, observationsIndex, ObservationsScreen()),
-                      _navigator(_usersKey, usersIndex, UsersScreen()),
+                      if(UserType.value.contains("ADMIN")) _navigator(_usersKey, usersIndex, UsersScreen()),
                       _navigator(_profileKey, profileIndex, ProfileScreen()),
                       _navigator(_settingsKey, settingsIndex, SettingsScreen()),
                     ],
@@ -197,12 +207,13 @@ class _BodyState extends State<Body> {
   Future<void> getUser() async {
   try {
     var token = PreferenceUtils.getString("token");
-      print("main2: $token");
+   
       await loginRepository
         .getUser(token!)
         .then((user) {
-           print("user: ${user.lastName}");
+             print("getUser: ${user.type}");
           UserData.value = "${user.surname} ${user.lastName}" ;
+          UserType.value = "${user.type}" ;
           PreferenceUtils.saveUserData(user);
     });
   } catch (e) {

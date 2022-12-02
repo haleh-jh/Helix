@@ -37,12 +37,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: h / 7, left: defaultSpacing),
+            margin: EdgeInsets.only(top: h / 8, left: defaultSpacing),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Welcome\nHere ",
+                  "Welcome\nHilex ",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 50,

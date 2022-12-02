@@ -8,6 +8,7 @@ import 'package:admin/data/models/user.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
+import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,24 @@ class _UsersWidgetState extends State<UsersWidget> {
     try {
       var formData = {
         "id": "0",
-        "name": "${data.userName}",
+        "userName": "${data.userName}",
+        "normalizedUserName": "${data.normalizedUserName}",
+        "email": "${data.email}",
+        "normalizedEmail": "${data.normalizedEmail}",
+        "emailConfirmed": "${data.emailConfirmed}",
+        "passwordHash": "${data.passwordHash}",
+        "securityStamp": "${data.securityStamp}",
+        "concurrencyStamp": "${data.concurrencyStamp}",
+        "phoneNumber": "${data.phoneNumber}",
+        "phoneNumberConfirmed": "${data.phoneNumberConfirmed}",
+        "twoFactorEnabled": "${data.twoFactorEnabled}",
+        "lockoutEnd": "${data.lockoutEnd}",
+        "lockoutEnabled": "${data.lockoutEnabled}",
+        "accessFailedCount": "${data.accessFailedCount}",
         "type": "${data.type}",
+        "surname": "${data.surname}",
+        "lastName": "${data.lastName}",
+        "institution": "${data.institution}",
       };
       await myProvider.addNew(Users, json.encode(formData)).then((value) {
         print("vv: $value");
@@ -92,9 +109,6 @@ class _UsersWidgetState extends State<UsersWidget> {
     myProvider.getAll(context, myProvider.getUsersList, Users);
     return Column(
       children: [
-        // Header(
-        //   title: Users,
-        // ),
         SizedBox(height: defaultPadding),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,8 +118,12 @@ class _UsersWidgetState extends State<UsersWidget> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        Users,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                       ElevatedButton.icon(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -122,20 +140,20 @@ class _UsersWidgetState extends State<UsersWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: defaultPadding),
+                  SizedBox(height: height),
                   RecentFiles(
-                    title: "Recent $Users",
+                    title: "Recent Users",
                     scaffoldKey: widget.scaffoldKey,
-                    path: Users,
-                    editFunction: (value) {
-                      EditResult(value as User);
-                    },
-                    deleteFunction: (value) {
-                      DeleteResult(value as User);
-                    },
                     progressController: progressController,
                     list: myProvider.getUsersList,
-                    isObject: false,
+                    dataRowList: UserDataRow(
+                        myProvider.getUsersList.length,
+                        myProvider.getUsersList,
+                        context,
+                        onPressedDeleteButton,
+                        onPressedEditButton,
+                        ),
+                    dataColumnList: UsersDataTable(),
                   ),
                 ],
               ),
@@ -146,12 +164,58 @@ class _UsersWidgetState extends State<UsersWidget> {
     );
   }
 
+  onPressedEditButton(BuildContext c, var data) {
+    showDialog(
+        context: c,
+        builder: (context) {
+          return CustomDialog(
+              path: Users,
+              formKey: _formKey,
+              scaffoldKey: widget.scaffoldKey,
+              c: context,
+              f: EditResult,
+              progressController: progressController,
+              btnTitle: "Edit",
+              data: data);
+        });
+  }
+
+  onPressedDeleteButton(BuildContext c, var data) async {
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return CustomAlertDialog(
+              path: Users,
+              c: context,
+              deleteFunction: DeleteResult,
+              progressController: progressController,
+              title: 'Are you sure you want to delete this object?',
+              data: data);
+        });
+  }
+
   void EditResult(User data) async {
     try {
       var formData = {
-        "id": data.id,
-        "name": "${data.userName}",
+        "id": "${data.id}",
+        "userName": "${data.userName}",
+        "normalizedUserName": "${data.normalizedUserName}",
+        "email": "${data.email}",
+        "normalizedEmail": "${data.normalizedEmail}",
+        "emailConfirmed": "${data.emailConfirmed}",
+        "passwordHash": "${data.passwordHash}",
+        "securityStamp": "${data.securityStamp}",
+        "concurrencyStamp": "${data.concurrencyStamp}",
+        "phoneNumber": "${data.phoneNumber}",
+        "phoneNumberConfirmed": "${data.phoneNumberConfirmed}",
+        "twoFactorEnabled": "${data.twoFactorEnabled}",
+        "lockoutEnd": "${data.lockoutEnd}",
+        "lockoutEnabled": "${data.lockoutEnabled}",
+        "accessFailedCount": "${data.accessFailedCount}",
         "type": "${data.type}",
+        "surname": "${data.surname}",
+        "lastName": "${data.lastName}",
+        "institution": "${data.institution}",
       };
       await myProvider
           .updateData(Users, data, json.encode(formData))
@@ -206,7 +270,7 @@ class _UsersWidgetState extends State<UsersWidget> {
               btnTitle: "Add",
               progressController: progressController,
               data: User(
-                id: "",
+                id: "0",
                 userName: "",
                 normalizedUserName: "",
                 email: "",
@@ -225,7 +289,7 @@ class _UsersWidgetState extends State<UsersWidget> {
                 surname: "",
                 lastName: "",
                 institution: "",
-                dec: "",
+                des: "",
               ));
         });
   }

@@ -12,9 +12,10 @@ import 'components/storage_details.dart';
 class DashboardScreen extends StatelessWidget {
   
  Function(int) profileSelected;
+ Function() logout;
 
  DashboardScreen({
-    Key? key, required this.profileSelected
+    Key? key, required this.profileSelected, required this.logout
   }) : super(key: key);
 
   @override
@@ -28,7 +29,7 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 Header(title: "Dashboard", profileSelected: (){
                   profileSelected(dashboardIndex);
-                },),
+                }, logout: logout,),
                 SizedBox(height: defaultPadding),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -18,7 +18,9 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
+    print("ch: ${UserType.value}");
+    return ValueListenableBuilder(valueListenable: UserType, builder: (context, value, child){
+        return  Drawer(
       child: ListView(
         children: [
           // DrawerHeader(
@@ -69,13 +71,15 @@ class SideMenu extends StatelessWidget {
               onTap(observationsIndex);
             },
           ),
-          DrawerListTile(
-            title: "Users",
-            svgSrc: "assets/icons/menu_notification.svg",
-            press: () {
-              onTap(usersIndex);
-            },
-          ),
+          if (UserType.value.contains("ADMIN")) ...{
+            DrawerListTile(
+              title: "Users",
+              svgSrc: "assets/icons/menu_notification.svg",
+              press: () {
+                onTap(usersIndex);
+              },
+            )
+          },
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
@@ -93,7 +97,9 @@ class SideMenu extends StatelessWidget {
         ],
       ),
     );
-  }
+  
+    });
+   }
 }
 
 class DrawerListTile extends StatelessWidget {

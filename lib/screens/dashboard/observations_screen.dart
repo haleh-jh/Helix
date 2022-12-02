@@ -7,6 +7,7 @@ import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/observation.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
+import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,9 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
         // "type": "${data.type}",
         // "filter": "${data.filter}",
       };
-      await myProvider.addNew(ObservationsPath, json.encode(formData)).then((value) {
+      await myProvider
+          .addNew(ObservationsPath, json.encode(formData))
+          .then((value) {
         print("vv: $value");
         var res = ObservationsModel.fromJson(value);
         myProvider.addData(res, myProvider.getObservationsList);
@@ -90,7 +93,8 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
 
-    myProvider.getAll(context, myProvider.getObservationsList, ObservationsPath);
+    myProvider.getAll(
+        context, myProvider.getObservationsList, ObservationsPath);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -101,7 +105,7 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
               flex: 5,
               child: Column(
                 children: [
-                 Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -126,18 +130,18 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
                   ),
                   SizedBox(height: height),
                   RecentFiles(
-                    title: "Recent $Observations",
+                    title: "Recent Observations",
                     scaffoldKey: widget.scaffoldKey,
-                    path: Observations,
-                    editFunction: (value) {
-                      EditResult(value as ObservationsModel);
-                    },
-                    deleteFunction: (value) {
-                      DeleteResult(value as ObservationsModel);
-                    },
                     progressController: progressController,
                     list: myProvider.getObservationsList,
-                    isObject: false,
+                    dataRowList: TelescopeDataRow(
+                        myProvider.getObservationsList.length,
+                        myProvider.getObservationsList,
+                        context,
+                        onPressedDeleteButton,
+                        onPressedEditButton,
+                        ),
+                    dataColumnList: TelescopDataTable(),
                   ),
                 ],
               ),
@@ -146,6 +150,36 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
         )
       ],
     );
+  }
+
+  onPressedEditButton(BuildContext c, var data) {
+    showDialog(
+        context: c,
+        builder: (context) {
+          return CustomDialog(
+              path: Observations,
+              formKey: _formKey,
+              scaffoldKey: widget.scaffoldKey,
+              c: context,
+              f: EditResult,
+              progressController: progressController,
+              btnTitle: "Edit",
+              data: data);
+        });
+  }
+
+  onPressedDeleteButton(BuildContext c, var data) async {
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return CustomAlertDialog(
+              path: Observations,
+              c: context,
+              deleteFunction: DeleteResult,
+              progressController: progressController,
+              title: 'Are you sure you want to delete this object?',
+              data: data);
+        });
   }
 
   void EditResult(ObservationsModel data) async {

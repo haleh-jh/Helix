@@ -5,6 +5,7 @@ import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/ProgressController.dart';
 import 'package:admin/data/models/data.dart';
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -124,15 +125,11 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                   RecentFiles(
                       title: "Recent $telescope",
                       scaffoldKey: widget.scaffoldKey,
-                      path: telescope,
-                      editFunction: (value) {
-                        EditResult(value as Data);
-                      },
-                      deleteFunction: (value) {
-                        DeleteResult(value as Data);
-                      },
                       progressController: progressController,
-                      list: myProvider.getTelescopeList),
+                      list: myProvider.getTelescopeList,
+                      dataColumnList: TelescopDataTable(),
+                      dataRowList: TelescopeDataRow(myProvider.getTelescopeList.length, myProvider.getTelescopeList,
+                             context, onPressedDeleteButton, onPressedEditButton),),
                 ],
               ),
             ),
@@ -140,6 +137,37 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         )
       ],
     );
+  }
+
+  onPressedEditButton(BuildContext c, var data) {
+    showDialog(
+        context: c,
+        builder: (context) {
+          return CustomDialog(
+              path: telescope,
+              formKey: _formKey,
+              scaffoldKey: widget.scaffoldKey,
+              c: context,
+              f: EditResult,
+              progressController: progressController,
+              btnTitle: "Edit",
+              data: data);
+        });
+  }
+
+  onPressedDeleteButton(BuildContext c, var data) async {
+    print("object");
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return CustomAlertDialog(
+              path: telescope,
+              c: context,
+              deleteFunction: DeleteResult,
+              progressController: progressController,
+              title: 'Are you sure you want to delete this object?',
+              data: data);
+        });
   }
 
   void EditResult(Data data) async {

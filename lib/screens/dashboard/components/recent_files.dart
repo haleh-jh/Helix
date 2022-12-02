@@ -25,26 +25,24 @@ typedef EditCallback<T> = void Function(T value);
 
 class RecentFiles<T> extends StatefulWidget {
   final String title;
-  final String path;
   final List list;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final EditCallback<T>? editFunction;
-  final EditCallback<T>? deleteFunction;
- // final Function(Data data)? deleteFunction;
+  final List<DataColumn> dataColumnList;
+  final List<DataRow> dataRowList;
+  // final Function(Data data)? deleteFunction;
   var progressController;
   bool isObject;
 
-  RecentFiles(
-      {Key? key,
-      required this.title,
-      required this.scaffoldKey,
-      required this.path,
-      required this.list,
-      this.editFunction,
-      this.deleteFunction,
-      this.progressController,
-      this.isObject = false,})
-      : super(key: key);
+  RecentFiles({
+    Key? key,
+    required this.title,
+    required this.scaffoldKey,
+    required this.list,
+    this.progressController,
+    this.isObject = false,
+    required this.dataColumnList,
+     required this.dataRowList,
+  }) : super(key: key);
 
   @override
   State<RecentFiles> createState() => _RecentFilesState();
@@ -95,18 +93,12 @@ class _RecentFilesState extends State<RecentFiles> {
                   )
                 : SizedBox(
                     width: double.infinity,
-                    child:
-                     DataTable2(
+                    child: DataTable2(
                       columnSpacing: defaultPadding,
                       minWidth: 600,
-                      columns: widget.isObject? SObjectsDataTable() : (widget.list is List<FramesModel>)? FramesDataTable() : (widget.list is List<User>)? UsersDataTable() : TelescopDataTable(),
-                      rows: List.generate(
-                        widget.list.length,
-                        (index) => recentFileDataRow(
-                          widget.list[index],
-                          context,
-                        ),
-                      ),
+                      columns: widget.dataColumnList,
+                     //   columns: widget.isObject? SObjectsDataTable() : (widget.list is List<FramesModel>)? FramesDataTable() : (widget.list is List<User>)? UsersDataTable() : TelescopDataTable(),
+                      rows: widget.dataRowList
                     ),
                   );
           })),
@@ -121,94 +113,103 @@ class _RecentFilesState extends State<RecentFiles> {
     super.dispose();
   }
 
-  onPressedButton(BuildContext c, var data) {
-    showDialog(
-        context: c,
-        builder: (context) {
-          return CustomDialog(
-              path: widget.path,
-              formKey: _formKey,
-              scaffoldKey: widget.scaffoldKey,
-              c: context,
-              f: widget.editFunction,
-              progressController: widget.progressController,
-              btnTitle: "Edit",
-              data: data);
-        });
-  }
+  // onPressedButton(BuildContext c, var data) {
+  //   showDialog(
+  //       context: c,
+  //       builder: (context) {
+  //         return CustomDialog(
+  //             path: widget.path,
+  //             formKey: _formKey,
+  //             scaffoldKey: widget.scaffoldKey,
+  //             c: context,
+  //             f: widget.editFunction,
+  //             progressController: widget.progressController,
+  //             btnTitle: "Edit",
+  //             data: data);
+  //       });
+  // }
 
-  onPressedDeleteButton(BuildContext c, var data) async{
-   await showDialog(
-        context: context,
-        builder: (_) {
-          return CustomAlertDialog(
-              path: widget.path,
-              c: context,
-              deleteFunction: widget.deleteFunction,
-              progressController: widget.progressController,
-              title: 'Are you sure you want to delete this object?',
-              data: data);
-        });
-  }
+  // onPressedDeleteButton(BuildContext c, var data) async {
+  //   await showDialog(
+  //       context: context,
+  //       builder: (_) {
+  //         return CustomAlertDialog(
+  //             path: widget.path,
+  //             c: context,
+  //             deleteFunction: widget.deleteFunction,
+  //             progressController: widget.progressController,
+  //             title: 'Are you sure you want to delete this object?',
+  //             data: data);
+  //       });
+  // }
 
-  DataRow recentFileDataRow(var fileInfo, BuildContext context) {
-    return DataRow(
-      cells: [
-        DataCell(
-          Row(
-            children: [
-             (fileInfo is User)? Text("${fileInfo.userName} ${fileInfo.lastName}") : Text(fileInfo.name!),
-            ],
-          ),
-        ),
-        DataCell(Text((fileInfo is SObjects) ? "${fileInfo.coordinate!.ra} ; ${fileInfo.coordinate!.dec}" : (fileInfo is FramesModel)? "${fileInfo.type} ; ${fileInfo.filter}" :(fileInfo is User)? fileInfo.phoneNumber : fileInfo.type!)),
-        DataCell(
-          Row(
-            children: [
-              Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    color: kEditIconColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      selectedId = fileInfo.id;
-                      onPressedButton(context, fileInfo);
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  )),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                child: Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      color: kDeleteIconColor,
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: InkWell(
-                      onTap: (() {
-                        selectedId = fileInfo.id;
-                        onPressedDeleteButton(context, fileInfo);
-                      }),
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    )),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  // DataRow recentFileDataRow(var fileInfo, BuildContext context) {
+  //   return 
+  //   DataRow(
+  //     cells: [
+  //       DataCell(
+  //         Row(
+  //           children: [
+  //             (fileInfo is User)
+  //                 ? Text("${fileInfo.userName} ${fileInfo.lastName}")
+  //                 : Text(fileInfo.name!),
+  //           ],
+  //         ),
+  //       ),
+  //       DataCell(Text((fileInfo is SObjects)
+  //           ? "${fileInfo.coordinate!.ra} ; ${fileInfo.coordinate!.dec}"
+  //           : (fileInfo is FramesModel)
+  //               ? "${fileInfo.type} ; ${fileInfo.filter}"
+  //               : (fileInfo is User)
+  //                   ? fileInfo.phoneNumber
+  //                   : fileInfo.type!)),
+  //       DataCell(
+  //         Row(
+  //           children: [
+  //             Container(
+  //                 height: 30,
+  //                 width: 30,
+  //                 decoration: BoxDecoration(
+  //                   color: kEditIconColor,
+  //                   borderRadius: const BorderRadius.all(Radius.circular(8)),
+  //                 ),
+  //                 child: InkWell(
+  //                   onTap: () {
+  //                     selectedId = fileInfo.id;
+  //                     onPressedButton(context, fileInfo);
+  //                   },
+  //                   child: Icon(
+  //                     Icons.edit,
+  //                     color: Colors.white,
+  //                     size: 20,
+  //                   ),
+  //                 )),
+  //             Padding(
+  //               padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+  //               child: Container(
+  //                   height: 30,
+  //                   width: 30,
+  //                   decoration: BoxDecoration(
+  //                     color: kDeleteIconColor,
+  //                     borderRadius: const BorderRadius.all(Radius.circular(8)),
+  //                   ),
+  //                   child: InkWell(
+  //                     onTap: (() {
+  //                       selectedId = fileInfo.id;
+  //                       onPressedDeleteButton(context, fileInfo);
+  //                     }),
+  //                     child: Icon(
+  //                       Icons.delete,
+  //                       color: Colors.white,
+  //                       size: 20,
+  //                     ),
+  //                   )),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
 }
