@@ -48,7 +48,6 @@ class ObservationsWidget extends StatefulWidget {
 class _ObservationsWidgetState extends State<ObservationsWidget> {
   late final myProvider;
   String Observations = "Observations";
-  String ObservationsPath = "ObservationSubmissions";
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
@@ -164,7 +163,8 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
               f: EditResult,
               progressController: progressController,
               btnTitle: "Edit",
-              data: data);
+              data: data,
+              customWidget: Container());
         });
   }
 

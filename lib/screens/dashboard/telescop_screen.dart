@@ -6,6 +6,7 @@ import 'package:admin/controllers/ProgressController.dart';
 import 'package:admin/data/models/data.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
+import 'package:admin/screens/dashboard/components/telescope_custom_dialog.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,8 @@ class TelescopWidget extends StatefulWidget {
 
 class _TelescopWidgetState extends State<TelescopWidget> {
   late final myProvider;
-  String telescope = "Telescopes";
+  TextEditingController NameController = TextEditingController();
+  TextEditingController TypeController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
@@ -58,8 +60,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
     try {
       var formData = json.encode({
         "id": "0",
-        "name": "${data.name}",
-        "type": "${data.type}",
+        "name": "${NameController.text}",
+        "type": "${TypeController.text}",
       });
       await myProvider.addNew(telescope, formData).then((value) {
         var res = Data.fromJson(value);
@@ -123,13 +125,18 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                   ),
                   SizedBox(height: height),
                   RecentFiles(
-                      title: "Recent $telescope",
-                      scaffoldKey: widget.scaffoldKey,
-                      progressController: progressController,
-                      list: myProvider.getTelescopeList,
-                      dataColumnList: TelescopDataTable(),
-                      dataRowList: TelescopeDataRow(myProvider.getTelescopeList.length, myProvider.getTelescopeList,
-                             context, onPressedDeleteButton, onPressedEditButton),),
+                    title: "Recent $telescope",
+                    scaffoldKey: widget.scaffoldKey,
+                    progressController: progressController,
+                    list: myProvider.getTelescopeList,
+                    dataColumnList: TelescopDataTable(),
+                    dataRowList: TelescopeDataRow(
+                        myProvider.getTelescopeList.length,
+                        myProvider.getTelescopeList,
+                        context,
+                        onPressedDeleteButton,
+                        onPressedEditButton),
+                  ),
                 ],
               ),
             ),
@@ -143,20 +150,32 @@ class _TelescopWidgetState extends State<TelescopWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = data.name;
+          TypeController.text = data.type;
           return CustomDialog(
-              path: telescope,
-              formKey: _formKey,
-              scaffoldKey: widget.scaffoldKey,
-              c: context,
-              f: EditResult,
-              progressController: progressController,
-              btnTitle: "Edit",
-              data: data);
+            path: telescope,
+            formKey: _formKey,
+            scaffoldKey: widget.scaffoldKey,
+            c: context,
+            f: (value) {
+              var d = Data(
+                  id: data.id,
+                  name: NameController.text,
+                  type: TypeController.text);
+              EditResult(d);
+            },
+            progressController: progressController,
+            btnTitle: "Edit",
+            data: data,
+            customWidget: TelescopeCustomDialog(
+                NameController: NameController,
+                TypeController: TypeController,
+                path: telescope),
+          );
         });
   }
 
   onPressedDeleteButton(BuildContext c, var data) async {
-    print("object");
     await showDialog(
         context: context,
         builder: (_) {
@@ -172,8 +191,11 @@ class _TelescopWidgetState extends State<TelescopWidget> {
 
   void EditResult(Data data) async {
     try {
-      var formData =
-          json.encode({"id": data.id, "name": data.name, "type": data.type});
+      var formData = json.encode({
+        "id": data.id,
+        "name": NameController.text,
+        "type": TypeController.text
+      });
       await myProvider.updateData(telescope, data, formData).then((value) {
         myProvider.updateList(value, myProvider.getTelescopeList);
         CustomDialog.stateSetter!(
@@ -215,16 +237,21 @@ class _TelescopWidgetState extends State<TelescopWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = "";
+          TypeController.text = "";
           return CustomDialog(
-            path: telescope,
-            formKey: _formKey,
-            scaffoldKey: key,
-            c: context,
-            f: addResult,
-            btnTitle: "Add",
-            progressController: progressController,
-            data: Data(id: 0, name: "", type: ""),
-          );
+              path: telescope,
+              formKey: _formKey,
+              scaffoldKey: key,
+              c: context,
+              f: addResult,
+              btnTitle: "Add",
+              progressController: progressController,
+              data: Data(id: 0, name: "", type: ""),
+              customWidget: TelescopeCustomDialog(
+                  NameController: NameController,
+                  TypeController: TypeController,
+                  path: telescope));
         });
   }
 }

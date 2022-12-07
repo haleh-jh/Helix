@@ -11,6 +11,7 @@ import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
+import 'package:admin/screens/dashboard/components/telescope_custom_dialog.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -54,14 +55,15 @@ class _DetectorWidgetState extends State<DetectorWidget> {
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
-  final String detector = "Detectors";
+  TextEditingController NameController = TextEditingController();
+  TextEditingController TypeController = TextEditingController();
 
   void addResult(Data data) async {
     try {
       var formData = json.encode({
         "id": "0",
-        "name": "${data.name}",
-        "type": "${data.type}",
+        "name": "${NameController.text}",
+        "type": "${TypeController.text}",
       });
       await myProvider.addNew(detector, formData).then((value) {
         var res = Data.fromJson(value);
@@ -130,12 +132,12 @@ class _DetectorWidgetState extends State<DetectorWidget> {
                     progressController: progressController,
                     list: myProvider.getDetectorsList,
                     dataRowList: TelescopeDataRow(
-                        myProvider.getDetectorsList.length,
-                        myProvider.getDetectorsList,
-                        context,
-                        onPressedDeleteButton,
-                        onPressedEditButton,
-                        ),
+                      myProvider.getDetectorsList.length,
+                      myProvider.getDetectorsList,
+                      context,
+                      onPressedDeleteButton,
+                      onPressedEditButton,
+                    ),
                     dataColumnList: TelescopDataTable(),
                   ),
                 ],
@@ -151,15 +153,28 @@ class _DetectorWidgetState extends State<DetectorWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = data.name;
+          TypeController.text = data.type;
           return CustomDialog(
-              path: detector,
-              formKey: _formKey,
-              scaffoldKey: widget.scaffoldKey,
-              c: context,
-              f: EditResult,
-              progressController: progressController,
-              btnTitle: "Edit",
-              data: data);
+            path: detector,
+            formKey: _formKey,
+            scaffoldKey: widget.scaffoldKey,
+            c: context,
+            f: (value) {
+              var d = Data(
+                  id: data.id,
+                  name: NameController.text,
+                  type: TypeController.text);
+              EditResult(d);
+            },
+            progressController: progressController,
+            btnTitle: "Edit",
+            data: data,
+            customWidget: TelescopeCustomDialog(
+                NameController: NameController,
+                TypeController: TypeController,
+                path: detector),
+          );
         });
   }
 
@@ -222,6 +237,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = "";
+          TypeController.text = "";
           return CustomDialog(
             path: detector,
             formKey: _formKey,
@@ -231,6 +248,10 @@ class _DetectorWidgetState extends State<DetectorWidget> {
             btnTitle: "Add",
             progressController: progressController,
             data: Data(id: 0, name: "", type: ""),
+            customWidget: TelescopeCustomDialog(
+                NameController: NameController,
+                TypeController: TypeController,
+                path: detector),
           );
         });
   }

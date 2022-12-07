@@ -15,7 +15,6 @@ void main() async {
   if (PreferenceUtils.getString("token") != null && PreferenceUtils.getString("token")!.length>0) {
     logged = true;
     token = PreferenceUtils.getString("token")!;
-    print("main1: $token");
   }
   runApp(MyApp());
 }

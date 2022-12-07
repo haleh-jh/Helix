@@ -6,6 +6,7 @@ import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/user.dart';
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/dashboard/components/User_custom_dialog.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
@@ -48,33 +49,37 @@ class UsersWidget extends StatefulWidget {
 
 class _UsersWidgetState extends State<UsersWidget> {
   late final myProvider;
-  String Users = "Users";
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController surnameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   void addResult(User data) async {
     try {
       var formData = {
         "id": "0",
-        "userName": "${data.userName}",
+        "userName": "${userNameController.text}",
         "normalizedUserName": "${data.normalizedUserName}",
-        "email": "${data.email}",
+        "email": "${emailController.text}",
         "normalizedEmail": "${data.normalizedEmail}",
         "emailConfirmed": "${data.emailConfirmed}",
         "passwordHash": "${data.passwordHash}",
         "securityStamp": "${data.securityStamp}",
         "concurrencyStamp": "${data.concurrencyStamp}",
-        "phoneNumber": "${data.phoneNumber}",
+        "phoneNumber": "${phoneController.text}",
         "phoneNumberConfirmed": "${data.phoneNumberConfirmed}",
         "twoFactorEnabled": "${data.twoFactorEnabled}",
         "lockoutEnd": "${data.lockoutEnd}",
         "lockoutEnabled": "${data.lockoutEnabled}",
         "accessFailedCount": "${data.accessFailedCount}",
         "type": "${data.type}",
-        "surname": "${data.surname}",
-        "lastName": "${data.lastName}",
+        "surname": "${surnameController.text}",
+        "lastName": "${lastNameController.text}",
         "institution": "${data.institution}",
       };
       await myProvider.addNew(Users, json.encode(formData)).then((value) {
@@ -147,12 +152,12 @@ class _UsersWidgetState extends State<UsersWidget> {
                     progressController: progressController,
                     list: myProvider.getUsersList,
                     dataRowList: UserDataRow(
-                        myProvider.getUsersList.length,
-                        myProvider.getUsersList,
-                        context,
-                        onPressedDeleteButton,
-                        onPressedEditButton,
-                        ),
+                      myProvider.getUsersList.length,
+                      myProvider.getUsersList,
+                      context,
+                      onPressedDeleteButton,
+                      onPressedEditButton,
+                    ),
                     dataColumnList: UsersDataTable(),
                   ),
                 ],
@@ -168,15 +173,50 @@ class _UsersWidgetState extends State<UsersWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          userNameController.text = data.userName;
+          lastNameController.text = data.lastname;
+          surnameController.text = data.surname;
+          emailController.text = data.email;
+          phoneController.text = data.phoneNumber;
           return CustomDialog(
               path: Users,
               formKey: _formKey,
               scaffoldKey: widget.scaffoldKey,
               c: context,
-              f: EditResult,
+              f: (value) {
+                var d = User(
+                id: data.id,
+                userName: userNameController.text,
+                normalizedUserName: "",
+                email: emailController.text,
+                normalizedEmail: "",
+                emailConfirmed: false,
+                passwordHash: "",
+                securityStamp: "",
+                concurrencyStamp: "",
+                phoneNumber: phoneController.text,
+                phoneNumberConfirmed: false,
+                twoFactorEnabled: false,
+                lockoutEnd: "",
+                lockoutEnabled: false,
+                accessFailedCount: "",
+                type: "",
+                surname: surnameController.text,
+                lastName: lastNameController.text,
+                institution: "",
+                des: "",
+              );
+                EditResult(d);
+              },
               progressController: progressController,
               btnTitle: "Edit",
-              data: data);
+              data: data,
+              customWidget: UserCustomDialog(
+                  userNameController: userNameController,
+                  lastNameController: lastNameController,
+                  surnameController: surnameController,
+                  emailController: emailController,
+                  phoneController: phoneController));
         });
   }
 
@@ -261,6 +301,11 @@ class _UsersWidgetState extends State<UsersWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          userNameController.text = "";
+          lastNameController.text = "";
+          surnameController.text = "";
+          emailController.text = "";
+          phoneController.text = "";
           return CustomDialog(
               path: Users,
               formKey: _formKey,
@@ -290,7 +335,13 @@ class _UsersWidgetState extends State<UsersWidget> {
                 lastName: "",
                 institution: "",
                 des: "",
-              ));
+              ),
+              customWidget: UserCustomDialog(
+                  userNameController: userNameController,
+                  lastNameController: lastNameController,
+                  surnameController: surnameController,
+                  emailController: emailController,
+                  phoneController: phoneController));
         });
   }
 }

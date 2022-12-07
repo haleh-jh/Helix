@@ -79,6 +79,8 @@ class DataController with ChangeNotifier {
       ProgressNotifier.value = true;
       if (list.length == 0) {
         await serviceRepository.getAll(path).then((value) {
+                      print("size1: ${value.length}");
+
           if (list is List<Data>) {
             final data = <Data>[];
             value.forEach((element) {

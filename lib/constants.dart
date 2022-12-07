@@ -9,12 +9,12 @@ const double buttonHeight = 50.0;
 const double fontSize = 18.0;
 
 const kMainLightColor = Color(0xffffffff);
-//const kSubTitleColor = Color(0xffc0bec5);   
+//const kSubTitleColor = Color(0xffc0bec5);
 const kSubTitleColor = Color(0xffaeabbb);
 const kButtonColor = Color(0xfff6f5fb);
 const kCustomElevatedButtonColor = Color(0xff5f57de);
 const kIconColor = Color(0xff6f64b7);
-const kBackgroundColor = Color(0xfff6f5fb);                  
+const kBackgroundColor = Color(0xfff6f5fb);
 const kCursorTextFieldColor = Color(0xff9896be);
 const kOrangeColor = Color(0xffff9f00);
 const kDeleteIconColor = Color(0xffff4343);
@@ -27,4 +27,14 @@ const defaultPadding = 16.0;
 const height = 40.0;
 
 String defaultError = "An error has occurred";
+
+final String telescope = "Telescopes";
+final String detector = "Detectors";
+final String Objects = "SObjects";
+final String Users = "Users";
+final String ObservationsPath = "ObservationSubmissions";
+final String Frames = "Frames";
+
+
+
 

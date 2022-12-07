@@ -1,6 +1,7 @@
 import 'package:admin/common/custom_snackbar.dart';
 import 'package:admin/common/pref.dart';
 import 'package:admin/controllers/DataController.dart';
+import 'package:admin/controllers/ListDataController.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/user.dart';
@@ -48,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
         ChangeNotifierProvider(create: (context) => MenuController()),
         ChangeNotifierProvider(create: (context) => DataController()),
         ChangeNotifierProvider(create: (context) => ProgressController()),
+        ChangeNotifierProvider(create: (context) => ListDataController()),
       ],
       child: Body(),
     );

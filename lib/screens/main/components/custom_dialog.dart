@@ -9,6 +9,7 @@ import 'package:admin/data/models/frames.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/dashboard/components/telescope_custom_dialog.dart';
 import 'package:admin/screens/login/components/input_box.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
@@ -26,7 +27,7 @@ class CustomDialog<T> extends StatelessWidget {
     required this.btnTitle,
     required this.data,
     this.progressController,
-    required this.path,
+    required this.path, required this.customWidget,
   }) : super(key: key);
 
   final GlobalKey<FormState> formKey;
@@ -37,6 +38,7 @@ class CustomDialog<T> extends StatelessWidget {
   TextEditingController decController = TextEditingController();
   TextEditingController FrameTypeController = TextEditingController();
   TextEditingController FrameFilterController = TextEditingController();
+  final Widget customWidget;
   final BuildContext c;
   final String btnTitle;
   var progressController;
@@ -74,75 +76,7 @@ class CustomDialog<T> extends StatelessWidget {
                 key: formKey,
                 child: Column(
                   children: [
-                    InputBox(
-                      controller: NameController,
-                      label: "${path} Name",
-                      textInputType: TextInputType.text,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 2.5.sp,
-                          fontWeight: FontWeight.w400),
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                    if (data is SObjects)
-                      Column(
-                        children: [
-                          InputBox(
-                            controller: raController,
-                            label: "coordinate ra",
-                            textInputType: TextInputType.text,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 2.5.sp,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          InputBox(
-                            controller: decController,
-                            label: "coordinate dec",
-                            textInputType: TextInputType.text,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 2.5.sp,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    if (data is Data)
-                      InputBox(
-                        controller: TypeController,
-                        label: "${path} Type",
-                        textInputType: TextInputType.text,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 2.5.sp,
-                            fontWeight: FontWeight.w400),
-                      ),
-                     if (data is FramesModel)
-                      Column(
-                        children: [
-                          InputBox(
-                            controller: FrameTypeController,
-                            label: "Frame type",
-                            textInputType: TextInputType.text,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 2.5.sp,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          InputBox(
-                            controller: FrameFilterController,
-                            label: "Frame filter",
-                            textInputType: TextInputType.text,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 2.5.sp,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    
+                    customWidget,
                     Expanded(child: Container()),
                     ElevatedButton(
                       style: TextButton.styleFrom(
@@ -201,3 +135,5 @@ class CustomDialog<T> extends StatelessWidget {
     });
   }
 }
+
+

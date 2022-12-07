@@ -9,6 +9,7 @@ import 'package:admin/data/models/data.dart';
 import 'package:admin/data/models/frames.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/dashboard/components/Frame_custom_dialog.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
@@ -51,19 +52,21 @@ class FramesWidget extends StatefulWidget {
 
 class _FramesWidgetState extends State<FramesWidget> {
   late final myProvider;
-  String Frames = "Frames";
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
+  TextEditingController NameController = TextEditingController();
+  TextEditingController FrameFilterController = TextEditingController();
+  TextEditingController FrameTypeController = TextEditingController();
 
   void addResult(FramesModel data) async {
     try {
       var formData = {
         "id": "0",
-        "name": "${data.name}",
-        "type": "${data.type}",
-        "filter": "${data.filter}",
+        "name": "${NameController.text}",
+        "type": "${FrameTypeController.text}",
+        "filter": "${FrameFilterController.text}",
       };
       await myProvider.addNew(Frames, json.encode(formData)).then((value) {
         print("vv: $value");
@@ -93,7 +96,6 @@ class _FramesWidgetState extends State<FramesWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
-
     myProvider.getAll(context, myProvider.getFramesList, Frames);
     return Column(
       children: [
@@ -169,15 +171,31 @@ class _FramesWidgetState extends State<FramesWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = data.name;
+          FrameFilterController.text = data.filter;
+          FrameTypeController.text = data.type;
           return CustomDialog(
               path: Frames,
               formKey: _formKey,
               scaffoldKey: widget.scaffoldKey,
               c: context,
-              f: EditResult,
+              f: (value) {
+                var d = FramesModel(
+                  id: data.id,
+                  name: NameController.text,
+                  type: FrameTypeController.text,
+                  filter: FrameFilterController.text,
+                );
+                EditResult(d);
+              },
               progressController: progressController,
               btnTitle: "Edit",
-              data: data);
+              data: data,
+              customWidget: FrameCustomDialog(
+                FrameFilterController: FrameFilterController,
+                FrameTypeController: FrameTypeController,
+                NameController: NameController,
+              ));
         });
   }
 
@@ -247,6 +265,9 @@ class _FramesWidgetState extends State<FramesWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = "";
+          FrameFilterController.text = "";
+          FrameTypeController.text = "";
           return CustomDialog(
               path: Frames,
               formKey: _formKey,
@@ -260,6 +281,11 @@ class _FramesWidgetState extends State<FramesWidget> {
                 name: "",
                 type: "",
                 filter: "",
+              ),
+              customWidget: FrameCustomDialog(
+                FrameFilterController: FrameFilterController,
+                FrameTypeController: FrameTypeController,
+                NameController: NameController,
               ));
         });
   }

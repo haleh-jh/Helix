@@ -12,6 +12,7 @@ import 'package:admin/data/models/object.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
+import 'package:admin/screens/dashboard/components/object_custom_dialog.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
@@ -53,20 +54,22 @@ class ObjectsWidget extends StatefulWidget {
 
 class _ObjectsWidgetState extends State<ObjectsWidget> {
   late final myProvider;
-  String Objects = "SObjects";
   String ObjectsTitle = "Objects";
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
+  TextEditingController NameController = TextEditingController();
+  TextEditingController decController = TextEditingController();
+  TextEditingController raController = TextEditingController();
 
   void addResult(SObjects data) async {
     try {
       var formData = {
         "id": "0",
-        "name": "${data.name}",
-        "ra": "${data.coordinate!.ra}",
-        "dec": "${data.coordinate!.dec}",
+        "name": "${NameController.text}",
+        "ra": "${raController.text}",
+        "dec": "${decController.text}",
       };
       await myProvider.addNew(Objects, json.encode(formData)).then((value) {
         var res = SObjects.fromJson(value);
@@ -136,12 +139,12 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
                     progressController: progressController,
                     list: myProvider.getSObjectsList,
                     dataRowList: SObjectDataRow(
-                        myProvider.getSObjectsList.length,
-                        myProvider.getSObjectsList,
-                        context,
-                        onPressedDeleteButton,
-                        onPressedEditButton,
-                        ),
+                      myProvider.getSObjectsList.length,
+                      myProvider.getSObjectsList,
+                      context,
+                      onPressedDeleteButton,
+                      onPressedEditButton,
+                    ),
                     dataColumnList: SObjectsDataTable(),
                   ),
                 ],
@@ -157,15 +160,32 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = data.name;
+          decController.text = data.coordinate.dec;
+          raController.text = data.coordinate.ra;
           return CustomDialog(
               path: ObjectsTitle,
               formKey: _formKey,
               scaffoldKey: widget.scaffoldKey,
               c: context,
-              f: EditResult,
+              f: (value) {
+                var d = SObjects(
+                    id: data.id,
+                    name: NameController.text,
+                    coordinate: Coordinate(
+                        id: data.coordinate.id,
+                        ra: raController.text,
+                        dec: decController.text));
+                EditResult(d);
+              },
               progressController: progressController,
               btnTitle: "Edit",
-              data: data);
+              data: data,
+              customWidget: ObjectCustomDialog(
+                NameController: NameController,
+                decController: decController,
+                raController: raController,
+              ));
         });
   }
 
@@ -239,6 +259,9 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
     showDialog(
         context: c,
         builder: (context) {
+          NameController.text = "";
+          decController.text = "";
+          raController.text = "";
           return CustomDialog(
               path: Objects,
               formKey: _formKey,
@@ -248,9 +271,15 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
               btnTitle: "Add",
               progressController: progressController,
               data: SObjects(
-                  id: 0,
-                  name: "",
-                  coordinate: Coordinate(id: 0, ra: "", dec: "")));
+                id: 0,
+                name: "",
+                coordinate: Coordinate(id: 0, ra: "", dec: ""),
+              ),
+              customWidget: ObjectCustomDialog(
+                NameController: NameController,
+                decController: decController,
+                raController: raController,
+              ));
         });
   }
 }
