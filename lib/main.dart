@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
             canvasColor: secondaryColor,
           ),
           home: 
-         //  MainScreen()
+          // MainScreen()
            logged? MainScreen() : LoginScreen(),
           );
     });
