@@ -8,7 +8,7 @@ class Data{
   Data({required this.id, required this.name, required this.type});
   
   factory Data.fromJson(Map<String, dynamic> json){
-    return Data(id: json['id'], name: json['name'], type: json['type']);
+    return Data(id: json['id'], name: json['name']??'', type: json['type']??'');
   }
   
   }

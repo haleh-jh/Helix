@@ -1,4 +1,5 @@
 import 'package:admin/constants.dart';
+import 'package:admin/data/models/observation.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,17 +46,45 @@ List<DataColumn> FramesDataTable() {
   ];
 }
 
-
 List<DataColumn> ObservationDataTable() {
   return [
     DataColumn(
-      label: Text("Name"),
+      label: Text("User name"),
     ),
     DataColumn(
-      label: Text("Phone"),
+      label: Text("Telescope"),
+    ),
+    DataColumn(
+      label: Text("Detector"),
+    ),
+    DataColumn(
+      label: Text("Observation"),
+    ),
+    DataColumn(
+      label: Text("Frame"),
     ),
     DataColumn(
       label: Text("Actions"),
+    ),
+  ];
+}
+
+List<DataColumn> SearchObservationDataTable() {
+  return [
+    DataColumn(
+      label: Text("User name"),
+    ),
+    DataColumn(
+      label: Text("Telescope"),
+    ),
+    DataColumn(
+      label: Text("Detector"),
+    ),
+    DataColumn(
+      label: Text("Observation"),
+    ),
+    DataColumn(
+      label: Text("Frame"),
     ),
   ];
 }
@@ -143,8 +172,7 @@ List<DataRow2> SObjectDataRow(int length, var fileInfo, BuildContext context,
             children: [Text(fileInfo[index].name!)],
           ),
         ),
-        DataCell(Text(
-            "${fileInfo[index].coordinate!.ra} ; ${fileInfo[index].coordinate!.dec}")),
+        DataCell(Text("${fileInfo[index].ra} ; ${fileInfo[index].dec}")),
         DataCell(
           RecentFileActionRow(
             deleteOnTap: (info) {
@@ -192,30 +220,45 @@ List<DataRow2> FrameDataRow(int length, var fileInfo, BuildContext context,
   });
 }
 
-List<DataRow2> ObservationDataRow(int length, var fileInfo, BuildContext context,
-    Function deleteOnTap, Function editOnTap) {
+List<DataRow2> ObservationDataRow(
+    int length,
+    var fileInfo,
+    BuildContext context,
+    Function deleteOnTap,
+    Function editOnTap,
+    bool search) {
   return List.generate(length, (index) {
+    ObservationsModel model = fileInfo[index];
     return DataRow2(
       cells: [
         DataCell(
           Row(
             children: [
-              Text(fileInfo[index].name!),
+              //   Text(fileInfo[index].user.userName!?? ""),
+              Text(
+                "username",
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         ),
-        DataCell(Text("${fileInfo[index].type} ; ${fileInfo[index].filter}")),
-        DataCell(
-          RecentFileActionRow(
-            deleteOnTap: (info) {
-              deleteOnTap!(context, info);
-            },
-            editOnTap: (info) {
-              editOnTap!(context, info);
-            },
-            fileInfo: fileInfo[index],
+        DataCell(Text("${model.telescopeName ?? ""}")),
+        DataCell(Text("${model.detectorName ?? ""}")),
+        DataCell(Text("${model.sObject!.name ?? ""}")),
+        DataCell(Text("${model.frameName ?? ""}")),
+        if (!search) ...{
+          DataCell(
+            RecentFileActionRow(
+              deleteOnTap: (info) {
+                deleteOnTap!(context, info);
+              },
+              editOnTap: (info) {
+                editOnTap!(context, info);
+              },
+              fileInfo: fileInfo[index],
+            ),
           ),
-        ),
+        }
       ],
     );
     ;

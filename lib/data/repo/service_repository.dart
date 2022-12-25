@@ -1,7 +1,9 @@
 import 'package:admin/common/http_client.dart';
 import 'package:admin/common/pref.dart';
 import 'package:admin/data/models/data.dart';
+import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/object.dart';
+import 'package:admin/data/models/observation.dart';
 import 'package:admin/data/source/service_data_source.dart';
 
 String? token = PreferenceUtils.getString("token");
@@ -15,6 +17,7 @@ abstract class IServiceRepository {
   Future<int> delete(int id, String path);
   Future<dynamic> edit(var data, String path, var formData);
   Future<List<SObjects>> getAllObjects(String path);
+  Future<List<ObservationsModel>> search(var data);
 }
 
 class ServiceRepository implements IServiceRepository {
@@ -30,7 +33,8 @@ class ServiceRepository implements IServiceRepository {
   Future<int> delete(int id, String path) async => dataSource.delete(id, path);
 
   @override
-  Future<dynamic> edit(var data, String path, var formData) async => dataSource.edit(data, path, formData);
+  Future<dynamic> edit(var data, String path, var formData) async =>
+      dataSource.edit(data, path, formData);
   @override
   Future<List<dynamic>> getAll(String path) async => dataSource.getAll(path);
 
@@ -39,7 +43,11 @@ class ServiceRepository implements IServiceRepository {
     // TODO: implement getById
     throw UnimplementedError();
   }
-  
+
   @override
-  Future<List<SObjects>> getAllObjects(String path) async => dataSource.getAllObjects(path);
+  Future<List<SObjects>> getAllObjects(String path) async =>
+      dataSource.getAllObjects(path);
+      
+        @override
+        Future<List<ObservationsModel>> search(var data) async => dataSource.search(data);
 }

@@ -91,7 +91,6 @@ class _DetectorWidgetState extends State<DetectorWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
-    myProvider.getAll(context, myProvider.getDetectorsList, detector);
     return Column(
       children: [
         SizedBox(height: defaultPadding),

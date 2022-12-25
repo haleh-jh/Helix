@@ -3,10 +3,10 @@ import 'package:admin/common/pref.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
-import 'package:admin/data/models/coordinate.dart';
 import 'package:admin/data/models/data.dart';
 import 'package:admin/data/models/frames.dart';
 import 'package:admin/data/models/object.dart';
+import 'package:admin/data/models/observation.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/telescope_custom_dialog.dart';
@@ -27,7 +27,8 @@ class CustomDialog<T> extends StatelessWidget {
     required this.btnTitle,
     required this.data,
     this.progressController,
-    required this.path, required this.customWidget,
+    required this.path,
+    required this.customWidget,
   }) : super(key: key);
 
   final GlobalKey<FormState> formKey;
@@ -51,13 +52,15 @@ class CustomDialog<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NameController.text = data.name;
     if (data is Data) {
       TypeController.text = data.type;
+      NameController.text = data.name;
     } else if (data is SObjects) {
-      raController.text = data.coordinate.ra;
-      decController.text = data.coordinate.dec;
+      NameController.text = data.name;
+      raController.text = data.ra;
+      decController.text = data.dec;
     } else if (data is FramesModel) {
+      NameController.text = data.name;
       FrameTypeController.text = data.type;
       FrameFilterController.text = data.filter;
     }
@@ -65,7 +68,7 @@ class CustomDialog<T> extends StatelessWidget {
     return StatefulBuilder(builder: (cc, state) {
       stateSetter = state;
       return Dialog(
-          insetPadding: EdgeInsets.fromLTRB(30.w, 20.h, 30.w, 25.h),
+          insetPadding: EdgeInsets.fromLTRB(30.w, 15.h, 30.w, 15.h),
           backgroundColor: secondaryColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.w)),
@@ -75,6 +78,7 @@ class CustomDialog<T> extends StatelessWidget {
               child: Form(
                 key: formKey,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     customWidget,
                     Expanded(child: Container()),
@@ -103,18 +107,20 @@ class CustomDialog<T> extends StatelessWidget {
                               d = SObjects(
                                   id: data.id,
                                   name: NameController.text,
-                                  coordinate: Coordinate(
-                                      id: data.coordinate.id,
-                                      ra: raController.text,
-                                      dec: decController.text));
-                            }
-                            else if (data is FramesModel) {
+                                  ra: raController.text,
+                                      dec: decController.text);
+                            } else if (data is FramesModel) {
                               d = FramesModel(
-                                  id: data.id,
-                                  name: NameController.text,
-                                  type: FrameTypeController.text,
-                                  filter: FrameFilterController.text,
-                                  );
+                                id: data.id,
+                                name: NameController.text,
+                                type: FrameTypeController.text,
+                                filter: FrameFilterController.text,
+                              );
+                            } else{
+                               d = ObservationsModel(
+                                id: data.id, dateTime: '', status: '', detectorName: '', frameName: '', sObject: null, telescopeName: '', userName: '',
+                                
+                              );
                             }
                             f!(d as T);
                           });
@@ -135,5 +141,3 @@ class CustomDialog<T> extends StatelessWidget {
     });
   }
 }
-
-

@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Welcome\nHilex ",
+                  "Welcome To\nHelix ",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 50,

@@ -40,35 +40,49 @@ class Header extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            InkWell(
-              onTap: logout,
-              child: Container(
-                padding: EdgeInsets.all(defaultPadding * 0.75),
-                margin: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-                decoration: BoxDecoration(
-                  color: primaryColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Row(
-                  children: [
-                    Text('Logout'),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            TextIconButton(logout: logout),
           ],
         ),
         ProfileCard(
           profileSelected: profileSelected,
         )
       ],
+    );
+  }
+}
+
+class TextIconButton extends StatelessWidget {
+  const TextIconButton({
+    Key? key,
+    required this.logout,
+  }) : super(key: key);
+
+  final Function() logout;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: logout,
+      child: Container(
+        padding: EdgeInsets.all(defaultPadding * 0.75),
+        margin: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+        decoration: BoxDecoration(
+          color: primaryColor,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Row(
+          children: [
+            Text('Logout'),
+            SizedBox(
+              width: 4,
+            ),
+            Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

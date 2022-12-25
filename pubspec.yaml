@@ -38,6 +38,10 @@ dependencies:
   shared_preferences: ^2.0.15
   sizer: ^2.0.15
   assorted_layout_widgets: ^7.0.0
+  shamsi_date: ^1.0.1
+  persian_number_utility: ^1.1.1
+  intl: ^0.18.0
+  
 
 dev_dependencies:
   flutter_test:

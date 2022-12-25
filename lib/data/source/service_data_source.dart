@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:admin/data/common/http_response_validator.dart';
 import 'package:admin/data/models/data.dart';
+import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/object.dart';
+import 'package:admin/data/models/observation.dart';
 import 'package:dio/dio.dart';
 
 abstract class IServiceDataSource {
@@ -12,6 +14,7 @@ abstract class IServiceDataSource {
   Future<int> delete(int id, String path);
   Future<dynamic> edit(var data, String path, var formData);
   Future<List<SObjects>> getAllObjects(String path);
+  Future<List<ObservationsModel>> search(var data);
 }
 
 class ServiceRemoteDataSource
@@ -27,12 +30,26 @@ class ServiceRemoteDataSource
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     print(formData.toString());
-    final response = await httpClient.post("api/$path", data: formData);
-    print(response);
-    validateResponse(response);
+    int statusCode = 0;
+     Response response = await httpClient.post("api/$path", data: formData,
+            options: Options(
+              followRedirects: false,
+              validateStatus: (status) {
+                statusCode = status!;
+                return statusCode < 600;
+              },
+            ))
+        .then((value) {
+          print(value);
+      return validateResponse(value);
+    });
+
     final js = jsonEncode(response.data);
     final jsonData = json.decode(js);
     var map = Map<String, dynamic>.from(jsonData);
+    print("1: ${js}");
+    print("2: ${jsonData}");
+    print("3: ${map}");
     return map;
   }
 
@@ -41,6 +58,7 @@ class ServiceRemoteDataSource
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     final response = await httpClient.delete("api/$path/$id");
+    print("del result: $response");
     validateResponse(response);
     return id;
   }
@@ -63,9 +81,8 @@ class ServiceRemoteDataSource
   Future<List<dynamic>> getAll(String path) async {
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
-    print("t: $path");
     final response = await httpClient.get("api/$path");
-     print("t2: $path");
+    print("t2: $response");
     validateResponse(response);
     return response.data;
   }
@@ -82,12 +99,12 @@ class ServiceRemoteDataSource
     var res = Data.fromJson(map);
     return res;
   }
-  
+
   @override
-  Future<List<SObjects>> getAllObjects(String path) async{
+  Future<List<SObjects>> getAllObjects(String path) async {
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
-        print("getAllObjects $path");
+    print("getAllObjects $path");
     final response = await httpClient.get("api/$path");
     print("getAllObjects $response");
     validateResponse(response);
@@ -96,5 +113,41 @@ class ServiceRemoteDataSource
       data.add(SObjects.fromJson(element));
     });
     return data;
+  }
+
+  @override
+  Future<List<ObservationsModel>> search(var data) async {
+    httpClient.options.headers['content-Type'] = 'application/json';
+    httpClient.options.headers['Authorization'] = 'Bearer $token';
+
+    int statusCode = 0;
+
+    var formData = FormData.fromMap(data);
+
+    Response response = await httpClient
+        .post('api/ObservationSubmissions/Search',
+            data: formData,
+            options: Options(
+              followRedirects: false,
+              validateStatus: (status) {
+                statusCode = status!;
+                return statusCode < 500;
+              },
+            ))
+        .then((value) {
+      print("vv: ${value.data}");
+      return validateResponse(value);
+    });
+
+    print("response: $response");
+
+    final list = <ObservationsModel>[];
+    if (response.data != null) {
+      (response.data as List).forEach((element) {
+        if ((response.data as List).length > 0)
+          list.add(ObservationsModel.fromJson(element));
+      });
+    }
+    return list;
   }
 }

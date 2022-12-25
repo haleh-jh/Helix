@@ -1,3 +1,5 @@
+import 'package:admin/data/models/data.dart';
+import 'package:admin/screens/dashboard/components/storage_details.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +29,7 @@ class ListDataController<T> with ChangeNotifier, DiagnosticableTreeMixin {
   String get frameValue => _frameValue;
 
   void telescopeSetValue(List<T> list) {
+    print("cc: ${list.length}");
     _telescopelist = list;
     notifyListeners();
   }

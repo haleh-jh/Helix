@@ -4,6 +4,7 @@ import 'package:admin/common/exception.dart';
 import 'package:admin/common/pref.dart';
 import 'package:admin/data/models/data.dart';
 import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/data/models/observation.dart';
 import 'package:admin/data/models/user.dart';
@@ -13,6 +14,22 @@ import 'package:flutter/material.dart';
 class DataController with ChangeNotifier {
   static List<Data> _dataList = [];
   List<Data> get getList => _dataList;
+
+  //drop down list
+
+  static List<GeneralModel> _TelescopeDropDownList = [];
+  List<GeneralModel> get getTelescopeDropDownList => _TelescopeDropDownList;
+
+  static List<GeneralModel> _DetectorDropDownList = [];
+  List<GeneralModel> get getDetectorDropDownList => _DetectorDropDownList;
+
+  static List<GeneralModel> _SObjectDropDownList = [];
+  List<GeneralModel> get getSObjectDropDownList => _SObjectDropDownList;
+
+  static List<GeneralModel> _FrameDropDownList = [];
+  List<GeneralModel> get getFrameDropDownList => _FrameDropDownList;
+
+//........
 
   static List<Data> _TelescopeList = [];
   List<Data> get getTelescopeList => _TelescopeList;
@@ -26,7 +43,7 @@ class DataController with ChangeNotifier {
   static List<FramesModel> _FramesList = [];
   List<FramesModel> get getFramesList => _FramesList;
 
-   static List<ObservationsModel> _ObservationsList = [];
+  static List<ObservationsModel> _ObservationsList = [];
   List<ObservationsModel> get getObservationsList => _ObservationsList;
 
   static List<User> _UsersList = [];
@@ -52,12 +69,13 @@ class DataController with ChangeNotifier {
       updatedData.type = data.type;
     } else if (list is List<SObjects>) {
       updatedData.name = data.name;
-      updatedData.coordinate = data.coordinate;
+      updatedData.ra = data.ra;
+      updatedData.dec = data.dec;
     } else if (list is List<FramesModel>) {
       updatedData.name = data.name;
       updatedData.type = data.type;
       updatedData.filter = data.filter;
-    }else if (list is List<User>) {
+    } else if (list is List<User>) {
       updatedData.userName = data.userName;
       updatedData.phoneNumber = data.phoneNumber;
     }
@@ -76,10 +94,11 @@ class DataController with ChangeNotifier {
     String path,
   ) async {
     try {
+      print("check repeat");
       ProgressNotifier.value = true;
       if (list.length == 0) {
         await serviceRepository.getAll(path).then((value) {
-                      print("size1: ${value.length}");
+          print("object1: ${value.length}");
 
           if (list is List<Data>) {
             final data = <Data>[];
@@ -99,17 +118,50 @@ class DataController with ChangeNotifier {
               data.add(FramesModel.fromJson(element));
             });
             list.addAll(data);
-          }else if (list is List<User>) {
+          } else if (list is List<User>) {
             final data = <User>[];
             value.forEach((element) {
               data.add(User.fromJson(element));
             });
             list.addAll(data);
+          } else if (list is List<ObservationsModel>) {
+            final data = <ObservationsModel>[];
+            value.forEach((element) {
+              data.add(ObservationsModel.fromJson(element));
+            });
+            list.addAll(data);
           }
           ProgressNotifier.value = false;
+               print("ch3: ${list.length}");
+
           if (list.length != 0) notifyListeners();
         });
       }
+    } catch (e) {
+      ProgressNotifier.value = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+          CustomSnackbar.customErrorSnackbar("An error has occurred", context));
+    }
+  }
+
+    Future<void> getDropDownList(
+    BuildContext context,
+    List list,
+    String path,
+  ) async {
+    try {
+      ProgressNotifier.value = true;
+      list.clear();
+   //   if (list.length == 0) {
+        await serviceRepository.getAll(path).then((value) {
+            final data = <GeneralModel>[];
+            value.forEach((element) {
+              data.add(GeneralModel.fromJson(element));
+            });
+            list.addAll(data);
+          if (list.length != 0) notifyListeners();
+        });
+     // }
     } catch (e) {
       print("e: {$e}");
       ProgressNotifier.value = false;
@@ -124,7 +176,7 @@ class DataController with ChangeNotifier {
       return data;
     } catch (e) {
       print("e22: ${e.toString()} ");
-      throw AppException();
+      throw AppException(message: e.toString());
     }
   }
 
@@ -148,6 +200,16 @@ class DataController with ChangeNotifier {
     } catch (e) {
       print(e.toString());
       throw AppException(message: "An error has occurred");
+    }
+  }
+
+    Future<dynamic> search(var formData) async {
+       print("formData: ${formData} ");
+    try {
+      await serviceRepository.search(formData);
+      return [];
+    } catch (e) {
+      throw AppException();
     }
   }
 }

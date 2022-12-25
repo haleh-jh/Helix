@@ -96,7 +96,6 @@ class _FramesWidgetState extends State<FramesWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
-    myProvider.getAll(context, myProvider.getFramesList, Frames);
     return Column(
       children: [
         SizedBox(height: defaultPadding),

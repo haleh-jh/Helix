@@ -1,14 +1,14 @@
-import 'package:admin/data/models/coordinate.dart';
 
 class SObjects{
    int id;
    String name;
-   Coordinate? coordinate;
+   String ra;
+   String dec;
 
-  SObjects({required this.id, required this.name, required this.coordinate});
+  SObjects({required this.id, required this.name, required this.ra, required this.dec});
   
   factory SObjects.fromJson(Map<String, dynamic> json){
-    return SObjects(id: json['id'], name: json['name'], coordinate: Coordinate(id: -1, ra: "", dec: ""));
+    return SObjects(id: json['id'], name: json['name'], ra: json['ra'], dec: json['dec'],);
   }
   
   }

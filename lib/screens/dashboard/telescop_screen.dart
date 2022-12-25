@@ -89,7 +89,6 @@ class _TelescopWidgetState extends State<TelescopWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
-    myProvider.getAll(context, myProvider.getTelescopeList, telescope);
     return Column(
       children: [
         SizedBox(height: defaultPadding),

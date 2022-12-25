@@ -97,7 +97,6 @@ class _RecentFilesState extends State<RecentFiles> {
                       columnSpacing: defaultPadding,
                       minWidth: 600,
                       columns: widget.dataColumnList,
-                     //   columns: widget.isObject? SObjectsDataTable() : (widget.list is List<FramesModel>)? FramesDataTable() : (widget.list is List<User>)? UsersDataTable() : TelescopDataTable(),
                       rows: widget.dataRowList
                     ),
                   );
@@ -112,104 +111,5 @@ class _RecentFilesState extends State<RecentFiles> {
     // TODO: implement dispose
     super.dispose();
   }
-
-  // onPressedButton(BuildContext c, var data) {
-  //   showDialog(
-  //       context: c,
-  //       builder: (context) {
-  //         return CustomDialog(
-  //             path: widget.path,
-  //             formKey: _formKey,
-  //             scaffoldKey: widget.scaffoldKey,
-  //             c: context,
-  //             f: widget.editFunction,
-  //             progressController: widget.progressController,
-  //             btnTitle: "Edit",
-  //             data: data);
-  //       });
-  // }
-
-  // onPressedDeleteButton(BuildContext c, var data) async {
-  //   await showDialog(
-  //       context: context,
-  //       builder: (_) {
-  //         return CustomAlertDialog(
-  //             path: widget.path,
-  //             c: context,
-  //             deleteFunction: widget.deleteFunction,
-  //             progressController: widget.progressController,
-  //             title: 'Are you sure you want to delete this object?',
-  //             data: data);
-  //       });
-  // }
-
-  // DataRow recentFileDataRow(var fileInfo, BuildContext context) {
-  //   return 
-  //   DataRow(
-  //     cells: [
-  //       DataCell(
-  //         Row(
-  //           children: [
-  //             (fileInfo is User)
-  //                 ? Text("${fileInfo.userName} ${fileInfo.lastName}")
-  //                 : Text(fileInfo.name!),
-  //           ],
-  //         ),
-  //       ),
-  //       DataCell(Text((fileInfo is SObjects)
-  //           ? "${fileInfo.coordinate!.ra} ; ${fileInfo.coordinate!.dec}"
-  //           : (fileInfo is FramesModel)
-  //               ? "${fileInfo.type} ; ${fileInfo.filter}"
-  //               : (fileInfo is User)
-  //                   ? fileInfo.phoneNumber
-  //                   : fileInfo.type!)),
-  //       DataCell(
-  //         Row(
-  //           children: [
-  //             Container(
-  //                 height: 30,
-  //                 width: 30,
-  //                 decoration: BoxDecoration(
-  //                   color: kEditIconColor,
-  //                   borderRadius: const BorderRadius.all(Radius.circular(8)),
-  //                 ),
-  //                 child: InkWell(
-  //                   onTap: () {
-  //                     selectedId = fileInfo.id;
-  //                     onPressedButton(context, fileInfo);
-  //                   },
-  //                   child: Icon(
-  //                     Icons.edit,
-  //                     color: Colors.white,
-  //                     size: 20,
-  //                   ),
-  //                 )),
-  //             Padding(
-  //               padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-  //               child: Container(
-  //                   height: 30,
-  //                   width: 30,
-  //                   decoration: BoxDecoration(
-  //                     color: kDeleteIconColor,
-  //                     borderRadius: const BorderRadius.all(Radius.circular(8)),
-  //                   ),
-  //                   child: InkWell(
-  //                     onTap: (() {
-  //                       selectedId = fileInfo.id;
-  //                       onPressedDeleteButton(context, fileInfo);
-  //                     }),
-  //                     child: Icon(
-  //                       Icons.delete,
-  //                       color: Colors.white,
-  //                       size: 20,
-  //                     ),
-  //                   )),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
 }

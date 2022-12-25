@@ -6,7 +6,6 @@ import 'package:admin/common/pref.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
-import 'package:admin/data/models/coordinate.dart';
 import 'package:admin/data/models/data.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/data/repo/service_repository.dart';
@@ -98,7 +97,6 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(false);
-    myProvider.getAll(context, myProvider.getSObjectsList, Objects);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -161,8 +159,8 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
         context: c,
         builder: (context) {
           NameController.text = data.name;
-          decController.text = data.coordinate.dec;
-          raController.text = data.coordinate.ra;
+          decController.text = data.dec;
+          raController.text = data.ra;
           return CustomDialog(
               path: ObjectsTitle,
               formKey: _formKey,
@@ -172,10 +170,8 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
                 var d = SObjects(
                     id: data.id,
                     name: NameController.text,
-                    coordinate: Coordinate(
-                        id: data.coordinate.id,
-                        ra: raController.text,
-                        dec: decController.text));
+                    ra: raController.text,
+                    dec: decController.text);
                 EditResult(d);
               },
               progressController: progressController,
@@ -205,15 +201,11 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
 
   void EditResult(SObjects data) async {
     try {
-      var coordinate = {
-        "id": "${data.coordinate!.id}",
-        "ra": "${data.coordinate!.ra}",
-        "dec": "${data.coordinate!.dec}",
-      };
       var formData = {
         "id": "${data.id}",
         "name": "${data.name}",
-        "coordinate": "$coordinate",
+        "ra": "${data.ra}",
+        "dec": "${data.dec!}",
       };
       await myProvider
           .updateData(Objects, data, json.encode(formData))
@@ -270,11 +262,7 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
               f: addResult,
               btnTitle: "Add",
               progressController: progressController,
-              data: SObjects(
-                id: 0,
-                name: "",
-                coordinate: Coordinate(id: 0, ra: "", dec: ""),
-              ),
+              data: SObjects(id: 0, name: "", ra: "", dec: ""),
               customWidget: ObjectCustomDialog(
                 NameController: NameController,
                 decController: decController,

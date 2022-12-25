@@ -1,33 +1,41 @@
+import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/ListDataController.dart';
+import 'package:admin/data/models/data.dart';
+import 'package:admin/data/models/general_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DetectorDropDown extends StatelessWidget {
-  final Function(dynamic) onChange;
-
-  const DetectorDropDown({
+final ValueNotifier<GeneralModel?> detectorValue;
+ DetectorDropDown({
     Key? key,
-    required this.title,
-    required this.onChange,
+    required this.title, required this.detectorValue,
   }) : super(key: key);
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton(
-      hint: Text(title), // Not necessary for Option 1
-      value: context.read<ListDataController>().detectorlist.length > 0
-          ? context.read<ListDataController>().detectorlist[0]
-          : '',
-      isExpanded: true,
-      onChanged: onChange,
-      items: context.watch<ListDataController>().detectorlist.map((value) {
-        return DropdownMenuItem(
-          child: new Text(value.name),
-          value: value,
-        );
-      }).toList(),
-    );
+    return ValueListenableBuilder(
+        valueListenable: detectorValue,
+        builder: (context, value, child) {
+          return DropdownButton<GeneralModel>(
+            hint: Text(title),
+            value: detectorValue.value,
+            isExpanded: true,
+            onChanged: (newValue) {
+              detectorValue.value = newValue;
+            },
+            items:
+                context.watch<DataController>().getDetectorDropDownList.map((data) {
+              return new DropdownMenuItem<GeneralModel>(
+                value: data,
+                child: new Text(
+                  data.value,
+                ),
+              );
+            }).toList(),
+          );
+        });
   }
 }

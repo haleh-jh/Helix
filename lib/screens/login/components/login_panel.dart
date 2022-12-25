@@ -101,6 +101,7 @@ class _LoginPanelWidgetState extends State<LoginPanelWidget> {
                                           Theme.of(context).textTheme.bodyText1,
                                     ),
                                   ),
+                          
                           ],
                         );
                       })),
@@ -110,21 +111,6 @@ class _LoginPanelWidgetState extends State<LoginPanelWidget> {
           ),
         ));
   }
-
-  // "password": "id_A123456",
-  // "userName": "mmm"
-  //user: admin
-  //pass: @dm!N123
-
-  // Widget _forgotPasswordButton() => InkWell(
-  //       onTap: () {
-  //         /// TODO: Add Forgot password functionality
-  //       },
-  //       child: Text(
-  //         'Forgot Password?',
-  //         style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600),
-  //       ),
-  //     );
 
 }
 

@@ -29,11 +29,18 @@ const height = 40.0;
 String defaultError = "An error has occurred";
 
 final String telescope = "Telescopes";
+final String telescopeDropDown = "Telescopes/GetDropDownTelescopes";
+final String detectorDropDown = "Detectors/GetDropDownDetectors";
+final String objectDropDown = "SObjects/GetDropDownSObjects";
+final String frameDropDown = "Frames/GetDropDownDetectors";
 final String detector = "Detectors";
 final String Objects = "SObjects";
 final String Users = "Users";
 final String ObservationsPath = "ObservationSubmissions";
 final String Frames = "Frames";
+
+const String kServerError= "خطایی از سمت سرور رخ داده است.";
+const String kGeneralError= "خطایی رخ داده است مجدد امتحان نمایید.";
 
 
 

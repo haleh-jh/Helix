@@ -4,21 +4,27 @@ import 'package:admin/data/models/object.dart';
 import 'package:admin/data/models/user.dart';
 
 class ObservationsModel{
+    
    int id;
    String dateTime;
    String status;
-   FramesModel frame;
-   SObjects sObject;
-   Data telescope;
-   Data detector;
-   User user;
+   String detectorName;
+   String frameName;
+   String telescopeName;
+   String userName;
+   SObjects? sObject;
 
-  ObservationsModel({required this.id, required this.dateTime, required this.status, required this.frame, required this.sObject
-  , required this.telescope, required this.detector, required this.user,});
+  ObservationsModel({required this.id, required this.dateTime, required this.status, required this.frameName, required this.sObject
+  , required this.telescopeName, required this.detectorName, required this.userName,});
   
   factory ObservationsModel.fromJson(Map<String, dynamic> json){
-    return ObservationsModel(id: json['id'], dateTime: json['dateTime'], status: json['status'], frame: FramesModel.fromJson(json['_Frame']), sObject: SObjects.fromJson(json['_SObject']),
-    telescope: Data.fromJson(json['_Telescope']), detector: Data.fromJson(json['_Detector']), user: User.fromJson(json['_User']),);
+    return ObservationsModel(id: json['id'], dateTime: json['dateTime'], status: json['status'],
+    frameName: json['frameName'].toString() ?? '',
+    sObject: json['_SObject'] == null? null : SObjects.fromJson(json['_SObject']),
+    telescopeName: json['telescopeName'].toString() ?? '',
+    detectorName: json['detectorName'].toString() ??'',
+    userName: json['userName'].toString() ??'',
+      );
   }
   
   }
