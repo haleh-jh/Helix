@@ -236,7 +236,7 @@ List<DataRow2> ObservationDataRow(
             children: [
               //   Text(fileInfo[index].user.userName!?? ""),
               Text(
-                "username",
+                model.userName ?? '',
                 overflow: TextOverflow.ellipsis,
               ),
             ],

@@ -15,6 +15,7 @@ abstract class IServiceDataSource {
   Future<dynamic> edit(var data, String path, var formData);
   Future<List<SObjects>> getAllObjects(String path);
   Future<List<ObservationsModel>> search(var data);
+  Future<void> uploadData(var data, String id);
 }
 
 class ServiceRemoteDataSource
@@ -31,7 +32,9 @@ class ServiceRemoteDataSource
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     print(formData.toString());
     int statusCode = 0;
-     Response response = await httpClient.post("api/$path", data: formData,
+    Response response = await httpClient
+        .post("api/$path",
+            data: formData,
             options: Options(
               followRedirects: false,
               validateStatus: (status) {
@@ -40,16 +43,14 @@ class ServiceRemoteDataSource
               },
             ))
         .then((value) {
-          print(value);
+          print("add: $value");
+          print("add: $statusCode");
       return validateResponse(value);
     });
 
     final js = jsonEncode(response.data);
     final jsonData = json.decode(js);
     var map = Map<String, dynamic>.from(jsonData);
-    print("1: ${js}");
-    print("2: ${jsonData}");
-    print("3: ${map}");
     return map;
   }
 
@@ -58,7 +59,6 @@ class ServiceRemoteDataSource
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     final response = await httpClient.delete("api/$path/$id");
-    print("del result: $response");
     validateResponse(response);
     return id;
   }
@@ -67,12 +67,10 @@ class ServiceRemoteDataSource
   Future<dynamic> edit(var data, String path, var formData) async {
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
-    print("${formData} $path");
     final response = await httpClient.put(
       "api/$path/${data.id}",
       data: formData,
     );
-    print(response);
     validateResponse(response);
     return data;
   }
@@ -82,7 +80,6 @@ class ServiceRemoteDataSource
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     final response = await httpClient.get("api/$path");
-    print("t2: $response");
     validateResponse(response);
     return response.data;
   }
@@ -135,7 +132,7 @@ class ServiceRemoteDataSource
               },
             ))
         .then((value) {
-      print("vv: ${value.data}");
+      print("search vv: ${value.data}");
       return validateResponse(value);
     });
 
@@ -149,5 +146,30 @@ class ServiceRemoteDataSource
       });
     }
     return list;
+  }
+
+  @override
+  Future<void> uploadData(data, String id) async {
+    httpClient.options.headers['content-Type'] = 'multipart/form-data';
+    httpClient.options.headers['Authorization'] = 'Bearer $token';
+
+    int statusCode = 0;
+
+    Response response = await httpClient
+        .post('api/ObservationSubmissions/FileUpload?Id=$id',
+            data: data,
+            options: Options(
+              followRedirects: false,
+              validateStatus: (status) {
+                statusCode = status!;
+                return statusCode < 500;
+              },
+            ))
+        .then((value) {
+      print("upload vv: ${value.data}");
+      return validateResponse(value);
+    });
+
+    print("response: $response");
   }
 }

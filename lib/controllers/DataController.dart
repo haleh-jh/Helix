@@ -10,6 +10,7 @@ import 'package:admin/data/models/observation.dart';
 import 'package:admin/data/models/user.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class DataController with ChangeNotifier {
   static List<Data> _dataList = [];
@@ -94,12 +95,9 @@ class DataController with ChangeNotifier {
     String path,
   ) async {
     try {
-      print("check repeat");
       ProgressNotifier.value = true;
       if (list.length == 0) {
         await serviceRepository.getAll(path).then((value) {
-          print("object1: ${value.length}");
-
           if (list is List<Data>) {
             final data = <Data>[];
             value.forEach((element) {
@@ -132,7 +130,6 @@ class DataController with ChangeNotifier {
             list.addAll(data);
           }
           ProgressNotifier.value = false;
-               print("ch3: ${list.length}");
 
           if (list.length != 0) notifyListeners();
         });
@@ -144,7 +141,7 @@ class DataController with ChangeNotifier {
     }
   }
 
-    Future<void> getDropDownList(
+  Future<void> getDropDownList(
     BuildContext context,
     List list,
     String path,
@@ -152,18 +149,17 @@ class DataController with ChangeNotifier {
     try {
       ProgressNotifier.value = true;
       list.clear();
-   //   if (list.length == 0) {
-        await serviceRepository.getAll(path).then((value) {
-            final data = <GeneralModel>[];
-            value.forEach((element) {
-              data.add(GeneralModel.fromJson(element));
-            });
-            list.addAll(data);
-          if (list.length != 0) notifyListeners();
+      //   if (list.length == 0) {
+      await serviceRepository.getAll(path).then((value) {
+        final data = <GeneralModel>[];
+        value.forEach((element) {
+          data.add(GeneralModel.fromJson(element));
         });
-     // }
+        list.addAll(data);
+        if (list.length != 0) notifyListeners();
+      });
+      // }
     } catch (e) {
-      print("e: {$e}");
       ProgressNotifier.value = false;
       ScaffoldMessenger.of(context).showSnackBar(
           CustomSnackbar.customErrorSnackbar("An error has occurred", context));
@@ -175,8 +171,7 @@ class DataController with ChangeNotifier {
       var data = await serviceRepository.add(path, formData);
       return data;
     } catch (e) {
-      print("e22: ${e.toString()} ");
-      throw AppException(message: e.toString());
+      throw Exception("An error has occurred");
     }
   }
 
@@ -185,8 +180,7 @@ class DataController with ChangeNotifier {
       final d = await serviceRepository.edit(data, path, formData);
       return d;
     } catch (e) {
-      print(e.toString());
-      throw AppException(message: "An error has occurred");
+      throw Exception("An error has occurred");
     }
   }
 
@@ -198,18 +192,40 @@ class DataController with ChangeNotifier {
       final d = await serviceRepository.delete(id, path);
       return d;
     } catch (e) {
-      print(e.toString());
-      throw AppException(message: "An error has occurred");
+      throw Exception("An error has occurred");
     }
   }
 
-    Future<dynamic> search(var formData) async {
-       print("formData: ${formData} ");
+  Future<dynamic> search(var formData) async {
     try {
-      await serviceRepository.search(formData);
-      return [];
+      return await serviceRepository.search(formData);
     } catch (e) {
-      throw AppException();
+      throw Exception("An error has occurred");
     }
+  }
+
+  Future<dynamic> uploadData(String id, var formData) async {
+    try {
+      var headers = {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ${PreferenceUtils.getString("token")}'
+      };
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://hilex.the4.ir/api/ObservationSubmissions/FileUpload?Id=$id'));
+
+      request.files.addAll(formData);
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {}
   }
 }

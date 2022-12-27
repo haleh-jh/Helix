@@ -8,22 +8,17 @@ mixin HttpResponseValidator {
   validateResponse(
     Response response,
   ) {
-    print("response.statusCode: ${response.statusCode}");
-    print("response.statusCode: ${response.data}");
     if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
       return response;
     }
-    //  else if (response.statusCode == 404) {
-    //   throw Exception('404 ${response.data['message']}');
-    // } else if (response.statusCode == 422) {
+     else if (response.statusCode == 401) {
+      throw Exception('401');
+    } 
     //   throw Exception('${response.data['message']}');
     // }
     else if (response.statusCode == 500) {
-      print(response.data);
       throw Exception(kServerError);
     } else {
-      print("response.statusCode: ${response.data}");
-
       throw Exception('${response.data['message']}');
     }
   }

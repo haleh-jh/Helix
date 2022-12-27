@@ -15,6 +15,8 @@ import '../../../constants.dart';
 import '../../../data/models/data.dart';
 import 'storage_info_card.dart';
 
+ValueNotifier<bool> loading = ValueNotifier(false);
+
 class StarageDetails extends StatefulWidget {
   final Function(dynamic value) onSearch;
   final ValueNotifier<GeneralModel?> telescopeValue;
@@ -120,12 +122,12 @@ class _StarageDetailsState extends State<StarageDetails> {
           ),
           SizedBox(height: defaultPadding),
           ValueListenableBuilder(
-              valueListenable: DashboardScreen.loading,
+              valueListenable: loading,
               builder: ((context, value, child) {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    DashboardScreen.loading.value
+                    loading.value
                         ? SizedBox(
                             height: 30,
                             width: 30,
@@ -141,31 +143,48 @@ class _StarageDetailsState extends State<StarageDetails> {
                               ),
                             ),
                             onPressed: () {
-                              if (frameValue.value!.value.length > 0 &&
-                                  telescopeValue.value!.value.length > 0 &&
-                                  objectValue.value!.value.length > 0 &&
-                                  detectorValue.value!.value.length > 0 &&
-                                  userController.text.length > 0 &&
-                                  dateFromController.text.length > 0 &&
-                                  dateToController.text.length > 0 &&
-                                  userController.text.length > 0) {
-                                DashboardScreen.loading.value = true;
-                                var data = {
-                                  'FrameName': frameValue.value!.value,
-                                  'TelescopeName': telescopeValue.value!.value,
-                                  'SObjectName': objectValue.value!.value,
-                                  'DetectorName': detectorValue.value!.value,
-                                  'DateOf': dateFromController.text,
-                                  'DateTo': dateToController.text,
-                                  'User': userController.text,
-                                  'SortByTelescope': '0',
-                                  'SortByFrame': '0',
-                                  'SortSObject': '0',
-                                  'SortDetector': '0',
-                                  'SortDate': '0'
-                                };
-                                search(data);
-                              } else {}
+                              String telescope = "";
+                              String detector = "";
+                              String object = "";
+                              String frame = "";
+                              telescopeValue.value == null
+                                  ? telescope = ""
+                                  : telescopeValue.value!.value;
+                              detectorValue.value == null
+                                  ? detector = ""
+                                  : detectorValue.value!.value;
+                              objectValue.value == null
+                                  ? object = ""
+                                  : objectValue.value!.value;
+                              frameValue.value == null
+                                  ? frame = ""
+                                  : frameValue.value!.value;
+
+                              // if (frameValue.value!.value.length > 0 &&
+                              //     telescopeValue.value!.value.length > 0 &&
+                              //     objectValue.value!.value.length > 0 &&
+                              //     detectorValue.value!.value.length > 0 &&
+                              //     userController.text.length > 0 &&
+                              //     dateFromController.text.length > 0 &&
+                              //     dateToController.text.length > 0 &&
+                              //     userController.text.length > 0) {
+                              loading.value = true;
+                              var data = {
+                                'FrameName': frame,
+                                'TelescopeName': telescope,
+                                'SObjectName': object,
+                                'DetectorName': detector,
+                                'DateOf': dateFromController.text,
+                                'DateTo': dateToController.text,
+                                'User': userController.text,
+                                'SortByTelescope': '0',
+                                'SortByFrame': '0',
+                                'SortSObject': '0',
+                                'SortDetector': '0',
+                                'SortDate': '0'
+                              };
+                              search(data);
+                              //     } else {}
                             },
                             icon: SvgPicture.asset("assets/icons/Search.svg"),
                             label: Text("Search"),
@@ -182,10 +201,10 @@ class _StarageDetailsState extends State<StarageDetails> {
     try {
       await myProvider.search(data).then((value) {
         widget.onSearch(value);
-        DashboardScreen.loading.value = false;
+        loading.value = false;
       });
     } catch (e) {
-      DashboardScreen.loading.value = false;
+      loading.value = false;
     }
   }
 }

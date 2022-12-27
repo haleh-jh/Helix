@@ -29,10 +29,8 @@ class LoginRemoteDataSource
       {required String userName, required String password}) async {
     var formData = json.encode({"password": password, "userName": userName});
     httpClient.options.headers['content-Type'] = 'application/json';
-    print("res1: ${formData.toString}");
     final response =
         await httpClient.post("api/Authenticate/login-user", data: formData);
-    print("res: $response");
     validateResponse(response);
     //  var body = json.decode(response.data);
     var token = response.data['token'];
@@ -41,11 +39,9 @@ class LoginRemoteDataSource
 
   @override
   Future<User> getUser(String token) async {
-    print("getUser token: $token");
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     final response = await httpClient.get("api/UserProfile/GetUser");
-    print("res: $response");
     validateResponse(response);
     User user = User.fromJson(response.data);
     return user;

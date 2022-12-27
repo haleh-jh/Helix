@@ -19,7 +19,6 @@ class TelescopeDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("check: ${telescopeValue.value}");
     return ValueListenableBuilder(
         valueListenable: telescopeValue,
         builder: (context, value, child) {

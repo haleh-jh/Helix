@@ -213,13 +213,11 @@ class _BodyState extends State<Body> {
       await loginRepository
         .getUser(token!)
         .then((user) {
-             print("getUser: ${user.type}");
           UserData.value = "${user.surname} ${user.lastName}" ;
           UserType.value = "${user.type}" ;
           PreferenceUtils.saveUserData(user);
     });
   } catch (e) {
-    print("catch: ${e.toString()}");
      Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

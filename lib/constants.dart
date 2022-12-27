@@ -19,6 +19,7 @@ const kCursorTextFieldColor = Color(0xff9896be);
 const kOrangeColor = Color(0xffff9f00);
 const kDeleteIconColor = Color(0xffff4343);
 const kEditIconColor = Color(0xff19e9aa);
+const serachBackground = Color.fromRGBO(73, 78, 108,1);
 
 // const Color green300 = Color(0xFF81C784);
 // const Color green400 = Color(0xFF66BB6A);

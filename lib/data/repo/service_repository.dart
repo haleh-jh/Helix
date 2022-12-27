@@ -18,6 +18,7 @@ abstract class IServiceRepository {
   Future<dynamic> edit(var data, String path, var formData);
   Future<List<SObjects>> getAllObjects(String path);
   Future<List<ObservationsModel>> search(var data);
+  Future<void> uploadData(var data, String id);
 }
 
 class ServiceRepository implements IServiceRepository {
@@ -47,7 +48,11 @@ class ServiceRepository implements IServiceRepository {
   @override
   Future<List<SObjects>> getAllObjects(String path) async =>
       dataSource.getAllObjects(path);
-      
-        @override
-        Future<List<ObservationsModel>> search(var data) async => dataSource.search(data);
+
+  @override
+  Future<List<ObservationsModel>> search(var data) async =>
+      dataSource.search(data);
+
+  @override
+  Future<void> uploadData(data, id) => dataSource.uploadData(data, id);
 }

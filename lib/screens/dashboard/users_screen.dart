@@ -109,8 +109,7 @@ class _UsersWidgetState extends State<UsersWidget> {
 
   @override
   Widget build(BuildContext context) {
-    DataController.ProgressNotifier = ValueNotifier(false);
-
+    DataController.ProgressNotifier = ValueNotifier(true);
     myProvider.getAll(context, myProvider.getUsersList, Users);
     return Column(
       children: [

@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../../constants.dart';
 import 'components/header.dart';
 
-import 'components/recent_files.dart';
 import 'components/storage_details.dart';
 
 final ValueNotifier<GeneralModel?> telescopeValue = ValueNotifier(null);
@@ -71,31 +70,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     flex: 5,
                     child: Column(
                       children: [
-                        MyFiles(),
+                        MyFiles(
+                            // telescopesCount:
+                            //     myProvider.getTelescopeDropDownList.length,
+                            // detectorsCount:
+                            //     myProvider.getDetectorDropDownList.length,
+                            // objectsCount:
+                            //     myProvider.getSObjectDropDownList.length,
+                            // framesCount:
+                            //     myProvider.getFrameDropDownList.length
+                            ),
                         SizedBox(height: height),
-                        if (searchResult.value) ...{
-                          ValueListenableBuilder(valueListenable: searchList, builder: (context, value, child) {
-                            return searchList.value.length > 0
-                              ? SearchPart()
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: height * 2),
-                                      child: Text(
-                                        "There is no Observation recorded in this date",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                        ValueListenableBuilder(
+                          valueListenable: searchList,
+                          builder: (context, value, child) {
+                            if (searchResult.value) {
+                              return searchList.value.length > 0
+                                  ? Container(
+                                      padding: EdgeInsets.all(defaultPadding),
+                                      decoration: BoxDecoration(
+                                        color: serachBackground,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10)),
                                       ),
-                                    ),
-                                  ],
-                                );
-                          },)
-                        },
+                                      child: SearchPart())
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: height * 2),
+                                          child: Text(
+                                            "There is no Observation recorded in this date",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                            } else
+                              return Container();
+                          },
+                        ),
                         if (Responsive.isMobile(context))
                           SizedBox(height: defaultPadding),
                         if (Responsive.isMobile(context))
@@ -133,8 +154,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   onSearch(dynamic value) {
+    searchResult.value = true;
     searchList.value = value;
-    print("test: $value");
   }
 }
 
@@ -145,7 +166,6 @@ Future<void> prepareData(BuildContext context) async {
 
   await setdataList(context, myProvider, myProvider.getTelescopeDropDownList,
       telescopeDropDown);
-  print("ch2: ${myProvider.getTelescopeDropDownList}");
   await setdataList(context, myProvider, myProvider.getDetectorDropDownList,
       detectorDropDown);
   await setdataList(
@@ -184,8 +204,9 @@ class SearchPart extends StatelessWidget {
             child: DataTable2(
                 columnSpacing: defaultPadding,
                 minWidth: 400,
-                columns: ObservationDataTable(),
-                rows: ObservationDataRow(0, [], context, () {}, () {}, true)),
+                columns: SearchObservationDataTable(),
+                rows: ObservationDataRow(searchList.value.length,
+                    searchList.value, context, () {}, () {}, true)),
           ),
         ),
       ],

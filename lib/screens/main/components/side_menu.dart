@@ -20,7 +20,6 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("ch: ${UserType.value}");
     DataController myProvider =
         Provider.of<DataController>(context, listen: false);
     return ValueListenableBuilder(

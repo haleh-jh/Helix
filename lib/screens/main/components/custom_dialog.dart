@@ -68,7 +68,7 @@ class CustomDialog<T> extends StatelessWidget {
     return StatefulBuilder(builder: (cc, state) {
       stateSetter = state;
       return Dialog(
-          insetPadding: EdgeInsets.fromLTRB(30.w, 15.h, 30.w, 15.h),
+          insetPadding: EdgeInsets.fromLTRB(30.w, 13.h, 30.w, 13.h),
           backgroundColor: secondaryColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.w)),
@@ -108,7 +108,7 @@ class CustomDialog<T> extends StatelessWidget {
                                   id: data.id,
                                   name: NameController.text,
                                   ra: raController.text,
-                                      dec: decController.text);
+                                  dec: decController.text);
                             } else if (data is FramesModel) {
                               d = FramesModel(
                                 id: data.id,
@@ -116,10 +116,16 @@ class CustomDialog<T> extends StatelessWidget {
                                 type: FrameTypeController.text,
                                 filter: FrameFilterController.text,
                               );
-                            } else{
-                               d = ObservationsModel(
-                                id: data.id, dateTime: '', status: '', detectorName: '', frameName: '', sObject: null, telescopeName: '', userName: '',
-                                
+                            } else {
+                              d = ObservationsModel(
+                                id: data.id,
+                                dateTime: data.dateTime,
+                                status: data.status,
+                                detectorName: data.detectorName,
+                                frameName: data.frameName,
+                                sObject: null,
+                                telescopeName: data.telescopeName,
+                                userName: data.userName,
                               );
                             }
                             f!(d as T);

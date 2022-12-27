@@ -96,7 +96,7 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    DataController.ProgressNotifier = ValueNotifier(false);
+    DataController.ProgressNotifier = ValueNotifier(true);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
