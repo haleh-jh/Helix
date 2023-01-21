@@ -32,13 +32,10 @@ List<DataColumn> SObjectsDataTable() {
   ];
 }
 
-List<DataColumn> FramesDataTable() {
+List<DataColumn> FiltersDataTable() {
   return [
     DataColumn(
       label: Text("Name"),
-    ),
-    DataColumn(
-      label: Text("Type / Filter"),
     ),
     DataColumn(
       label: Text("Actions"),
@@ -58,10 +55,16 @@ List<DataColumn> ObservationDataTable() {
       label: Text("Detector"),
     ),
     DataColumn(
-      label: Text("Observation"),
+      label: Text("Object"),
     ),
     DataColumn(
-      label: Text("Frame"),
+      label: Text("Filter"),
+    ),
+    DataColumn(
+      label: Text("Status"),
+    ),
+    DataColumn(
+      label: Text(""),
     ),
     DataColumn(
       label: Text("Actions"),
@@ -81,10 +84,13 @@ List<DataColumn> SearchObservationDataTable() {
       label: Text("Detector"),
     ),
     DataColumn(
-      label: Text("Observation"),
+      label: Text("Object"),
     ),
     DataColumn(
-      label: Text("Frame"),
+      label: Text("Filter"),
+    ),
+        DataColumn(
+      label: Text(""),
     ),
   ];
 }
@@ -202,7 +208,6 @@ List<DataRow2> FrameDataRow(int length, var fileInfo, BuildContext context,
             ],
           ),
         ),
-        DataCell(Text("${fileInfo[index].type} ; ${fileInfo[index].filter}")),
         DataCell(
           RecentFileActionRow(
             deleteOnTap: (info) {
@@ -226,9 +231,11 @@ List<DataRow2> ObservationDataRow(
     BuildContext context,
     Function deleteOnTap,
     Function editOnTap,
+    Function(dynamic info) viewOnTap,
     bool search) {
   return List.generate(length, (index) {
     ObservationsModel model = fileInfo[index];
+    print(model.id);
     return DataRow2(
       cells: [
         DataCell(
@@ -245,7 +252,25 @@ List<DataRow2> ObservationDataRow(
         DataCell(Text("${model.telescopeName ?? ""}")),
         DataCell(Text("${model.detectorName ?? ""}")),
         DataCell(Text("${model.sObject!.name ?? ""}")),
-        DataCell(Text("${model.frameName ?? ""}")),
+        DataCell(Text("${model.filterName ?? ""}")),
+        if (!search) ...{
+          DataCell(Text(
+            "${model.status ?? ""}",
+            style: TextStyle(
+                color: model.status.contains('True')
+                    ? Color(0xff26e5ff)
+                    : Color(0xffee2727)),
+          ))
+        },
+        DataCell(InkWell(
+          onTap: (){
+            viewOnTap(fileInfo[index]);
+          },
+          child: Icon(
+            Icons.remove_red_eye,
+            color: Color(0xff26e5ff),
+          ),
+        )),
         if (!search) ...{
           DataCell(
             RecentFileActionRow(
@@ -264,12 +289,6 @@ List<DataRow2> ObservationDataRow(
     ;
   });
 }
-
-// selectedId = fileInfo.id;
-// onPressedButton(context, fileInfo);
-
-// selectedId = fileInfo.id;
-// onPressedDeleteButton(context, fileInfo);
 
 class RecentFileActionRow extends StatelessWidget {
   Function(dynamic info)? deleteOnTap;
@@ -311,7 +330,6 @@ class RecentFileActionRow extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: () {
-                  print("eh: ${fileInfo}");
                   deleteOnTap!(fileInfo);
                 },
                 child: Icon(

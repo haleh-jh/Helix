@@ -4,13 +4,9 @@ import 'package:sizer/sizer.dart';
 
 class FrameCustomDialog extends StatelessWidget {
   final TextEditingController NameController;
-  final TextEditingController FrameTypeController;
-  final TextEditingController FrameFilterController;
   const FrameCustomDialog({
     Key? key,
     required this.NameController,
-    required this.FrameTypeController,
-    required this.FrameFilterController,
   }) : super(key: key);
 
   @override
@@ -19,7 +15,7 @@ class FrameCustomDialog extends StatelessWidget {
       children: [
         InputBox(
           controller: NameController,
-          label: "Frame Name",
+          label: "Filter Name",
           textInputType: TextInputType.text,
           style: TextStyle(
               color: Colors.white,
@@ -28,28 +24,6 @@ class FrameCustomDialog extends StatelessWidget {
         ),
         SizedBox(
           height: 1.h,
-        ),
-        Column(
-          children: [
-            InputBox(
-              controller: FrameTypeController,
-              label: "Frame type",
-              textInputType: TextInputType.text,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 2.5.sp,
-                  fontWeight: FontWeight.w400),
-            ),
-            InputBox(
-              controller: FrameFilterController,
-              label: "Frame filter",
-              textInputType: TextInputType.text,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 2.5.sp,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
         ),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:admin/common/custom_text_field.dart';
 import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/screens/dashboard/components/detector_drop_down.dart';
 import 'package:admin/screens/dashboard/components/frame_drop_down.dart';

@@ -70,9 +70,8 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
         "ra": "${raController.text}",
         "dec": "${decController.text}",
       };
-      await myProvider.addNew(Objects, json.encode(formData)).then((value) {
-        var res = SObjects.fromJson(value);
-        myProvider.addData(res, myProvider.getSObjectsList);
+      await myProvider.addNew(context, Objects, json.encode(formData)).then((value) {
+        myProvider.getAll(context, myProvider.getSObjectsList, Objects);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -90,13 +89,14 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
 
   @override
   void initState() {
-    myProvider = Provider.of<DataController>(context, listen: false);
     super.initState();
+    myProvider = Provider.of<DataController>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(true);
+    myProvider.getAll(context, myProvider.getSObjectsList, Objects);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -131,20 +131,24 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
                     ],
                   ),
                   SizedBox(height: height),
-                  RecentFiles(
-                    title: "Recent Objectss",
-                    scaffoldKey: widget.scaffoldKey,
-                    progressController: progressController,
-                    list: myProvider.getSObjectsList,
-                    dataRowList: SObjectDataRow(
-                      myProvider.getSObjectsList.length,
-                      myProvider.getSObjectsList,
-                      context,
-                      onPressedDeleteButton,
-                      onPressedEditButton,
-                    ),
-                    dataColumnList: SObjectsDataTable(),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: myProvider.getSObjectsList,
+                      builder: (context, value, child) {
+                        return RecentFiles(
+                          title: "Recent Objectss",
+                          scaffoldKey: widget.scaffoldKey,
+                          progressController: progressController,
+                          list: myProvider.getSObjectsList.value,
+                          dataRowList: SObjectDataRow(
+                            myProvider.getSObjectsList.value.length,
+                            myProvider.getSObjectsList.value,
+                            context,
+                            onPressedDeleteButton,
+                            onPressedEditButton,
+                          ),
+                          dataColumnList: SObjectsDataTable(),
+                        );
+                      })
                 ],
               ),
             ),
@@ -162,7 +166,6 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
           decController.text = data.dec;
           raController.text = data.ra;
           return CustomDialog(
-              path: ObjectsTitle,
               formKey: _formKey,
               scaffoldKey: widget.scaffoldKey,
               c: context,
@@ -190,7 +193,6 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
         context: context,
         builder: (_) {
           return CustomAlertDialog(
-              path: ObjectsTitle,
               c: context,
               deleteFunction: DeleteResult,
               progressController: progressController,
@@ -208,10 +210,9 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
         "dec": "${data.dec!}",
       };
       await myProvider
-          .updateData(Objects, data, json.encode(formData))
+          .updateData(context, Objects, data, json.encode(formData))
           .then((value) {
-        print("ss: ${value.toString()}");
-        myProvider.updateList(value, myProvider.getSObjectsList);
+        myProvider.getAll(context, myProvider.getSObjectsList, Objects);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -231,8 +232,8 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(Objects, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getSObjectsList);
+      await myProvider.deleteData(context, Objects, data.id).then((value) {
+        myProvider.getAll(context, myProvider.getSObjectsList, Objects);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -255,7 +256,6 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
           decController.text = "";
           raController.text = "";
           return CustomDialog(
-              path: Objects,
               formKey: _formKey,
               scaffoldKey: key,
               c: context,

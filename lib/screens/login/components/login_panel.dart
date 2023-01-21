@@ -1,4 +1,5 @@
 import 'package:admin/common/custom_snackbar.dart';
+import 'package:admin/common/exception.dart';
 import 'package:admin/common/pref.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/controllers/ProgressController.dart';
@@ -101,7 +102,6 @@ class _LoginPanelWidgetState extends State<LoginPanelWidget> {
                                           Theme.of(context).textTheme.bodyText1,
                                     ),
                                   ),
-                          
                           ],
                         );
                       })),
@@ -111,7 +111,6 @@ class _LoginPanelWidgetState extends State<LoginPanelWidget> {
           ),
         ));
   }
-
 }
 
 class RegisterView extends StatelessWidget {
@@ -357,16 +356,24 @@ Future<void> login(GlobalKey<ScaffoldState> scaffoldKey, String userName,
     var token = await loginRepository
         .login(userName: userName, password: password)
         .then((value) async {
+      print("token: $value");
       await PreferenceUtils.setString("token", value);
       await PreferenceUtils.reload();
       logged = true;
+      //   await getUser(context, value);
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => MainScreen()));
     });
   } catch (e) {
-    print(e.toString());
-    ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackbar.customErrorSnackbar("An error has occurred", context));
+    String error = '';
+    if (e is AppException) {
+      print(e.message.toString());
+      error = e.message;
+    } else
+      error = kGeneralError;
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackbar.customErrorSnackbar(error, context));
   }
   context.read<ProgressController>().setValue(false);
 }
@@ -390,8 +397,25 @@ Future<void> register(
       }
     });
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackbar.customErrorSnackbar(e.toString(), context));
+    String error = '';
+    if (e is AppException) {
+      print(e.message.toString());
+      error = e.message;
+    } else
+      error = kGeneralError;
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(CustomSnackbar.customErrorSnackbar(error, context));
   }
   context.read<ProgressController>().setValue(false);
+}
+
+Future<void> getUser(BuildContext context, String token) async {
+  try {
+    await loginRepository.getUser(token).then((user) {
+      UserData.value = "${user.surname} ${user.lastName}";
+      UserType.value = "${user.type}";
+      PreferenceUtils.saveUserData(user);
+    });
+  } catch (e) {}
 }

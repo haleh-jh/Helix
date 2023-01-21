@@ -10,6 +10,7 @@ import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -69,20 +70,41 @@ class _TelescopWidgetState extends State<TelescopWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              "Profile",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-    
-          ],
+        ClipRRect(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(30)),
+          child: Image.asset(
+          'assets/images/sahabi.jpeg',
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.3,
+          fit: BoxFit.cover,
         ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "Profile",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: SvgPicture.asset(
+                "assets/icons/profile.svg",
+                height: 50,
+              ),
+            ),),
         SizedBox(height: height),
- ],
+      ],
     );
   }
 }

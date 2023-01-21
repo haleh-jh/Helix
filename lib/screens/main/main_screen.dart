@@ -10,7 +10,7 @@ import 'package:admin/main.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/dashboard/detectors_screen.dart';
-import 'package:admin/screens/dashboard/frames_screen.dart';
+import 'package:admin/screens/dashboard/filters_screen.dart';
 import 'package:admin/screens/dashboard/objects_screen.dart';
 import 'package:admin/screens/dashboard/observations_screen.dart';
 import 'package:admin/screens/dashboard/profile_screen.dart';
@@ -23,6 +23,8 @@ import 'package:provider/provider.dart';
 
 import 'components/side_menu.dart';
 
+late BuildContext mainContext;
+
 class MainScreen extends StatefulWidget {
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -32,7 +34,7 @@ const int dashboardIndex = 0;
 const int telescopsIndex = 1;
 const int detectorsIndex = 2;
 const int objectsIndex = 3;
-const int framesIndex = 4;
+const int FiltersIndex = 4;
 const int observationsIndex = 5;
 const int usersIndex = 6;
 const int profileIndex = 7;
@@ -44,6 +46,7 @@ ValueNotifier<String> UserType = ValueNotifier('GENERAL');
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    mainContext = context;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => MenuController()),
@@ -78,7 +81,7 @@ class _BodyState extends State<Body> {
 
   GlobalKey<NavigatorState> _objectsKey = GlobalKey();
 
-  GlobalKey<NavigatorState> _framesKey = GlobalKey();
+  GlobalKey<NavigatorState> _FiltersKey = GlobalKey();
 
   GlobalKey<NavigatorState> _observationsKey = GlobalKey();
 
@@ -93,7 +96,7 @@ class _BodyState extends State<Body> {
     telescopsIndex: _telescopsKey,
     detectorsIndex: _detectorsKey,
     objectsIndex: _objectsKey,
-    framesIndex: _framesKey,
+    FiltersIndex: _FiltersKey,
     usersIndex: _usersKey,
     profileIndex: _profileKey,
     settingsIndex: _settingsKey,
@@ -116,17 +119,18 @@ class _BodyState extends State<Body> {
     }
   }
 
+  List<Widget> _pages = [];
   @override
   void initState() {
-
-    if(logged){
-         getUser();
+    if (logged) {
+      getUser();
     }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    loadPages();
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -153,30 +157,9 @@ class _BodyState extends State<Body> {
                   // It takes 5/6 part of the screen
                   flex: 5,
                   child: IndexedStack(
+                    key: ObjectKey(_pages[0].hashCode),
                     index: selectedScreenIndex,
-                    children: [
-                      _navigator(
-                          _dashboardKey, dashboardIndex, DashboardScreen(profileSelected: changeScreen, logout: (){
-                              PreferenceUtils.clear();
-                              PreferenceUtils.reload();
-                                  logged = false;
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
-                                  (route) => true);
-                          },)),
-                      _navigator(
-                          _telescopsKey, telescopsIndex, TelescopScreen()),
-                      _navigator(
-                          _detectorsKey, detectorsIndex, DetectorScreen()),
-                      _navigator(_objectsKey, objectsIndex, ObjectsScreen()),
-                      _navigator(_framesKey, framesIndex, FramesScreen()),
-                      _navigator(_observationsKey, observationsIndex, ObservationsScreen()),
-                      if(UserType.value.contains("ADMIN")) _navigator(_usersKey, usersIndex, UsersScreen()),
-                      _navigator(_profileKey, profileIndex, ProfileScreen()),
-                      _navigator(_settingsKey, settingsIndex, SettingsScreen()),
-                    ],
+                    children: _pages,
                   )),
             ],
           ),
@@ -185,13 +168,13 @@ class _BodyState extends State<Body> {
     );
   }
 
-  changeScreen(int index){
+  changeScreen(int index) {
     print("changeScreen $index");
-  _history.remove(selectedScreenIndex);
-            _history.add(selectedScreenIndex);
-            setState(() {
-              selectedScreenIndex = index;
-            });
+    _history.remove(selectedScreenIndex);
+    _history.add(selectedScreenIndex);
+    setState(() {
+      selectedScreenIndex = index;
+    });
   }
 
   Widget _navigator(GlobalKey key, int index, Widget child) {
@@ -200,29 +183,53 @@ class _BodyState extends State<Body> {
         : Navigator(
             key: key,
             onGenerateRoute: (settings) => MaterialPageRoute(
-                builder: (context) => Offstage(
-                      offstage: selectedScreenIndex != index,
-                      child: child,
-                    )));
+                  builder: (context) => Offstage(
+                    offstage: selectedScreenIndex != index,
+                    child: child,
+                  ),
+                  maintainState: false,
+                ));
   }
 
   Future<void> getUser() async {
-  try {
-    var token = PreferenceUtils.getString("token");
-   
-      await loginRepository
-        .getUser(token!)
-        .then((user) {
-          UserData.value = "${user.surname} ${user.lastName}" ;
-          UserType.value = "${user.type}" ;
-          PreferenceUtils.saveUserData(user);
-    });
-  } catch (e) {
-     Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()),
-                            (route) => false);
+    try {
+      var token = PreferenceUtils.getString("token");
+
+      await loginRepository.getUser(token!).then((user) {
+        UserData.value = "${user.surname} ${user.lastName}";
+        UserType.value = "${user.type}";
+        PreferenceUtils.saveUserData(user);
+      });
+    } catch (e) {
+    }
   }
-}
+
+  void loadPages() {
+    _pages = [
+      _navigator(
+          _dashboardKey,
+          dashboardIndex,
+          DashboardScreen(
+            profileSelected: changeScreen,
+            logout: () {
+              PreferenceUtils.clear();
+              PreferenceUtils.reload();
+              logged = false;
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => true);
+            },
+          )),
+      _navigator(_telescopsKey, telescopsIndex, TelescopScreen()),
+      _navigator(_detectorsKey, detectorsIndex, DetectorScreen()),
+      _navigator(_objectsKey, objectsIndex, ObjectsScreen()),
+      _navigator(_FiltersKey, FiltersIndex, FiltersScreen()),
+      _navigator(_observationsKey, observationsIndex, ObservationsScreen()),
+      if (UserType.value.contains("ADMIN"))
+        _navigator(_usersKey, usersIndex, UsersScreen()),
+      _navigator(_profileKey, profileIndex, ProfileScreen()),
+      _navigator(_settingsKey, settingsIndex, SettingsScreen()),
+    ];
+  }
 }

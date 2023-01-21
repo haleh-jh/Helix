@@ -1,6 +1,6 @@
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/ListDataController.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/responsive.dart';
@@ -143,31 +143,24 @@ class _StarageDetailsState extends State<StarageDetails> {
                               ),
                             ),
                             onPressed: () {
+                              searchList.value = [];
                               String telescope = "";
                               String detector = "";
                               String object = "";
                               String frame = "";
-                              telescopeValue.value == null
-                                  ? telescope = ""
+                           telescope = telescopeValue.value == null
+                                  ? ""
                                   : telescopeValue.value!.value;
-                              detectorValue.value == null
-                                  ? detector = ""
+                           detector = detectorValue.value == null
+                                  ? ""
                                   : detectorValue.value!.value;
-                              objectValue.value == null
-                                  ? object = ""
+                           object = objectValue.value == null
+                                  ? ""
                                   : objectValue.value!.value;
-                              frameValue.value == null
-                                  ? frame = ""
+                           frame = frameValue.value == null
+                                  ? ""
                                   : frameValue.value!.value;
 
-                              // if (frameValue.value!.value.length > 0 &&
-                              //     telescopeValue.value!.value.length > 0 &&
-                              //     objectValue.value!.value.length > 0 &&
-                              //     detectorValue.value!.value.length > 0 &&
-                              //     userController.text.length > 0 &&
-                              //     dateFromController.text.length > 0 &&
-                              //     dateToController.text.length > 0 &&
-                              //     userController.text.length > 0) {
                               loading.value = true;
                               var data = {
                                 'FrameName': frame,
@@ -177,6 +170,9 @@ class _StarageDetailsState extends State<StarageDetails> {
                                 'DateOf': dateFromController.text,
                                 'DateTo': dateToController.text,
                                 'User': userController.text,
+                                'ra': coordinateRaController.text,
+                                'dec': coordinateDecController.text,
+                                'radius': radiusController.text,
                                 'SortByTelescope': '0',
                                 'SortByFrame': '0',
                                 'SortSObject': '0',
@@ -184,7 +180,6 @@ class _StarageDetailsState extends State<StarageDetails> {
                                 'SortDate': '0'
                               };
                               search(data);
-                              //     } else {}
                             },
                             icon: SvgPicture.asset("assets/icons/Search.svg"),
                             label: Text("Search"),
@@ -199,7 +194,8 @@ class _StarageDetailsState extends State<StarageDetails> {
 
   search(var data) async {
     try {
-      await myProvider.search(data).then((value) {
+      await myProvider.search(context, data).then((value) {
+        print("tt3: ${value}}");
         widget.onSearch(value);
         loading.value = false;
       });

@@ -82,10 +82,8 @@ class _UsersWidgetState extends State<UsersWidget> {
         "lastName": "${lastNameController.text}",
         "institution": "${data.institution}",
       };
-      await myProvider.addNew(Users, json.encode(formData)).then((value) {
-        print("vv: $value");
-        var res = User.fromJson(value);
-        myProvider.addData(res, myProvider.getUsersList);
+      await myProvider.addNew(context, Users, json.encode(formData)).then((value) {
+        myProvider.getAll(context, myProvider.getUsersList, Users);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -145,20 +143,24 @@ class _UsersWidgetState extends State<UsersWidget> {
                     ],
                   ),
                   SizedBox(height: height),
-                  RecentFiles(
-                    title: "Recent Users",
-                    scaffoldKey: widget.scaffoldKey,
-                    progressController: progressController,
-                    list: myProvider.getUsersList,
-                    dataRowList: UserDataRow(
-                      myProvider.getUsersList.length,
-                      myProvider.getUsersList,
-                      context,
-                      onPressedDeleteButton,
-                      onPressedEditButton,
-                    ),
-                    dataColumnList: UsersDataTable(),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: myProvider.getUsersList,
+                      builder: (context, value, child) {
+                        return RecentFiles(
+                          title: "Recent Users",
+                          scaffoldKey: widget.scaffoldKey,
+                          progressController: progressController,
+                          list: myProvider.getUsersList.value,
+                          dataRowList: UserDataRow(
+                            myProvider.getUsersList.value.length,
+                            myProvider.getUsersList.value,
+                            context,
+                            onPressedDeleteButton,
+                            onPressedEditButton,
+                          ),
+                          dataColumnList: UsersDataTable(),
+                        );
+                      })
                 ],
               ),
             ),
@@ -178,33 +180,32 @@ class _UsersWidgetState extends State<UsersWidget> {
           emailController.text = data.email;
           phoneController.text = data.phoneNumber;
           return CustomDialog(
-              path: Users,
               formKey: _formKey,
               scaffoldKey: widget.scaffoldKey,
               c: context,
               f: (value) {
                 var d = User(
-                id: data.id,
-                userName: userNameController.text,
-                normalizedUserName: "",
-                email: emailController.text,
-                normalizedEmail: "",
-                emailConfirmed: false,
-                passwordHash: "",
-                securityStamp: "",
-                concurrencyStamp: "",
-                phoneNumber: phoneController.text,
-                phoneNumberConfirmed: false,
-                twoFactorEnabled: false,
-                lockoutEnd: "",
-                lockoutEnabled: false,
-                accessFailedCount: "",
-                type: "",
-                surname: surnameController.text,
-                lastName: lastNameController.text,
-                institution: "",
-                des: "",
-              );
+                  id: data.id,
+                  userName: userNameController.text,
+                  normalizedUserName: "",
+                  email: emailController.text,
+                  normalizedEmail: "",
+                  emailConfirmed: false,
+                  passwordHash: "",
+                  securityStamp: "",
+                  concurrencyStamp: "",
+                  phoneNumber: phoneController.text,
+                  phoneNumberConfirmed: false,
+                  twoFactorEnabled: false,
+                  lockoutEnd: "",
+                  lockoutEnabled: false,
+                  accessFailedCount: "",
+                  type: "",
+                  surname: surnameController.text,
+                  lastName: lastNameController.text,
+                  institution: "",
+                  des: "",
+                );
                 EditResult(d);
               },
               progressController: progressController,
@@ -224,7 +225,6 @@ class _UsersWidgetState extends State<UsersWidget> {
         context: context,
         builder: (_) {
           return CustomAlertDialog(
-              path: Users,
               c: context,
               deleteFunction: DeleteResult,
               progressController: progressController,
@@ -257,10 +257,9 @@ class _UsersWidgetState extends State<UsersWidget> {
         "institution": "${data.institution}",
       };
       await myProvider
-          .updateData(Users, data, json.encode(formData))
+          .updateData(context, Users, data, json.encode(formData))
           .then((value) {
-        print("ss: ${value.toString()}");
-        myProvider.updateList(value, myProvider.getUsersList);
+        myProvider.getAll(context, myProvider.getUsersList, Users);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -280,8 +279,8 @@ class _UsersWidgetState extends State<UsersWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(Users, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getUsersList);
+      await myProvider.deleteData(context, Users, data.id).then((value) {
+        myProvider.getAll(context, myProvider.getUsersList, Users);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -306,7 +305,6 @@ class _UsersWidgetState extends State<UsersWidget> {
           emailController.text = "";
           phoneController.text = "";
           return CustomDialog(
-              path: Users,
               formKey: _formKey,
               scaffoldKey: key,
               c: context,

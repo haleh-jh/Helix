@@ -1,8 +1,5 @@
 import 'package:admin/controllers/DataController.dart';
-import 'package:admin/controllers/ListDataController.dart';
-import 'package:admin/data/models/data.dart';
 import 'package:admin/data/models/general_model.dart';
-import 'package:admin/screens/dashboard/components/storage_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +24,7 @@ class TelescopeDropDown extends StatelessWidget {
             value: telescopeValue.value,
             isExpanded: true,
             onChanged: (newValue) {
+              print("chch: ${newValue!.value} ${newValue!.key}");
               telescopeValue.value = newValue;
             },
             items:

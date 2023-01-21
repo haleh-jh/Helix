@@ -1,25 +1,20 @@
 import 'package:admin/common/exception.dart';
 import 'package:admin/constants.dart';
-import 'package:admin/screens/login/login_screen.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
 mixin HttpResponseValidator {
-  validateResponse(
-    Response response,
-  ) {
-    if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
-      return response;
+  validateResponse(Response response) {
+    if (!checkConnection()!) {
+      throw Exception(kConnectionError);
     }
-     else if (response.statusCode == 401) {
-      throw Exception('401');
-    } 
-    //   throw Exception('${response.data['message']}');
-    // }
-    else if (response.statusCode == 500) {
-      throw Exception(kServerError);
+    if (response.statusCode == 404 || response.statusCode == 422) {
+      throw AppException(message: response.data['message']);
+    } else if (response.statusCode == 401) {
+      throw AppException(message: '401');
+    } else if (response.statusCode == 500) {
+      throw AppException(message: kServerError);
     } else {
-      throw Exception('${response.data['message']}');
+      throw AppException(message: kGeneralError);
     }
   }
 }

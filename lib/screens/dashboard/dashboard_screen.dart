@@ -1,3 +1,5 @@
+import 'package:admin/common/custom_snackbar.dart';
+import 'package:admin/common/exception.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/ListDataController.dart';
 import 'package:admin/data/models/general_model.dart';
@@ -71,6 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Column(
                       children: [
                         MyFiles(
+
                             // telescopesCount:
                             //     myProvider.getTelescopeDropDownList.length,
                             // detectorsCount:
@@ -84,37 +87,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ValueListenableBuilder(
                           valueListenable: searchList,
                           builder: (context, value, child) {
-                            if (searchResult.value) {
-                              return searchList.value.length > 0
-                                  ? Container(
-                                      padding: EdgeInsets.all(defaultPadding),
-                                      decoration: BoxDecoration(
-                                        color: serachBackground,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      child: SearchPart())
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: height * 2),
-                                          child: Text(
-                                            "There is no Observation recorded in this date",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500,
+                            return searchList.value.length > 0
+                                ? Container(
+                                    padding: EdgeInsets.all(defaultPadding),
+                                    decoration: BoxDecoration(
+                                      color: serachBackground,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                    ),
+                                    child: SearchPart())
+                                : searchResult.value
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: height * 2),
+                                            child: Text(
+                                              "There is no Observation recorded in this date",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    );
-                            } else
-                              return Container();
+                                        ],
+                                      )
+                                    : Container();
                           },
                         ),
                         if (Responsive.isMobile(context))
@@ -154,7 +156,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   onSearch(dynamic value) {
-    searchResult.value = true;
+    searchList.value.clear();
+    if (value.length == 0) {
+      searchResult.value = true;
+    } else
+      searchResult.value = false;
     searchList.value = value;
   }
 }
@@ -176,7 +182,14 @@ Future<void> prepareData(BuildContext context) async {
 
 Future<void> setdataList(BuildContext context, DataController myProvider,
     List<GeneralModel> list, String path) async {
-  await myProvider.getDropDownList(context, list, path);
+  try {
+    await myProvider.getDropDownList(context, list, path);
+  } catch (e) {
+    if (e is AppException) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(CustomSnackbar.customErrorSnackbar(e.message, context));
+    }
+  }
 }
 
 class SearchPart extends StatelessWidget {
@@ -205,8 +218,14 @@ class SearchPart extends StatelessWidget {
                 columnSpacing: defaultPadding,
                 minWidth: 400,
                 columns: SearchObservationDataTable(),
-                rows: ObservationDataRow(searchList.value.length,
-                    searchList.value, context, () {}, () {}, true)),
+                rows: ObservationDataRow(
+                    searchList.value.length,
+                    searchList.value,
+                    context,
+                    () {},
+                    () {},
+                    (fileinfo) {},
+                    true)),
           ),
         ),
       ],

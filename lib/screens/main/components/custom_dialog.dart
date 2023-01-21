@@ -4,7 +4,7 @@ import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/data/models/observation.dart';
 import 'package:admin/data/repo/service_repository.dart';
@@ -27,7 +27,6 @@ class CustomDialog<T> extends StatelessWidget {
     required this.btnTitle,
     required this.data,
     this.progressController,
-    required this.path,
     required this.customWidget,
   }) : super(key: key);
 
@@ -46,7 +45,6 @@ class CustomDialog<T> extends StatelessWidget {
   final EditCallbackF<T>? f;
   //final Function(Data data)? f;
   var data;
-  final String path;
 
   static StateSetter? stateSetter;
 
@@ -59,10 +57,8 @@ class CustomDialog<T> extends StatelessWidget {
       NameController.text = data.name;
       raController.text = data.ra;
       decController.text = data.dec;
-    } else if (data is FramesModel) {
+    } else if (data is FiltersModel) {
       NameController.text = data.name;
-      FrameTypeController.text = data.type;
-      FrameFilterController.text = data.filter;
     }
 
     return StatefulBuilder(builder: (cc, state) {
@@ -72,78 +68,87 @@ class CustomDialog<T> extends StatelessWidget {
           backgroundColor: secondaryColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.w)),
-          child: Container(
-              width: 100.w,
-              padding: EdgeInsets.all(2.w),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    customWidget,
-                    Expanded(child: Container()),
-                    ElevatedButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: defaultPadding * 2,
-                          vertical: defaultPadding /
-                              (Responsive.isMobile(context) ? 2 : 1),
-                        ),
+          child: SingleChildScrollView(
+            child: Container(
+                width: 100.w,
+                padding: EdgeInsets.all(2.w),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      customWidget,
+                      //   Expanded(child: Container()),
+                      SizedBox(
+                        height: defaultPadding,
                       ),
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          stateSetter!(
-                            () => progressController.setValue(true),
-                          );
-                          Future.delayed(Duration(milliseconds: 2000))
-                              .then((value) {
-                            var d;
-                            if (data is Data) {
-                              d = Data(
+                      ElevatedButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: defaultPadding * 2,
+                            vertical: defaultPadding /
+                                (Responsive.isMobile(context) ? 2 : 1),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            stateSetter!(
+                              () => progressController.setValue(true),
+                            );
+                            Future.delayed(Duration(milliseconds: 2000))
+                                .then((value) {
+                              var d;
+                              if (data is Data) {
+                                d = Data(
+                                    id: data.id,
+                                    name: NameController.text,
+                                    type: TypeController.text);
+                              } else if (data is SObjects) {
+                                d = SObjects(
+                                    id: data.id,
+                                    name: NameController.text,
+                                    ra: raController.text,
+                                    dec: decController.text);
+                              } else if (data is FiltersModel) {
+                                d = FiltersModel(
                                   id: data.id,
                                   name: NameController.text,
-                                  type: TypeController.text);
-                            } else if (data is SObjects) {
-                              d = SObjects(
+                                );
+                              } else {
+                                d = ObservationsModel(
                                   id: data.id,
-                                  name: NameController.text,
-                                  ra: raController.text,
-                                  dec: decController.text);
-                            } else if (data is FramesModel) {
-                              d = FramesModel(
-                                id: data.id,
-                                name: NameController.text,
-                                type: FrameTypeController.text,
-                                filter: FrameFilterController.text,
-                              );
-                            } else {
-                              d = ObservationsModel(
-                                id: data.id,
-                                dateTime: data.dateTime,
-                                status: data.status,
-                                detectorName: data.detectorName,
-                                frameName: data.frameName,
-                                sObject: null,
-                                telescopeName: data.telescopeName,
-                                userName: data.userName,
-                              );
-                            }
-                            f!(d as T);
-                          });
-                        }
-                      },
-                      child: progressController.listenableValue
-                          ? SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ))
-                          : Text(btnTitle),
-                    )
-                  ],
-                ),
-              )));
+                                  dateTime: data.dateTime,
+                                  status: data.status,
+                                  detectorName: data.detectorName,
+                                  filterName: data.filterName,
+                                  sObject: data.sObject,
+                                  telescopeName: data.telescopeName,
+                                  userName: data.userName,
+                                  name: data.name,
+                                  type: data.type,
+                                );
+                              }
+                              f!(d as T);
+                            });
+                          }
+                        },
+                        child: progressController.listenableValue
+                            ? SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ))
+                            : Text(btnTitle),
+                      ),
+                      SizedBox(
+                        height: defaultPadding,
+                      ),
+                    ],
+                  ),
+                )),
+          ));
     });
   }
 }

@@ -8,7 +8,7 @@ class SObjects{
   SObjects({required this.id, required this.name, required this.ra, required this.dec});
   
   factory SObjects.fromJson(Map<String, dynamic> json){
-    return SObjects(id: json['id'], name: json['name'], ra: json['ra'], dec: json['dec'],);
+    return SObjects(id: json['id'], name: json['name'], ra: json['ra']??'', dec: json['dec']??'',);
   }
   
   }

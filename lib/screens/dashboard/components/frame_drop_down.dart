@@ -1,6 +1,6 @@
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/ListDataController.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/general_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

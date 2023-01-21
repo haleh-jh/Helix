@@ -27,24 +27,48 @@ class LoginRemoteDataSource
   @override
   Future<String> login(
       {required String userName, required String password}) async {
+    int statusCode = 0;
     var formData = json.encode({"password": password, "userName": userName});
     httpClient.options.headers['content-Type'] = 'application/json';
-    final response =
-        await httpClient.post("api/Authenticate/login-user", data: formData);
-    validateResponse(response);
-    //  var body = json.decode(response.data);
-    var token = response.data['token'];
-    return token;
+    Response response = await httpClient.post(
+      "api/Authenticate/login-user",
+      data: formData,
+      options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            statusCode = status!;
+            return status < 500;
+          }),
+    );
+    if (response.statusCode == 200 ||
+        response.statusCode == 201 ||
+        response.statusCode == 204) {
+      return response.data['token'];
+    } else {
+      return validateResponse(response);
+    }
   }
 
   @override
   Future<User> getUser(String token) async {
+    int statusCode = 0;
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
-    final response = await httpClient.get("api/UserProfile/GetUser");
-    validateResponse(response);
-    User user = User.fromJson(response.data);
-    return user;
+    Response response = await httpClient.get(
+      "api/UserProfile/GetUser",
+      options: Options(
+          followRedirects: false,
+          validateStatus: (status) {
+            statusCode = status!;
+            return status < 500;
+          }),
+    );
+    if (statusCode == 200 || statusCode == 201 || statusCode == 204) {
+      User user = User.fromJson(response.data);
+      return user;
+    } else {
+      return validateResponse(response);
+    }
   }
 
   @override

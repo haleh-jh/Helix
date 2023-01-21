@@ -5,12 +5,12 @@ import 'package:sizer/sizer.dart';
 class TelescopeCustomDialog extends StatelessWidget {
   final TextEditingController NameController;
   final TextEditingController TypeController;
-  final String path;
+  final String title;
   const TelescopeCustomDialog({
     Key? key,
     required this.NameController,
     required this.TypeController,
-    required this.path,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class TelescopeCustomDialog extends StatelessWidget {
       children: [
         InputBox(
           controller: NameController,
-          label: "${path} Name",
+          label: "${title} Name",
           textInputType: TextInputType.text,
           style: TextStyle(
               color: Colors.white,
@@ -31,7 +31,7 @@ class TelescopeCustomDialog extends StatelessWidget {
         ),
         InputBox(
           controller: TypeController,
-          label: "${path} Type",
+          label: "${title} Type",
           textInputType: TextInputType.text,
           style: TextStyle(
               color: Colors.white,

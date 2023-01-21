@@ -15,11 +15,17 @@ import 'components/header.dart';
 import 'components/recent_files.dart';
 import 'package:provider/provider.dart';
 
-class TelescopScreen extends StatelessWidget {
+class TelescopScreen extends StatefulWidget {
+  @override
+  State<TelescopScreen> createState() => _TelescopScreenState();
+}
+
+class _TelescopScreenState extends State<TelescopScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-    var providerType = Provider.of<DataController>(context);
+    print("test1");
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -63,9 +69,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         "name": "${NameController.text}",
         "type": "${TypeController.text}",
       });
-      await myProvider.addNew(telescope, formData).then((value) {
-        var res = Data.fromJson(value);
-        myProvider.addData(res, myProvider.getTelescopeList);
+      await myProvider.addNew(context, telescopePath, formData).then((value) {
+        myProvider.getAll(context, myProvider.getTelescopeList, telescopePath);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -89,6 +94,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(true);
+    myProvider.getAll(context, myProvider.getTelescopeList, telescopePath);
+    print('test');
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -123,19 +130,23 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                     ],
                   ),
                   SizedBox(height: height),
-                  RecentFiles(
-                    title: "Recent $telescope",
-                    scaffoldKey: widget.scaffoldKey,
-                    progressController: progressController,
-                    list: myProvider.getTelescopeList,
-                    dataColumnList: TelescopDataTable(),
-                    dataRowList: TelescopeDataRow(
-                        myProvider.getTelescopeList.length,
-                        myProvider.getTelescopeList,
-                        context,
-                        onPressedDeleteButton,
-                        onPressedEditButton),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: myProvider.getTelescopeList,
+                      builder: (context, value, child) {
+                        return RecentFiles(
+                          title: "Recent $telescope",
+                          scaffoldKey: widget.scaffoldKey,
+                          progressController: progressController,
+                          list: myProvider.getTelescopeList.value,
+                          dataColumnList: TelescopDataTable(),
+                          dataRowList: TelescopeDataRow(
+                              myProvider.getTelescopeList.value.length,
+                              myProvider.getTelescopeList.value,
+                              context,
+                              onPressedDeleteButton,
+                              onPressedEditButton),
+                        );
+                      })
                 ],
               ),
             ),
@@ -152,7 +163,6 @@ class _TelescopWidgetState extends State<TelescopWidget> {
           NameController.text = data.name;
           TypeController.text = data.type;
           return CustomDialog(
-            path: telescope,
             formKey: _formKey,
             scaffoldKey: widget.scaffoldKey,
             c: context,
@@ -169,7 +179,7 @@ class _TelescopWidgetState extends State<TelescopWidget> {
             customWidget: TelescopeCustomDialog(
                 NameController: NameController,
                 TypeController: TypeController,
-                path: telescope),
+                title: telescope),
           );
         });
   }
@@ -179,7 +189,6 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         context: context,
         builder: (_) {
           return CustomAlertDialog(
-              path: telescope,
               c: context,
               deleteFunction: DeleteResult,
               progressController: progressController,
@@ -195,8 +204,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         "name": NameController.text,
         "type": TypeController.text
       });
-      await myProvider.updateData(telescope, data, formData).then((value) {
-        myProvider.updateList(value, myProvider.getTelescopeList);
+      await myProvider.updateData(context, telescopePath, data, formData).then((value) {
+        myProvider.getAll(context, myProvider.getTelescopeList, telescopePath);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -216,8 +225,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(telescope, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getTelescopeList);
+      await myProvider.deleteData(context, telescopePath, data.id).then((value) {
+        myProvider.getAll(context, myProvider.getTelescopeList, telescopePath);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -239,7 +248,6 @@ class _TelescopWidgetState extends State<TelescopWidget> {
           NameController.text = "";
           TypeController.text = "";
           return CustomDialog(
-              path: telescope,
               formKey: _formKey,
               scaffoldKey: key,
               c: context,
@@ -250,7 +258,7 @@ class _TelescopWidgetState extends State<TelescopWidget> {
               customWidget: TelescopeCustomDialog(
                   NameController: NameController,
                   TypeController: TypeController,
-                  path: telescope));
+                  title: telescope));
         });
   }
 }

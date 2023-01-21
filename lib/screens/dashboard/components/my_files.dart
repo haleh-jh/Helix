@@ -10,13 +10,13 @@ class MyFiles extends StatelessWidget {
       this.telescopesCount = 0,
       this.detectorsCount = 0,
       this.objectsCount = 0,
-      this.framesCount = 0})
+      this.FiltersCount = 0})
       : super(key: key);
 
   final int telescopesCount;
   final int detectorsCount;
   final int objectsCount;
-  final int framesCount;
+  final int FiltersCount;
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +52,14 @@ class MyFiles extends StatelessWidget {
               telescopesCount: telescopesCount,
               detectorsCount: detectorsCount,
               objectsCount: objectsCount,
-              framesCount: framesCount),
+              FiltersCount: FiltersCount),
           tablet: FileInfoCardGridView(),
           desktop: FileInfoCardGridView(
               childAspectRatio: _size.width < 1400 ? 1.1 : 1.4,
               telescopesCount: telescopesCount,
               detectorsCount: detectorsCount,
               objectsCount: objectsCount,
-              framesCount: framesCount),
+              FiltersCount: FiltersCount),
         ),
       ],
     );
@@ -75,7 +75,7 @@ class FileInfoCardGridView extends StatelessWidget {
       this.telescopesCount = 0,
       this.detectorsCount = 0,
       this.objectsCount = 0,
-      this.framesCount = 0})
+      this.FiltersCount = 0})
       : super(key: key);
 
   final int crossAxisCount;
@@ -84,7 +84,7 @@ class FileInfoCardGridView extends StatelessWidget {
   final int telescopesCount;
   final int detectorsCount;
   final int objectsCount;
-  final int framesCount;
+  final int FiltersCount;
 
   @override
   Widget build(BuildContext context) {
@@ -146,10 +146,10 @@ class FileInfoCardGridView extends StatelessWidget {
         {
           return FileInfoCard(
               info: CloudStorageInfo(
-            title: "Frames",
+            title: "Filters",
             numOfFiles: 5328,
             svgSrc: "assets/icons/drop_box.svg",
-            totalStorage: "${this.framesCount}",
+            totalStorage: "${this.FiltersCount}",
             color: Color(0xFF007EE5),
             percentage: 78,
           ));
@@ -161,7 +161,7 @@ class FileInfoCardGridView extends StatelessWidget {
             title: "--",
             numOfFiles: 5328,
             svgSrc: "assets/icons/drop_box.svg",
-            totalStorage: "${this.framesCount}",
+            totalStorage: "${this.FiltersCount}",
             color: Color(0xFF007EE5),
             percentage: 78,
           ));

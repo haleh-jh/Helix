@@ -6,7 +6,7 @@ import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/custom_fun.dart';
 import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/data/models/user.dart';
 import 'package:admin/data/repo/service_repository.dart';

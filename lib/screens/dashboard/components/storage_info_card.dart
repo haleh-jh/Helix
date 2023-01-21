@@ -1,5 +1,5 @@
 import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/screens/dashboard/components/detector_drop_down.dart';
@@ -53,7 +53,7 @@ class StorageInfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title.contains(typeObject.Telescope.name)) ...{
+                  if (title.contains(typeObject.Optic.name)) ...{
                     InkWell(
                       onTap: onTap,
                       child: TelescopeDropDown(title: title, telescopeValue: telescopeValue),
@@ -68,7 +68,7 @@ class StorageInfoCard extends StatelessWidget {
                       onTap: onTap,
                       child: ObjectDropDown(title: title, objectValue: objectValue,),
                     ),
-                  } else if (title.contains(typeObject.Frame.name)) ...{
+                  } else if (title.contains(typeObject.Filter.name)) ...{
                     InkWell(
                       onTap: onTap,
                       child: FrameDropDown(title: title, frameValue: frameValue,),
@@ -85,4 +85,4 @@ class StorageInfoCard extends StatelessWidget {
 
 }
 
-enum typeObject { Telescope, Detector, Object, Frame }
+enum typeObject { Optic, Detector, Object, Filter }

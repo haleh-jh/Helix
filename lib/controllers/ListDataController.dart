@@ -59,12 +59,12 @@ class ListDataController<T> with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  void frameSetValue(List<T> list) {
+  void FiltersetValue(List<T> list) {
     _framelist = list;
     notifyListeners();
   }
 
-  void frameSetSValue(String v) {
+  void FiltersetSValue(String v) {
     _frameValue = v;
     notifyListeners();
   }

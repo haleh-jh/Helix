@@ -65,9 +65,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
         "name": "${NameController.text}",
         "type": "${TypeController.text}",
       });
-      await myProvider.addNew(detector, formData).then((value) {
-        var res = Data.fromJson(value);
-        myProvider.addData(res, myProvider.getDetectorsList);
+      await myProvider.addNew(context ,detector, formData).then((value) {
+        myProvider.getAll(context, myProvider.getDetectorsList, detector);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -91,6 +90,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(true);
+    myProvider.getAll(context, myProvider.getDetectorsList, detector);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -125,20 +125,24 @@ class _DetectorWidgetState extends State<DetectorWidget> {
                     ],
                   ),
                   SizedBox(height: height),
-                  RecentFiles(
-                    title: "Recent Detectors",
-                    scaffoldKey: widget.scaffoldKey,
-                    progressController: progressController,
-                    list: myProvider.getDetectorsList,
-                    dataRowList: TelescopeDataRow(
-                      myProvider.getDetectorsList.length,
-                      myProvider.getDetectorsList,
-                      context,
-                      onPressedDeleteButton,
-                      onPressedEditButton,
-                    ),
-                    dataColumnList: TelescopDataTable(),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: myProvider.getDetectorsList,
+                      builder: (context, value, child) {
+                        return RecentFiles(
+                          title: "Recent Detectors",
+                          scaffoldKey: widget.scaffoldKey,
+                          progressController: progressController,
+                          list: myProvider.getDetectorsList.value,
+                          dataRowList: TelescopeDataRow(
+                            myProvider.getDetectorsList.value.length,
+                            myProvider.getDetectorsList.value,
+                            context,
+                            onPressedDeleteButton,
+                            onPressedEditButton,
+                          ),
+                          dataColumnList: TelescopDataTable(),
+                        );
+                      })
                 ],
               ),
             ),
@@ -155,7 +159,6 @@ class _DetectorWidgetState extends State<DetectorWidget> {
           NameController.text = data.name;
           TypeController.text = data.type;
           return CustomDialog(
-            path: detector,
             formKey: _formKey,
             scaffoldKey: widget.scaffoldKey,
             c: context,
@@ -172,7 +175,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
             customWidget: TelescopeCustomDialog(
                 NameController: NameController,
                 TypeController: TypeController,
-                path: detector),
+                title: detector),
           );
         });
   }
@@ -182,7 +185,6 @@ class _DetectorWidgetState extends State<DetectorWidget> {
         context: context,
         builder: (_) {
           return CustomAlertDialog(
-              path: detector,
               c: context,
               deleteFunction: DeleteResult,
               progressController: progressController,
@@ -195,8 +197,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
     try {
       var formData =
           json.encode({"id": data.id, "name": data.name, "type": data.type});
-      await myProvider.updateData(detector, data, formData).then((value) {
-        myProvider.updateList(value, myProvider.getDetectorsList);
+      await myProvider.updateData(context, detector, data, formData).then((value) {
+        myProvider.getAll(context, myProvider.getDetectorsList, detector);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -216,8 +218,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(detector, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getDetectorsList);
+      await myProvider.deleteData(context, detector, data.id).then((value) {
+        myProvider.getAll(context, myProvider.getDetectorsList, detector);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -239,7 +241,6 @@ class _DetectorWidgetState extends State<DetectorWidget> {
           NameController.text = "";
           TypeController.text = "";
           return CustomDialog(
-            path: detector,
             formKey: _formKey,
             scaffoldKey: key,
             c: context,
@@ -250,7 +251,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
             customWidget: TelescopeCustomDialog(
                 NameController: NameController,
                 TypeController: TypeController,
-                path: detector),
+                title: detector),
           );
         });
   }

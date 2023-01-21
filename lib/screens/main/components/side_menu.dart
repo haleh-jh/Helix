@@ -51,12 +51,9 @@ class SideMenu extends StatelessWidget {
                   },
                 ),
                 DrawerListTile(
-                  title: "Telescopes",
+                  title: "Optics",
                   svgSrc: "assets/icons/menu_tran.svg",
                   press: () {
-                    myProvider.getTelescopeList.clear();
-                    myProvider.getAll(
-                        context, myProvider.getTelescopeList, telescope);
                     onTap(telescopsIndex);
                   },
                 ),
@@ -64,9 +61,6 @@ class SideMenu extends StatelessWidget {
                   title: "Detectors",
                   svgSrc: "assets/icons/menu_task.svg",
                   press: () {
-                    myProvider.getDetectorsList.clear();
-                    myProvider.getAll(
-                        context, myProvider.getDetectorsList, detector);
                     onTap(detectorsIndex);
                   },
                 ),
@@ -74,29 +68,23 @@ class SideMenu extends StatelessWidget {
                   title: "Objects",
                   svgSrc: "assets/icons/menu_doc.svg",
                   press: () {
-                    myProvider.getSObjectsList.clear();
-                    myProvider.getAll(
-                        context, myProvider.getSObjectsList, Objects);
+                    // myProvider.getSObjectsList.clear();
+                    // myProvider.getAll(
+                    //     context, myProvider.getSObjectsList, Objects);
                     onTap(objectsIndex);
                   },
                 ),
                 DrawerListTile(
-                  title: "Frames",
+                  title: "Filters",
                   svgSrc: "assets/icons/menu_store.svg",
                   press: () {
-                    myProvider.getFramesList.clear();
-                    myProvider.getAll(
-                        context, myProvider.getFramesList, Frames);
-                    onTap(framesIndex);
+                    onTap(FiltersIndex);
                   },
                 ),
                 DrawerListTile(
                   title: "Observations",
                   svgSrc: "assets/icons/menu_store.svg",
                   press: () {
-                    myProvider.getObservationsList.clear();
-                    myProvider.getAll(context, myProvider.getObservationsList,
-                        ObservationsPath);
                     onTap(observationsIndex);
                   },
                 ),
@@ -105,9 +93,6 @@ class SideMenu extends StatelessWidget {
                     title: "Users",
                     svgSrc: "assets/icons/menu_notification.svg",
                     press: () {
-                      myProvider.getUsersList.clear();
-                      myProvider.getAll(
-                          context, myProvider.getUsersList, Users);
                       onTap(usersIndex);
                     },
                   )

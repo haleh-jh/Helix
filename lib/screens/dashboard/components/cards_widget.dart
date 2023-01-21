@@ -1,6 +1,6 @@
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/object.dart';
 import 'package:admin/screens/dashboard/components/storage_info_card.dart';
@@ -27,7 +27,7 @@ class CardsWidget extends StatelessWidget {
         children: [
           StorageInfoCard(
             svgSrc: "assets/icons/Documents.svg",
-            title: "Telescope",
+            title: "Optic",
             onTap: () async {
            //   context.watch<DataController>().getTelescopeDropDownList;
             },
@@ -60,7 +60,7 @@ class CardsWidget extends StatelessWidget {
           ),
           StorageInfoCard(
             svgSrc: "assets/icons/unknown.svg",
-            title: "Frame",
+            title: "Filter",
             onTap: () async {
           //                  context.watch<DataController>().getTelescopeDropDownList;
             },

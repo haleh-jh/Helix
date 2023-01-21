@@ -6,19 +6,20 @@ import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
 import 'package:admin/controllers/progressController.dart';
 import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
+import 'package:admin/data/models/filters.dart';
 import 'package:admin/data/repo/service_repository.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/Frame_custom_dialog.dart';
 import 'package:admin/screens/dashboard/components/header.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
+import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FramesScreen extends StatelessWidget {
+class FiltersScreen extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class FramesScreen extends StatelessWidget {
         body: SingleChildScrollView(
           primary: false,
           padding: EdgeInsets.all(defaultPadding),
-          child: FramesWidget(
+          child: FiltersWidget(
             scaffoldKey: _scaffoldKey,
           ),
         ),
@@ -38,8 +39,8 @@ class FramesScreen extends StatelessWidget {
   }
 }
 
-class FramesWidget extends StatefulWidget {
-  FramesWidget({
+class FiltersWidget extends StatefulWidget {
+  FiltersWidget({
     Key? key,
     required this.scaffoldKey,
   }) : super(key: key);
@@ -47,31 +48,25 @@ class FramesWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
-  State<FramesWidget> createState() => _FramesWidgetState();
+  State<FiltersWidget> createState() => _FiltersWidgetState();
 }
 
-class _FramesWidgetState extends State<FramesWidget> {
+class _FiltersWidgetState extends State<FiltersWidget> {
   late final myProvider;
 
   final _formKey = GlobalKey<FormState>();
   var progressProvider;
   var progressController = ProgressController();
   TextEditingController NameController = TextEditingController();
-  TextEditingController FrameFilterController = TextEditingController();
-  TextEditingController FrameTypeController = TextEditingController();
 
-  void addResult(FramesModel data) async {
+  void addResult(FiltersModel data) async {
     try {
       var formData = {
         "id": "0",
         "name": "${NameController.text}",
-        "type": "${FrameTypeController.text}",
-        "filter": "${FrameFilterController.text}",
       };
-      await myProvider.addNew(Frames, json.encode(formData)).then((value) {
-        print("vv: $value");
-        var res = FramesModel.fromJson(value);
-        myProvider.addData(res, myProvider.getFramesList);
+      await myProvider.addNew(context, Filters, json.encode(formData)).then((value) {
+        myProvider.getAll(context, myProvider.getFiltersList, Filters);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -96,6 +91,7 @@ class _FramesWidgetState extends State<FramesWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(true);
+    myProvider.getAll(context, myProvider.getFiltersList, Filters);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -110,7 +106,7 @@ class _FramesWidgetState extends State<FramesWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        Frames,
+                        Filters,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       ElevatedButton.icon(
@@ -130,33 +126,23 @@ class _FramesWidgetState extends State<FramesWidget> {
                     ],
                   ),
                   SizedBox(height: height),
-                  // RecentFiles(
-                  //   title: "Recent $Frames",
-                  //   scaffoldKey: widget.scaffoldKey,
-                  //   path: Frames,
-                  //   editFunction: (value) {
-                  //     EditResult(value as FramesModel);
-                  //   },
-                  //   deleteFunction: (value) {
-                  //     DeleteResult(value as FramesModel);
-                  //   },
-                  //   progressController: progressController,
-                  //   list: myProvider.getFramesList,
-                  //   isObject: false,
-                  // ),
-                  RecentFiles(
-                    title: "Recent Detectors",
-                    scaffoldKey: widget.scaffoldKey,
-                    progressController: progressController,
-                    list: myProvider.getFramesList,
-                    dataRowList: FrameDataRow(
-                        myProvider.getFramesList.length,
-                        myProvider.getFramesList,
-                        context,
-                        onPressedDeleteButton,
-                        onPressedEditButton),
-                    dataColumnList: FramesDataTable(),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: myProvider.getFiltersList,
+                      builder: (context, value, child) {
+                        return RecentFiles(
+                          title: "Recent Filters",
+                          scaffoldKey: widget.scaffoldKey,
+                          progressController: progressController,
+                          list: myProvider.getFiltersList.value,
+                          dataRowList: FrameDataRow(
+                              myProvider.getFiltersList.value.length,
+                              myProvider.getFiltersList.value,
+                              context,
+                              onPressedDeleteButton,
+                              onPressedEditButton),
+                          dataColumnList: FiltersDataTable(),
+                        );
+                      })
                 ],
               ),
             ),
@@ -171,19 +157,14 @@ class _FramesWidgetState extends State<FramesWidget> {
         context: c,
         builder: (context) {
           NameController.text = data.name;
-          FrameFilterController.text = data.filter;
-          FrameTypeController.text = data.type;
           return CustomDialog(
-              path: Frames,
               formKey: _formKey,
               scaffoldKey: widget.scaffoldKey,
               c: context,
               f: (value) {
-                var d = FramesModel(
+                var d = FiltersModel(
                   id: data.id,
                   name: NameController.text,
-                  type: FrameTypeController.text,
-                  filter: FrameFilterController.text,
                 );
                 EditResult(d);
               },
@@ -191,8 +172,6 @@ class _FramesWidgetState extends State<FramesWidget> {
               btnTitle: "Edit",
               data: data,
               customWidget: FrameCustomDialog(
-                FrameFilterController: FrameFilterController,
-                FrameTypeController: FrameTypeController,
                 NameController: NameController,
               ));
         });
@@ -203,7 +182,6 @@ class _FramesWidgetState extends State<FramesWidget> {
         context: context,
         builder: (_) {
           return CustomAlertDialog(
-              path: Frames,
               c: context,
               deleteFunction: DeleteResult,
               progressController: progressController,
@@ -212,19 +190,16 @@ class _FramesWidgetState extends State<FramesWidget> {
         });
   }
 
-  void EditResult(FramesModel data) async {
+  void EditResult(FiltersModel data) async {
     try {
       var formData = {
         "id": data.id,
         "name": "${data.name}",
-        "type": "${data.type}",
-        "filter": "${data.filter}",
       };
       await myProvider
-          .updateData(Frames, data, json.encode(formData))
+          .updateData(context, Filters, data, json.encode(formData))
           .then((value) {
-        print("ss: ${value.toString()}");
-        myProvider.updateList(value, myProvider.getFramesList);
+        myProvider.getAll(context, myProvider.getFiltersList, Filters);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
         );
@@ -239,13 +214,13 @@ class _FramesWidgetState extends State<FramesWidget> {
     }
   }
 
-  void DeleteResult(FramesModel data) async {
+  void DeleteResult(FiltersModel data) async {
     CustomAlertDialog.alertstateSetter!(
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(Frames, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getFramesList);
+      await myProvider.deleteData(context, Filters, data.id).then((value) {
+        myProvider.getAll(context, myProvider.getFiltersList, Filters);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -265,25 +240,18 @@ class _FramesWidgetState extends State<FramesWidget> {
         context: c,
         builder: (context) {
           NameController.text = "";
-          FrameFilterController.text = "";
-          FrameTypeController.text = "";
           return CustomDialog(
-              path: Frames,
               formKey: _formKey,
               scaffoldKey: key,
               c: context,
               f: addResult,
               btnTitle: "Add",
               progressController: progressController,
-              data: FramesModel(
+              data: FiltersModel(
                 id: 0,
                 name: "",
-                type: "",
-                filter: "",
               ),
               customWidget: FrameCustomDialog(
-                FrameFilterController: FrameFilterController,
-                FrameTypeController: FrameTypeController,
                 NameController: NameController,
               ));
         });

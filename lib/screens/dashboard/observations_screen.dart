@@ -1,35 +1,33 @@
 import 'dart:convert';
+import 'package:admin/screens/dashboard/components/custom_text_field.dart';
+import 'package:admin/screens/dashboard/dashboard_screen.dart';
+import 'package:admin/screens/login/components/input_box.dart';
+import 'package:admin/screens/main/components/view_detail_dialog.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 import 'package:admin/common/custom_snackbar.dart';
 import 'package:admin/common/pref.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/controllers/DataController.dart';
-import 'package:admin/controllers/ListDataController.dart';
 import 'package:admin/controllers/progressController.dart';
-import 'package:admin/data/models/data.dart';
-import 'package:admin/data/models/frames.dart';
 import 'package:admin/data/models/general_model.dart';
-import 'package:admin/data/models/object.dart';
 import 'package:admin/data/models/observation.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/cards_widget.dart';
-import 'package:admin/screens/dashboard/components/detector_drop_down.dart';
-import 'package:admin/screens/dashboard/components/frame_drop_down.dart';
 import 'package:admin/screens/dashboard/components/recent_files.dart';
-import 'package:admin/screens/dashboard/components/storage_details.dart';
-import 'package:admin/screens/dashboard/components/storage_info_card.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
 import 'package:admin/screens/main/components/custom_alert_dialog.dart';
 import 'package:admin/screens/main/components/custom_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+// import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart';
 
 class ObservationsScreen extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -63,6 +61,8 @@ class ObservationsWidget extends StatefulWidget {
   ValueNotifier<GeneralModel?> objectValue = ValueNotifier(null);
   ValueNotifier<GeneralModel?> frameValue = ValueNotifier(null);
 
+  ValueNotifier<bool> importFileProgress = ValueNotifier(false);
+
   @override
   State<ObservationsWidget> createState() => _ObservationsWidgetState();
 }
@@ -76,7 +76,10 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
   var progressController = ProgressController();
   ValueNotifier<int> status = ValueNotifier(0);
   List<FilePickerCross> myFiles = [];
+  List<FilePickerCross> importFiles = [];
   ValueNotifier<String> fileName = ValueNotifier('');
+  TextEditingController NameController = TextEditingController();
+  TextEditingController TypeController = TextEditingController();
 
   @override
   void initState() {
@@ -87,6 +90,8 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
   @override
   Widget build(BuildContext context) {
     DataController.ProgressNotifier = ValueNotifier(true);
+    myProvider.getAll(
+        context, myProvider.getObservationsList, ObservationsPath);
     return Column(
       children: [
         SizedBox(height: defaultPadding),
@@ -103,37 +108,72 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
                         Observations,
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      ElevatedButton.icon(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: defaultPadding * 1.5,
-                            vertical: defaultPadding /
-                                (Responsive.isMobile(context) ? 2 : 1),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: defaultPadding * 1.5,
+                                  vertical: defaultPadding /
+                                      (Responsive.isMobile(context) ? 2 : 1),
+                                ),
+                              ),
+                              onPressed: _onImportBtnTapped,
+                              child: ValueListenableBuilder(
+                                valueListenable: widget.importFileProgress,
+                                builder: (context, value, child) {
+                                  return widget.importFileProgress.value
+                                      ? SizedBox(
+                                          height: 30,
+                                          width: 30,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ))
+                                      : Text("Import file");
+                                },
+                              )),
+                          SizedBox(
+                            width: 20,
                           ),
-                        ),
-                        onPressed: () {
-                          onPressedButton(context, widget.scaffoldKey);
-                        },
-                        icon: Icon(Icons.add),
-                        label: Text("Add New"),
-                      ),
+                          ElevatedButton.icon(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: defaultPadding * 1.5,
+                                vertical: defaultPadding /
+                                    (Responsive.isMobile(context) ? 2 : 1),
+                              ),
+                            ),
+                            onPressed: () {
+                              onPressedButton(context, widget.scaffoldKey);
+                            },
+                            icon: Icon(Icons.add),
+                            label: Text("Add New"),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                   SizedBox(height: height),
-                  RecentFiles(
-                    title: "Recent Observations",
-                    scaffoldKey: widget.scaffoldKey,
-                    progressController: progressController,
-                    list: myProvider.getObservationsList,
-                    dataRowList: ObservationDataRow(
-                        myProvider.getObservationsList.length,
-                        myProvider.getObservationsList,
-                        context,
-                        onPressedDeleteButton,
-                        onPressedEditButton,
-                        false),
-                    dataColumnList: ObservationDataTable(),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: myProvider.getObservationsList,
+                      builder: (context, value, child) {
+                        return RecentFiles(
+                          title: "Recent Observations",
+                          scaffoldKey: widget.scaffoldKey,
+                          progressController: progressController,
+                          list: myProvider.getObservationsList.value,
+                          dataRowList: ObservationDataRow(
+                              myProvider.getObservationsList.value.length,
+                              myProvider.getObservationsList.value,
+                              context,
+                              onPressedDeleteButton,
+                              onPressedEditButton,
+                               (fileinfo) {
+                            onPressedViewButton(context, fileinfo);
+                          }, false),
+                          dataColumnList: ObservationDataTable(),
+                        );
+                      })
                 ],
               ),
             ),
@@ -149,65 +189,116 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
         builder: (context) {
           final listDataController =
               Provider.of<DataController>(c, listen: false);
+
+          widget.frameValue.value = null;
+          widget.telescopeValue.value = null;
+          widget.detectorValue.value = null;
+          widget.objectValue.value = null;
+          NameController.text = '';
+          TypeController.text = '';
+
           return ListenableProvider<DataController>.value(
               value: listDataController,
               child: CustomDialog(
-                  path: Observations,
-                  formKey: _formKey,
-                  scaffoldKey: key,
-                  c: context,
-                  f: addResult,
-                  btnTitle: "Add",
-                  progressController: progressController,
-                  data: ObservationsModel(
-                    id: 0,
-                    dateTime: '',
-                    status: '',
-                    detectorName: '',
-                    frameName: '',
-                    sObject: null,
-                    telescopeName: '',
-                    userName: '',
-                  ),
-                  customWidget: Column(
-                    children: [
-                      CardsWidget(
-                        telescopeValue: widget.telescopeValue,
-                        detectorValue: widget.detectorValue,
-                        frameValue: widget.frameValue,
-                        objectValue: widget.objectValue,
-                      ),
-                      SizedBox(
-                        height: defaultPadding,
-                      ),
-                      ElevatedButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: defaultPadding * 1.5,
-                            vertical: defaultPadding /
-                                (Responsive.isMobile(context) ? 2 : 1),
-                          ),
+                formKey: _formKey,
+                scaffoldKey: key,
+                c: context,
+                f: addResult,
+                btnTitle: "Add Observation",
+                progressController: progressController,
+                data: ObservationsModel(
+                  id: '',
+                  dateTime: '',
+                  status: '',
+                  detectorName: '',
+                  filterName: '',
+                  sObject: null,
+                  telescopeName: '',
+                  userName: '',
+                  name: '',
+                  type: '',
+                ),
+                customWidget: Column(
+                  children: [
+                    ObservationAddView(),
+                    ElevatedButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: defaultPadding * 1.5,
+                          vertical: defaultPadding /
+                              (Responsive.isMobile(context) ? 2 : 1),
                         ),
-                        onPressed: () async {
-                          myFiles =
-                              await FilePickerCross.importMultipleFromStorage(
-                                  type: FileTypeCross
-                                      .any, // Available: `any`, `audio`, `image`, `video`, `custom`. Note: not available using FDE
-                                  fileExtension:
-                                      'txt, md' // Only if FileTypeCross.custom . May be any file extension like `dot`, `ppt,pptx,odp`
-                                  );
-                              for (var element in myFiles) {
-                                fileName.value = "${fileName.value}  ${element.fileName}";
-                              }
-                        },
-                        child: Text("Select file"),
                       ),
-                   ValueListenableBuilder(valueListenable: fileName, builder: (context, value, child) {
-                     return Text(fileName.value, overflow: TextOverflow.ellipsis,);
-                   })
-                    ],
-                  )));
+                      onPressed: () async {
+                        myFiles =
+                            await FilePickerCross.importMultipleFromStorage(
+                                type: FileTypeCross
+                                    .any, // Available: `any`, `audio`, `image`, `video`, `custom`. Note: not available using FDE
+                                fileExtension:
+                                    'txt, md' // Only if FileTypeCross.custom . May be any file extension like `dot`, `ppt,pptx,odp`
+                                );
+                        for (var element in myFiles) {
+                          fileName.value =
+                              "${fileName.value} \n ${element.fileName}";
+                        }
+                      },
+                      child: Text("Select file"),
+                    ),
+                    ValueListenableBuilder(
+                        valueListenable: fileName,
+                        builder: (context, value, child) {
+                          return fileName.value.length > 0
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      fileName.value,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    SizedBox(
+                                      height: defaultPadding,
+                                    ),
+                                  ],
+                                )
+                              : Container();
+                        }),
+                  ],
+                ),
+              ));
         });
+  }
+
+  Column ObservationAddView() {
+    return Column(
+      children: [
+        CardsWidget(
+          telescopeValue: widget.telescopeValue,
+          detectorValue: widget.detectorValue,
+          frameValue: widget.frameValue,
+          objectValue: widget.objectValue,
+        ),
+        SizedBox(
+          height: defaultPadding,
+        ),
+        CustomTextField(
+          controller: NameController,
+          hint: "Name",
+          iconData: Icons.calendar_today,
+          iconColor: Color(0xffffa113),
+        ),
+        SizedBox(
+          height: defaultPadding,
+        ),
+        CustomTextField(
+          controller: TypeController,
+          hint: "Type",
+          iconData: Icons.calendar_today,
+          iconColor: Color(0xffffa113),
+        ),
+        SizedBox(
+          height: defaultPadding,
+        ),
+      ],
+    );
   }
 
   onPressedEditButton(BuildContext c, var data) {
@@ -216,10 +307,43 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
         builder: (context) {
           final listDataController =
               Provider.of<DataController>(c, listen: false);
+          NameController.text = data.name;
+          TypeController.text = data.type;
+
+          widget.telescopeValue.value =
+              myProvider.getTelescopeDropDownList.firstWhere(
+            (element) {
+              return element.value == data.telescopeName;
+            },
+          );
+
+          widget.detectorValue.value =
+              myProvider.getDetectorDropDownList.firstWhere(
+            (element) {
+              return element.value == data.detectorName;
+            },
+          );
+
+          widget.objectValue.value =
+              myProvider.getSObjectDropDownList.firstWhere(
+            (element) {
+              return element.value == data.sObject.name;
+            },
+          );
+
+          widget.frameValue.value = myProvider.getFrameDropDownList.firstWhere(
+            (element) {
+              return element.value == data.filterName;
+            },
+          );
+
+          data.status.toString().contains('True')
+              ? status.value = 1
+              : status.value = 0;
+
           return ListenableProvider<DataController>.value(
             value: listDataController,
             child: CustomDialog(
-                path: Observations,
                 formKey: _formKey,
                 scaffoldKey: widget.scaffoldKey,
                 c: context,
@@ -229,17 +353,12 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
                 data: data,
                 customWidget: Column(
                   children: [
-                    CardsWidget(
-                      telescopeValue: widget.telescopeValue,
-                      detectorValue: widget.detectorValue,
-                      frameValue: widget.frameValue,
-                      objectValue: widget.objectValue,
-                    ),
-                    SizedBox(
-                      height: defaultPadding * 2,
-                    ),
+                    ObservationAddView(),
                     Row(
                       children: [
+                        SizedBox(
+                          width: defaultPadding,
+                        ),
                         Text('Status'),
                         SizedBox(
                           width: defaultPadding * 2,
@@ -263,6 +382,43 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
                             })
                       ],
                     ),
+                    SizedBox(
+                      height: defaultPadding,
+                    ),
+                    // CardsWidget(
+                    //   telescopeValue: widget.telescopeValue,
+                    //   detectorValue: widget.detectorValue,
+                    //   frameValue: widget.frameValue,
+                    //   objectValue: widget.objectValue,
+                    // ),
+                    // SizedBox(
+                    //   height: defaultPadding * 2,
+                    // ),
+                    // Row(
+                    //   children: [
+                    //     Text('Status'),
+                    //     SizedBox(
+                    //       width: defaultPadding * 2,
+                    //     ),
+                    //     ValueListenableBuilder(
+                    //         valueListenable: status,
+                    //         builder: (context, value, child) {
+                    //           return Checkbox(
+                    //             checkColor: Colors.white,
+                    //             activeColor: kCustomElevatedButtonColor,
+                    //             value: status.value == 1 ? true : false,
+                    //             shape: RoundedRectangleBorder(
+                    //                 borderRadius: BorderRadius.circular(2.w)),
+                    //             onChanged: (bool? res) {
+                    //               if (res!) {
+                    //                 status.value = 1;
+                    //               } else
+                    //                 status.value = 0;
+                    //             },
+                    //           );
+                    //         })
+                    //   ],
+                    // ),
                   ],
                 )),
           );
@@ -274,7 +430,6 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
         context: context,
         builder: (_) {
           return CustomAlertDialog(
-              path: Observations,
               c: context,
               deleteFunction: DeleteResult,
               progressController: progressController,
@@ -291,23 +446,22 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
 
       var userId = PreferenceUtils.getString('id');
       var formData = {
-        "id": "0",
         "dateTime": "${formattedDate}",
-        "frameId": widget.frameValue.value!.key,
+        "filterId": widget.frameValue.value!.key,
         "sObjectId": widget.objectValue.value!.key,
         "telescopeId": widget.telescopeValue.value!.key,
         "detectorId": widget.detectorValue.value!.key,
-        "userId": userId
+        "userId": userId,
+        "status": status.value == 1 ? true : false,
+        "name": NameController.text,
+        "type": TypeController.text,
       };
       await myProvider
-          .addNew(ObservationsPath, jsonEncode(formData))
+          .addNew(context, ObservationsPath, jsonEncode(formData))
           .then((value) async {
-        print("valueeee: $value");
-          sendFile(value['id'].toString());
-        myProvider.getObservationsList.clear();
-        await myProvider.getAll(
+        sendFile(value['id'].toString());
+        myProvider.getAll(
             context, myProvider.getObservationsList, ObservationsPath);
-        setState(() {});
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomDialog.stateSetter!(
@@ -325,33 +479,38 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
 
   void EditResult(ObservationsModel data) async {
     progressController.setValue(false);
-    // try {
-    //   var formData = {
-    //     "id": data.id,
-    //     "dateTime": data.dateTime,
-    //     "frameId": widget.frameValue.value!.key,
-    //     "sObjectId": widget.objectValue.value!.key,
-    //     "telescopeId": widget.telescopeValue.value!.key,
-    //     "detectorId": widget.detectorValue.value!.key,
-    //     "userId": userId
-    //   };
-    //   await myProvider
-    //       .updateData(ObservationsPath, data, json.encode(formData))
-    //       .then((value) {
-    //     print("ss: ${value.toString()}");
-    //     myProvider.updateList(value, myProvider.getObservationsList);
-    //     CustomDialog.stateSetter!(
-    //       () => progressController.setValue(false),
-    //     );
-    //     Navigator.of(context, rootNavigator: true).pop();
-    //   });
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //       CustomSnackbar.customErrorSnackbar(e.toString(), context));
-    //   CustomDialog.stateSetter!(
-    //     () => progressController.setValue(false),
-    //   );
-    // }
+    try {
+      var userId = PreferenceUtils.getString('id');
+      var formData = {
+        "id": data.id,
+        "dateTime": data.dateTime,
+        "filterId": widget.frameValue.value!.key,
+        "sObjectId": widget.objectValue.value!.key,
+        "telescopeId": widget.telescopeValue.value!.key,
+        "detectorId": widget.detectorValue.value!.key,
+        "userId": userId,
+        "name": NameController.text,
+        "type": TypeController.text,
+        "status": status.value == 1 ? true : false,
+      };
+      await myProvider
+          .updateData(context, ObservationsPath, data, json.encode(formData))
+          .then((value) {
+        print("ss: ${value.toString()}");
+        myProvider.getAll(
+            context, myProvider.getObservationsList, ObservationsPath);
+        CustomDialog.stateSetter!(
+          () => progressController.setValue(false),
+        );
+        Navigator.of(context, rootNavigator: true).pop();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          CustomSnackbar.customErrorSnackbar(e.toString(), context));
+      CustomDialog.stateSetter!(
+        () => progressController.setValue(false),
+      );
+    }
   }
 
   void DeleteResult(ObservationsModel data) async {
@@ -359,8 +518,12 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(ObservationsPath, data.id).then((value) {
-        myProvider.deleteList(data, myProvider.getObservationsList);
+      print("delete ${data.id}");
+      await myProvider
+          .deleteDataV2(context, ObservationsPath, data.id)
+          .then((value) {
+        myProvider.getAll(
+            context, myProvider.getObservationsList, ObservationsPath);
       });
       Navigator.of(context, rootNavigator: true).pop();
       CustomAlertDialog.alertstateSetter!(
@@ -380,15 +543,69 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
       var formData = [];
       for (var file in myFiles) {
         formData.add(http.MultipartFile.fromBytes('files', file.toUint8List(),
-      contentType: new MediaType('application', 'octet-stream'),
-      filename: file.fileName));
+            contentType: new MediaType('application', 'octet-stream'),
+            filename: file.fileName));
       }
       print(formData.toString());
-      await myProvider.uploadData(formData, id).then((value) async {
+      await myProvider.uploadData(context, formData, id).then((value) async {
         print("valueeee: $value");
       });
     }
+  }
 
+  importFile() async {
+    if (importFiles.length > 0) {
+      widget.importFileProgress.value = true;
+      for (var file in importFiles) {
+        final formData = FormData.fromMap({
+          'files': MultipartFile.fromBytes(
+            file.toUint8List(),
+            contentType: new MediaType('application', 'octet-stream'),
+            filename: file.fileName,
+          )
+        });
+
+        await myProvider.ImportFiles(context, formData).then((value) async {
+          print("valueeee: $value");
+          if (value != null) {
+            widget.importFileProgress.value = false;
+            myProvider.getAll(
+                context, myProvider.getObservationsList, ObservationsPath);
+          }
+        });
+      }
+    }
+  }
+
+  void _onImportBtnTapped() async {
+    await FilePickerCross.importMultipleFromStorage(
+            type: FileTypeCross
+                .any, // Available: `any`, `audio`, `image`, `video`, `custom`. Note: not available using FDE
+            fileExtension:
+                'txt, md' // Only if FileTypeCross.custom . May be any file extension like `dot`, `ppt,pptx,odp`
+            )
+        .then((value) {
+      importFiles = value;
+      importFile();
+    });
+  }
+
+  onPressedViewButton(BuildContext c, var data) async {
+              final listDataController =
+              Provider.of<DataController>(c, listen: false);
+    await showDialog(
+        context: context,
+        builder: (_) {
+          return ListenableProvider<DataController>.value(
+              value: listDataController,
+              child: ViewDetailDialog(
+            c: c,
+            formKey: _formKey,
+            scaffoldKey: widget.scaffoldKey,
+            observation: data,
+            ObservationId: data.id,
+          ));
+        });
   }
 
 }

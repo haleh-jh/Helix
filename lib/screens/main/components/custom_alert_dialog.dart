@@ -20,7 +20,7 @@ class CustomAlertDialog<T> extends StatelessWidget {
     this.deleteFunction,
     required this.title,
     required this.data,
-    this.progressController, required this.path,
+    this.progressController,
     
   }) : super(key: key);
 
@@ -29,7 +29,6 @@ class CustomAlertDialog<T> extends StatelessWidget {
   var progressController;
   final DeleteCallbackF<T>? deleteFunction;
   var data;
-  final String path;
 
   static StateSetter? alertstateSetter;
 
