@@ -51,7 +51,7 @@ class SideMenu extends StatelessWidget {
                   },
                 ),
                 DrawerListTile(
-                  title: "Optics",
+                  title: "Telescopes",
                   svgSrc: "assets/icons/menu_tran.svg",
                   press: () {
                     onTap(telescopsIndex);
@@ -104,13 +104,13 @@ class SideMenu extends StatelessWidget {
                     onTap(profileIndex);
                   },
                 ),
-                DrawerListTile(
-                  title: "Settings",
-                  svgSrc: "assets/icons/menu_setting.svg",
-                  press: () {
-                    onTap(settingsIndex);
-                  },
-                ),
+                // DrawerListTile(
+                //   title: "Settings",
+                //   svgSrc: "assets/icons/menu_setting.svg",
+                //   press: () {
+                //     onTap(settingsIndex);
+                //   },
+                // ),
               ],
             ),
           );

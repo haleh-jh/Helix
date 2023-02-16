@@ -32,6 +32,7 @@ class RecentFiles<T> extends StatefulWidget {
   // final Function(Data data)? deleteFunction;
   var progressController;
   bool isObject;
+  final double tableHeight;
 
   RecentFiles({
     Key? key,
@@ -41,7 +42,8 @@ class RecentFiles<T> extends StatefulWidget {
     this.progressController,
     this.isObject = false,
     required this.dataColumnList,
-     required this.dataRowList,
+    required this.dataRowList,
+    required this.tableHeight,
   }) : super(key: key);
 
   @override
@@ -93,23 +95,15 @@ class _RecentFilesState extends State<RecentFiles> {
                   )
                 : SizedBox(
                     width: double.infinity,
+                    height: widget.tableHeight,
                     child: DataTable2(
-                      columnSpacing: defaultPadding,
-                      minWidth: 600,
-                      columns: widget.dataColumnList,
-                      rows: widget.dataRowList
-                    ),
-                  );
+                        columnSpacing: defaultPadding,
+                        minWidth: 600,
+                        columns: widget.dataColumnList,
+                        rows: widget.dataRowList));
           })),
         ],
       ),
     );
   }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
 }

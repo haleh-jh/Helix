@@ -47,6 +47,9 @@ class DataController with ChangeNotifier {
   ValueNotifier<List<ObservationsModel>> getObservationsList =
       ValueNotifier([]);
 
+  ValueNotifier<List<ObservationsModel>> getUserObservationsList =
+      ValueNotifier([]);
+
   ValueNotifier<List<User>> getUsersList = ValueNotifier([]);
 
   static late ValueNotifier<bool> ProgressNotifier;
@@ -258,11 +261,12 @@ class DataController with ChangeNotifier {
     try {
       return await serviceRepository.ImportFile(formData);
     } catch (e) {
+      print("upload error: ${e.toString()}");
       AppException.handleError(e);
     }
   }
 
-    Future<dynamic> getDownloadFile(String id) async {
+  Future<dynamic> getDownloadFile(String id) async {
     try {
       return await serviceRepository.getDownloadFile(id);
     } catch (e) {

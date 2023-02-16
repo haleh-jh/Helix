@@ -65,7 +65,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
         "name": "${NameController.text}",
         "type": "${TypeController.text}",
       });
-      await myProvider.addNew(context ,detector, formData).then((value) {
+      await myProvider.addNew(context, detector, formData).then((value) {
         myProvider.getAll(context, myProvider.getDetectorsList, detector);
       });
       Navigator.of(context, rootNavigator: true).pop();
@@ -130,6 +130,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
                       builder: (context, value, child) {
                         return RecentFiles(
                           title: "Recent Detectors",
+                          tableHeight:
+                              MediaQuery.of(context).size.height * 0.75,
                           scaffoldKey: widget.scaffoldKey,
                           progressController: progressController,
                           list: myProvider.getDetectorsList.value,
@@ -197,7 +199,9 @@ class _DetectorWidgetState extends State<DetectorWidget> {
     try {
       var formData =
           json.encode({"id": data.id, "name": data.name, "type": data.type});
-      await myProvider.updateData(context, detector, data, formData).then((value) {
+      await myProvider
+          .updateData(context, detector, data, formData)
+          .then((value) {
         myProvider.getAll(context, myProvider.getDetectorsList, detector);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),

@@ -200,8 +200,7 @@ class _BodyState extends State<Body> {
         UserType.value = "${user.type}";
         PreferenceUtils.saveUserData(user);
       });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   void loadPages() {

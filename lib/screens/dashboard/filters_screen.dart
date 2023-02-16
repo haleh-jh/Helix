@@ -65,7 +65,9 @@ class _FiltersWidgetState extends State<FiltersWidget> {
         "id": "0",
         "name": "${NameController.text}",
       };
-      await myProvider.addNew(context, Filters, json.encode(formData)).then((value) {
+      await myProvider
+          .addNew(context, Filters, json.encode(formData))
+          .then((value) {
         myProvider.getAll(context, myProvider.getFiltersList, Filters);
       });
       Navigator.of(context, rootNavigator: true).pop();
@@ -131,6 +133,8 @@ class _FiltersWidgetState extends State<FiltersWidget> {
                       builder: (context, value, child) {
                         return RecentFiles(
                           title: "Recent Filters",
+                          tableHeight:
+                              MediaQuery.of(context).size.height * 0.75,
                           scaffoldKey: widget.scaffoldKey,
                           progressController: progressController,
                           list: myProvider.getFiltersList.value,

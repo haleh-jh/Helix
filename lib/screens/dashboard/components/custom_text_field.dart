@@ -21,17 +21,21 @@ class CustomTextField extends StatelessWidget {
   final Color iconColor;
   final TextEditingController controller;
 
-
   const CustomTextField({
-    Key? key, required this.controller, required this.hint, this.svgSrc : '', this.iconData, this.iconColor : Colors.white,
+    Key? key,
+    required this.controller,
+    required this.hint,
+    this.svgSrc: '',
+    this.iconData,
+    this.iconColor: Colors.white,
   }) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
       // margin: EdgeInsets.only(top: defaultPadding),
-      padding: EdgeInsets.only(left: defaultPadding, right: defaultPadding, bottom: defaultPadding),
+      padding: EdgeInsets.only(
+          left: defaultPadding, right: defaultPadding, bottom: defaultPadding),
       decoration: BoxDecoration(
         border: Border.all(width: 2, color: primaryColor.withOpacity(0.15)),
         borderRadius: const BorderRadius.all(
@@ -39,29 +43,35 @@ class CustomTextField extends StatelessWidget {
         ),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             height: 20,
             width: 20,
-            child: svgSrc.length>0? SvgPicture.asset(svgSrc) : Icon(iconData, color: iconColor,),
+            child: svgSrc.length > 0
+                ? SvgPicture.asset(svgSrc)
+                : Icon(
+                    iconData,
+                    color: iconColor,
+                  ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-              child: InputBox(controller: controller, label: hint, textInputType: TextInputType.text, style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w400,
-              overflow: TextOverflow.ellipsis),
-              
-              
-              )
-          )
-          ),
+              child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: InputBox(
+                    controller: controller,
+                    label: hint,
+                    textInputType: TextInputType.text,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        overflow: TextOverflow.ellipsis),
+                  ))),
         ],
       ),
     );
   }
-
 }
 
 enum typeObject { Telescope, Detector, Object, Frame }

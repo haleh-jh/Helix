@@ -135,6 +135,8 @@ class _TelescopWidgetState extends State<TelescopWidget> {
                       builder: (context, value, child) {
                         return RecentFiles(
                           title: "Recent $telescope",
+                          tableHeight:
+                              MediaQuery.of(context).size.height * 0.75,
                           scaffoldKey: widget.scaffoldKey,
                           progressController: progressController,
                           list: myProvider.getTelescopeList.value,
@@ -204,7 +206,9 @@ class _TelescopWidgetState extends State<TelescopWidget> {
         "name": NameController.text,
         "type": TypeController.text
       });
-      await myProvider.updateData(context, telescopePath, data, formData).then((value) {
+      await myProvider
+          .updateData(context, telescopePath, data, formData)
+          .then((value) {
         myProvider.getAll(context, myProvider.getTelescopeList, telescopePath);
         CustomDialog.stateSetter!(
           () => progressController.setValue(false),
@@ -225,7 +229,9 @@ class _TelescopWidgetState extends State<TelescopWidget> {
       () => progressController.setValue(true),
     );
     try {
-      await myProvider.deleteData(context, telescopePath, data.id).then((value) {
+      await myProvider
+          .deleteData(context, telescopePath, data.id)
+          .then((value) {
         myProvider.getAll(context, myProvider.getTelescopeList, telescopePath);
       });
       Navigator.of(context, rootNavigator: true).pop();

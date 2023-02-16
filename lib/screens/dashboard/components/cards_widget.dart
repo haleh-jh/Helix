@@ -27,9 +27,9 @@ class CardsWidget extends StatelessWidget {
         children: [
           StorageInfoCard(
             svgSrc: "assets/icons/Documents.svg",
-            title: "Optic",
+            title: "Telescopes",
             onTap: () async {
-           //   context.watch<DataController>().getTelescopeDropDownList;
+              //   context.watch<DataController>().getTelescopeDropDownList;
             },
             telescopeValue: telescopeValue,
             detectorValue: detectorValue,
@@ -40,7 +40,7 @@ class CardsWidget extends StatelessWidget {
             svgSrc: "assets/icons/media.svg",
             title: "Detector",
             onTap: () async {
-            //  context.watch<DataController>().getTelescopeDropDownList;
+              //  context.watch<DataController>().getTelescopeDropDownList;
             },
             telescopeValue: telescopeValue,
             detectorValue: detectorValue,
@@ -51,7 +51,7 @@ class CardsWidget extends StatelessWidget {
             svgSrc: "assets/icons/folder.svg",
             title: "Object",
             onTap: () async {
-           //   context.watch<DataController>().getTelescopeDropDownList;
+              //   context.watch<DataController>().getTelescopeDropDownList;
             },
             telescopeValue: telescopeValue,
             detectorValue: detectorValue,
@@ -62,7 +62,7 @@ class CardsWidget extends StatelessWidget {
             svgSrc: "assets/icons/unknown.svg",
             title: "Filter",
             onTap: () async {
-          //                  context.watch<DataController>().getTelescopeDropDownList;
+              //                  context.watch<DataController>().getTelescopeDropDownList;
             },
             telescopeValue: telescopeValue,
             detectorValue: detectorValue,

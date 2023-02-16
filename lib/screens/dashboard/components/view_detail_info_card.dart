@@ -33,10 +33,13 @@ class ViewDetailInfoCard extends StatelessWidget {
       case 3:
         name = observation.filterName;
         break;
+      case 4:
+        name = observation.type;
+        break;
       default:
     }
     return Container(
-      padding: EdgeInsets.all(defaultPadding),
+      padding: EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 4),
       decoration: BoxDecoration(
         color: secondaryColor,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -46,39 +49,43 @@ class ViewDetailInfoCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.all(defaultPadding * 0.75),
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: info.color!.withOpacity(0.1),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(defaultPadding * 0.75),
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: info.color!.withOpacity(0.1),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: SvgPicture.asset(
+                    info.svgSrc!,
+                    color: info.color,
+                  ),
                 ),
-                child: SvgPicture.asset(
-                  info.svgSrc!,
-                  color: info.color,
+                Text(
+                  info.title!,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 14),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              Text(
-                info.title!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Container(
-                width: 40,
-              )
-            ],
+                Container(
+                  width: 40,
+                )
+              ],
+            ),
           ),
           Text(
             name,
             maxLines: 1,
+            style: TextStyle(fontSize: 18),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),
-       ],
+        ],
       ),
     );
   }

@@ -6,7 +6,9 @@ import 'package:admin/data/models/general_model.dart';
 import 'package:admin/data/models/observation.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/my_fields.dart';
+import 'package:admin/screens/dashboard/components/search_screen_horizontal.dart';
 import 'package:admin/screens/dashboard/components/table_label.dart';
+import 'package:admin/screens/main/components/view_detail_dialog.dart';
 import 'package:admin/screens/main/main_screen.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +16,6 @@ import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 import 'components/header.dart';
-
-import 'components/storage_details.dart';
 
 final ValueNotifier<GeneralModel?> telescopeValue = ValueNotifier(null);
 final ValueNotifier<GeneralModel?> detectorValue = ValueNotifier(null);
@@ -69,21 +69,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    flex: 5,
                     child: Column(
                       children: [
-                        MyFiles(
-
-                            // telescopesCount:
-                            //     myProvider.getTelescopeDropDownList.length,
-                            // detectorsCount:
-                            //     myProvider.getDetectorDropDownList.length,
-                            // objectsCount:
-                            //     myProvider.getSObjectDropDownList.length,
-                            // framesCount:
-                            //     myProvider.getFrameDropDownList.length
-                            ),
-                        SizedBox(height: height),
+                        SearchScreenHorizontal(
+                          onSearch: onSearch,
+                          detectorValue: detectorValue,
+                          frameValue: frameValue,
+                          objectValue: objectValue,
+                          telescopeValue: telescopeValue,
+                        ),
+                        SizedBox(height: defaultPadding),
                         ValueListenableBuilder(
                           valueListenable: searchList,
                           builder: (context, value, child) {
@@ -119,33 +114,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     : Container();
                           },
                         ),
-                        if (Responsive.isMobile(context))
-                          SizedBox(height: defaultPadding),
-                        if (Responsive.isMobile(context))
-                          StarageDetails(
-                            onSearch: onSearch,
-                            detectorValue: detectorValue,
-                            frameValue: frameValue,
-                            objectValue: objectValue,
-                            telescopeValue: telescopeValue,
-                          ),
                       ],
                     ),
                   ),
                   if (!Responsive.isMobile(context))
                     SizedBox(width: defaultPadding),
-                  // On Mobile means if the screen is less than 850 we dont want to show it
-                  if (!Responsive.isMobile(context))
-                    Expanded(
-                      flex: 2,
-                      child: StarageDetails(
-                        onSearch: onSearch,
-                        detectorValue: detectorValue,
-                        frameValue: frameValue,
-                        objectValue: objectValue,
-                        telescopeValue: telescopeValue,
-                      ),
-                    ),
                 ],
               )
             ],
@@ -211,24 +184,34 @@ class SearchPart extends StatelessWidget {
             ),
           ],
         ),
-        SingleChildScrollView(
-          child: SizedBox(
-            width: double.infinity,
-            child: DataTable2(
-                columnSpacing: defaultPadding,
-                minWidth: 400,
-                columns: SearchObservationDataTable(),
-                rows: ObservationDataRow(
-                    searchList.value.length,
-                    searchList.value,
-                    context,
-                    () {},
-                    () {},
-                    (fileinfo) {},
-                    true)),
-          ),
+        SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: DataTable2(
+              columnSpacing: defaultPadding,
+              minWidth: 400,
+              columns: SearchObservationDataTable(),
+              rows: ObservationDataRow(searchList.value.length,
+                  searchList.value, context, () {}, () {}, (fileinfo) {
+                onPressedViewButton(context, fileinfo);
+              }, true)),
         ),
       ],
     );
+  }
+
+  onPressedViewButton(BuildContext c, var data) async {
+    final listDataController = Provider.of<DataController>(c, listen: false);
+    await showDialog(
+        context: c,
+        builder: (_) {
+          return ListenableProvider<DataController>.value(
+              value: listDataController,
+              child: ViewDetailDialog(
+                c: c,
+                observation: data,
+                ObservationId: data.id,
+              ));
+        });
   }
 }

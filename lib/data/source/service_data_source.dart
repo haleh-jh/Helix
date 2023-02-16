@@ -44,7 +44,7 @@ class ServiceRemoteDataSource
             return statusCode < 600;
           },
         ));
-
+    print("addvalue1: ${response}");
     if (response.statusCode == 200 ||
         response.statusCode == 201 ||
         response.statusCode == 204) {
@@ -93,6 +93,8 @@ class ServiceRemoteDataSource
             return statusCode < 600;
           },
         ));
+
+    print("statusCode:  ${statusCode}");
     if (response.statusCode == 200 ||
         response.statusCode == 201 ||
         response.statusCode == 204) {
@@ -138,7 +140,7 @@ class ServiceRemoteDataSource
             return statusCode < 600;
           },
         ));
-
+    print("obres: $response");
     if (response.statusCode == 200 ||
         response.statusCode == 201 ||
         response.statusCode == 204) {
@@ -213,6 +215,7 @@ class ServiceRemoteDataSource
                 return statusCode < 500;
               },
             ));
+    print("search: ${response}");
     if (statusCode == 200 || statusCode == 201 || statusCode == 204) {
       final list = <ObservationsModel>[];
       if (response.data != null) {
@@ -255,35 +258,44 @@ class ServiceRemoteDataSource
 
     int statusCode = 0;
 
-    Response response = await httpClient.post(
-        'api/ObservationSubmissions/FileUploadAndAutoInsert',
-        data: data,
-        options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            statusCode = status!;
-            return statusCode < 500;
-          },
-        ));
+    Response response = await httpClient
+        .post('api/ObservationSubmissions/FileUploadAndAutoInsert',
+            data: data,
+            options: Options(
+              followRedirects: false,
+              validateStatus: (status) {
+                statusCode = status!;
+                return statusCode < 500;
+              },
+            ))
+        // .timeout(Duration(seconds: 180))
+        .then((value) {
+      print("upload res: ${statusCode}");
+      print("upload res: ${value.data}");
+      return value;
+    });
+
     if (statusCode == 200 || statusCode == 201 || statusCode == 204) {
       return response;
     } else
       return validateResponse(response);
   }
-  
+
   @override
-  Future<List<String>> getDownloadFile(String id) async{
+  Future<List<String>> getDownloadFile(String id) async {
     httpClient.options.headers['content-Type'] = 'application/json';
     httpClient.options.headers['Authorization'] = 'Bearer $token';
     int statusCode = 0;
-    final response = await httpClient.get("api/ObservationSubmissions/GetFiles?Id=$id",
-        options: Options(
-          followRedirects: false,           
-          validateStatus: (status) {
-            statusCode = status!;
-            return statusCode < 600;
-          },
-        ));
+    final response =
+        await httpClient.get("api/ObservationSubmissions/GetFiles?Id=$id",
+            options: Options(
+              followRedirects: false,
+              validateStatus: (status) {
+                statusCode = status!;
+                return statusCode < 600;
+              },
+            ));
+    print("gg: ${response}");
     if (statusCode == 200 || statusCode == 201 || statusCode == 204) {
       var data = <String>[];
       (response.data as List).forEach((element) {

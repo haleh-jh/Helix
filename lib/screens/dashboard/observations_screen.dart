@@ -159,6 +159,8 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
                       builder: (context, value, child) {
                         return RecentFiles(
                           title: "Recent Observations",
+                          tableHeight:
+                              MediaQuery.of(context).size.height * 0.75,
                           scaffoldKey: widget.scaffoldKey,
                           progressController: progressController,
                           list: myProvider.getObservationsList.value,
@@ -167,8 +169,7 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
                               myProvider.getObservationsList.value,
                               context,
                               onPressedDeleteButton,
-                              onPressedEditButton,
-                               (fileinfo) {
+                              onPressedEditButton, (fileinfo) {
                             onPressedViewButton(context, fileinfo);
                           }, false),
                           dataColumnList: ObservationDataTable(),
@@ -564,15 +565,19 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
             filename: file.fileName,
           )
         });
-
-        await myProvider.ImportFiles(context, formData).then((value) async {
-          print("valueeee: $value");
-          if (value != null) {
-            widget.importFileProgress.value = false;
-            myProvider.getAll(
-                context, myProvider.getObservationsList, ObservationsPath);
-          }
-        });
+        print(formData);
+        try {
+          await myProvider.ImportFiles(context, formData).then((value) async {
+            print("valueeee: $value");
+            if (value != null) {
+              widget.importFileProgress.value = false;
+              myProvider.getAll(
+                  context, myProvider.getObservationsList, ObservationsPath);
+            }
+          });
+        } catch (e) {
+          widget.importFileProgress.value = false;
+        }
       }
     }
   }
@@ -591,23 +596,19 @@ class _ObservationsWidgetState extends State<ObservationsWidget> {
   }
 
   onPressedViewButton(BuildContext c, var data) async {
-              final listDataController =
-              Provider.of<DataController>(c, listen: false);
+    final listDataController = Provider.of<DataController>(c, listen: false);
     await showDialog(
         context: context,
         builder: (_) {
           return ListenableProvider<DataController>.value(
               value: listDataController,
               child: ViewDetailDialog(
-            c: c,
-            formKey: _formKey,
-            scaffoldKey: widget.scaffoldKey,
-            observation: data,
-            ObservationId: data.id,
-          ));
+                c: c,
+                observation: data,
+                ObservationId: data.id,
+              ));
         });
   }
-
 }
 
 

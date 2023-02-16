@@ -70,7 +70,9 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
         "ra": "${raController.text}",
         "dec": "${decController.text}",
       };
-      await myProvider.addNew(context, Objects, json.encode(formData)).then((value) {
+      await myProvider
+          .addNew(context, Objects, json.encode(formData))
+          .then((value) {
         myProvider.getAll(context, myProvider.getSObjectsList, Objects);
       });
       Navigator.of(context, rootNavigator: true).pop();
@@ -136,6 +138,8 @@ class _ObjectsWidgetState extends State<ObjectsWidget> {
                       builder: (context, value, child) {
                         return RecentFiles(
                           title: "Recent Objectss",
+                          tableHeight:
+                              MediaQuery.of(context).size.height * 0.75,
                           scaffoldKey: widget.scaffoldKey,
                           progressController: progressController,
                           list: myProvider.getSObjectsList.value,

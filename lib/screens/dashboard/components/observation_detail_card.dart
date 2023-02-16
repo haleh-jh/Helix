@@ -24,7 +24,11 @@ class ObservationDetailCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              observation.userName,
+              "User:   ${observation.userName}",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            Text(
+              "Date:   ${observation.dateTime}",
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ],
@@ -34,14 +38,19 @@ class ObservationDetailCard extends StatelessWidget {
           mobile: FileInfoCardGridView(
             ob: observation,
             crossAxisCount: 2,
-            childAspectRatio: _size.width < 650 && _size.width > 350 ? 1.5 : _size.width > 650? 2 : 1,
+            childAspectRatio: _size.width < 650 && _size.width > 350
+                ? 1.5
+                : _size.width > 650
+                    ? 2
+                    : 1,
           ),
           tablet: FileInfoCardGridView(
             ob: observation,
           ),
           desktop: FileInfoCardGridView(
             ob: observation,
-            childAspectRatio: _size.width < 1400 ? 1.1 : 2.3,
+            crossAxisCount: 5,
+            childAspectRatio: _size.width < 1400 ? 1.1 : 1.8,
           ),
         ),
       ],
@@ -67,15 +76,15 @@ class FileInfoCardGridView extends StatelessWidget {
     return GridView.builder(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: demoMyFiles.length,
+      itemCount: demoObservationDetail.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: defaultPadding*2,
+        crossAxisSpacing: defaultPadding * 2,
         mainAxisSpacing: defaultPadding,
         childAspectRatio: childAspectRatio,
       ),
       itemBuilder: (context, index) => ViewDetailInfoCard(
-        info: demoMyFiles[index],
+        info: demoObservationDetail[index],
         index: index,
         observation: ob,
       ),

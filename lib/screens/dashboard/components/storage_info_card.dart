@@ -9,22 +9,26 @@ import 'package:admin/screens/dashboard/components/telescope_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../constants.dart';
 
 class StorageInfoCard extends StatelessWidget {
   final Function() onTap;
   final ValueNotifier<GeneralModel?> telescopeValue;
-  final ValueNotifier<GeneralModel?> detectorValue ;
+  final ValueNotifier<GeneralModel?> detectorValue;
   final ValueNotifier<GeneralModel?> objectValue;
   final ValueNotifier<GeneralModel?> frameValue;
-
 
   const StorageInfoCard({
     Key? key,
     required this.title,
     required this.svgSrc,
-    required this.onTap, required this.telescopeValue, required this.detectorValue, required this.objectValue, required this.frameValue,
+    required this.onTap,
+    required this.telescopeValue,
+    required this.detectorValue,
+    required this.objectValue,
+    required this.frameValue,
   }) : super(key: key);
 
   final String title, svgSrc;
@@ -41,6 +45,7 @@ class StorageInfoCard extends StatelessWidget {
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             height: 20,
@@ -53,25 +58,35 @@ class StorageInfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title.contains(typeObject.Optic.name)) ...{
+                  if (title.contains(typeObject.Telescope.name)) ...{
                     InkWell(
                       onTap: onTap,
-                      child: TelescopeDropDown(title: title, telescopeValue: telescopeValue),
+                      child: TelescopeDropDown(
+                          title: title, telescopeValue: telescopeValue),
                     ),
                   } else if (title.contains(typeObject.Detector.name)) ...{
                     InkWell(
                       onTap: onTap,
-                      child: DetectorDropDown(title: title, detectorValue: detectorValue,),
+                      child: DetectorDropDown(
+                        title: title,
+                        detectorValue: detectorValue,
+                      ),
                     ),
                   } else if (title.contains(typeObject.Object.name)) ...{
                     InkWell(
                       onTap: onTap,
-                      child: ObjectDropDown(title: title, objectValue: objectValue,),
+                      child: ObjectDropDown(
+                        title: title,
+                        objectValue: objectValue,
+                      ),
                     ),
                   } else if (title.contains(typeObject.Filter.name)) ...{
                     InkWell(
                       onTap: onTap,
-                      child: FrameDropDown(title: title, frameValue: frameValue,),
+                      child: FrameDropDown(
+                        title: title,
+                        frameValue: frameValue,
+                      ),
                     ),
                   }
                 ],
@@ -82,7 +97,6 @@ class StorageInfoCard extends StatelessWidget {
       ),
     );
   }
-
 }
 
-enum typeObject { Optic, Detector, Object, Filter }
+enum typeObject { Telescope, Detector, Object, Filter }

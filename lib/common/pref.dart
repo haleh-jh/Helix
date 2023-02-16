@@ -1,8 +1,7 @@
-
 import 'package:admin/data/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-class PreferenceUtils{
 
+class PreferenceUtils {
   static SharedPreferences? _prefs;
 
   // call this method from iniState() function of mainApp().
@@ -11,10 +10,10 @@ class PreferenceUtils{
     return _prefs;
   }
 
-  static reload(){
+  static reload() {
     _prefs!.reload();
   }
-  
+
   //sets
   static Future<bool> setBool(String key, bool value) async =>
       await _prefs!.setBool(key, value);
@@ -47,17 +46,17 @@ class PreferenceUtils{
 
   static Future<bool> clear() async => await _prefs!.clear();
 
-
- static saveUserData(User user) async {
-   await setString("id", user.id);
-   await setString("userName", user.userName);
-   await setString("email", user.email);
-   await setString("type", user.type);
-   await setString("surname", user.surname);
-   await setString("lastName", user.lastName);
-   await setString("institution", user.institution);
-   await setString("phoneNumber", user.phoneNumber);
-   await setBool("emailConfirmed", user.emailConfirmed);
-   await setBool("phoneNumberConfirmed", user.phoneNumberConfirmed);
+  static saveUserData(User user) async {
+    await setString("id", user.id);
+    await setString("userName", user.userName);
+    await setString("email", user.email);
+    await setString("type", user.type);
+    await setString("surname", user.surname);
+    await setString("lastName", user.lastName);
+    await setString("institution", user.institution);
+    await setString("phoneNumber", user.phoneNumber);
+    await setBool("emailConfirmed", user.emailConfirmed);
+    await setBool("phoneNumberConfirmed", user.phoneNumberConfirmed);
+    await reload();
   }
 }

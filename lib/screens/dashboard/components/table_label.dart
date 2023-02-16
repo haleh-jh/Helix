@@ -89,7 +89,7 @@ List<DataColumn> SearchObservationDataTable() {
     DataColumn(
       label: Text("Filter"),
     ),
-        DataColumn(
+    DataColumn(
       label: Text(""),
     ),
   ];
@@ -263,7 +263,7 @@ List<DataRow2> ObservationDataRow(
           ))
         },
         DataCell(InkWell(
-          onTap: (){
+          onTap: () {
             viewOnTap(fileInfo[index]);
           },
           child: Icon(

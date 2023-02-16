@@ -82,7 +82,11 @@ class _UsersWidgetState extends State<UsersWidget> {
         "lastName": "${lastNameController.text}",
         "institution": "${data.institution}",
       };
-      await myProvider.addNew(context, Users, json.encode(formData)).then((value) {
+      print(formData);
+      await myProvider
+          .addNew(context, Users, json.encode(formData))
+          .then((value) {
+        print("addvalue: ${value}");
         myProvider.getAll(context, myProvider.getUsersList, Users);
       });
       Navigator.of(context, rootNavigator: true).pop();
@@ -148,6 +152,8 @@ class _UsersWidgetState extends State<UsersWidget> {
                       builder: (context, value, child) {
                         return RecentFiles(
                           title: "Recent Users",
+                          tableHeight:
+                              MediaQuery.of(context).size.height * 0.75,
                           scaffoldKey: widget.scaffoldKey,
                           progressController: progressController,
                           list: myProvider.getUsersList.value,

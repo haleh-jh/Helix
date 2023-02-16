@@ -21,7 +21,7 @@ const kCursorTextFieldColor = Color(0xff9896be);
 const kOrangeColor = Color(0xffff9f00);
 const kDeleteIconColor = Color(0xffff4343);
 const kEditIconColor = Color(0xff19e9aa);
-const serachBackground = Color.fromRGBO(73, 78, 108,1);
+const serachBackground = Color.fromRGBO(73, 78, 108, 1);
 
 // const Color green300 = Color(0xFF81C784);
 // const Color green400 = Color(0xFF66BB6A);
@@ -31,7 +31,7 @@ const height = 40.0;
 
 String defaultError = "An error has occurred";
 
-final String telescope = "Optics";
+final String telescope = "Telescopes";
 final String telescopePath = "Telescopes";
 final String telescopeDropDown = "Telescopes/GetDropDownTelescopes";
 final String detectorDropDown = "Detectors/GetDropDownDetectors";
@@ -41,14 +41,13 @@ final String detector = "Detectors";
 final String Objects = "SObjects";
 final String Users = "Users";
 final String ObservationsPath = "ObservationSubmissions";
+final String UserObservationPath = "UserProfile/GetUserObservationSubmissions";
 final String Filters = "Filters";
 
-const String kServerError= "خطایی از سمت سرور رخ داده است.";
-const String kGeneralError= "خطایی رخ داده است مجدد امتحان نمایید.";
-const String kConnectionError= "Check your internet connection";
+const String kServerError = "Server error has occurred";
+const String kGeneralError = "An Error has occurred please try again";
+const String kConnectionError = "Check your internet connection";
 
-
-bool? checkConnection(){
+bool? checkConnection() {
   return window.navigator.onLine;
 }
-
