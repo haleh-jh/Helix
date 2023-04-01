@@ -8,7 +8,7 @@ import Foundation
 import connectivity_macos
 import file_selector_macos
 import package_info_plus_macos
-import path_provider_macos
+import path_provider_foundation
 import share_plus_macos
 import shared_preferences_foundation
 import sqflite

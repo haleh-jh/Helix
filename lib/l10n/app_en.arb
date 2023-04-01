@@ -1,0 +1,17 @@
+{
+    "telescope": "Telescopes",
+    "telescopePath": "Telescopes",
+    "telescopeDropDown": "Telescopes/GetDropDownTelescopes",
+    "detectorDropDown": "Detectors/GetDropDownDetectors",
+    "objectDropDown": "SObjects/GetDropDownSObjects",
+    "frameDropDown": "Filters/GetDropDownDetectors",
+    "detector": "Detectors",
+    "objects": "SObjects",
+    "users": "Users",
+    "observationsPath": "ObservationSubmissions",
+    "userObservationPath": "UserProfile/GetUserObservationSubmissions",
+    "filters": "Filters",
+    "kServerError": "Server error has occurred",
+    "kGeneralError": "An Error has occurred please try again",
+    "kConnectionError": "Check your internet connection"
+}
