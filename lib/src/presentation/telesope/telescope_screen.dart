@@ -17,6 +17,6 @@ class _TelescopeScreenState extends State<TelescopeScreen> {
   @override
   Widget build(BuildContext context) {
     print("test2");
-    return Container(color: Colors.amber,);
+    return Container();
   }
 }
