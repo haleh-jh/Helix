@@ -9,6 +9,6 @@ class GetAllUseCase implements UseCase<DataState<List<dynamic>>, UserRequestPara
   GetAllUseCase({required ServiceRepository serviceRepository}): _serviceRepository = serviceRepository;
   
   @override
-  Future<DataState<List<dynamic>>> call({required UserRequestParams params, required String path}) => _serviceRepository.getAll(params, path);
+  Future<DataState<List<dynamic>>> call({required UserRequestParams params, required String data}) => _serviceRepository.getAll(params, data);
   
 }

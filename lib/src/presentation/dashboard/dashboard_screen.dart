@@ -4,105 +4,113 @@ import 'package:helix_with_clean_architecture/src/core/utils/constants/colors.da
 import 'package:helix_with_clean_architecture/src/core/utils/constants/sizes.dart';
 import 'package:helix_with_clean_architecture/src/core/utils/constants/texts.dart';
 import 'package:helix_with_clean_architecture/src/core/utils/responsive.dart';
-import 'package:helix_with_clean_architecture/src/data/models/data_model.dart';
+import 'package:helix_with_clean_architecture/src/data/models/observation.dart';
 import 'package:helix_with_clean_architecture/src/injector.dart';
 import 'package:helix_with_clean_architecture/src/presentation/dashboard/bloc/dashboard_bloc.dart';
 import 'package:helix_with_clean_architecture/src/presentation/dashboard/widgets/header.dart';
+import 'package:helix_with_clean_architecture/src/presentation/dashboard/widgets/search_part.dart';
 import 'package:helix_with_clean_architecture/src/presentation/dashboard/widgets/search_screen_horizontal.dart';
 import 'package:helix_with_clean_architecture/src/presentation/main_screen/main_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   Function(int) profileSelected;
   Function() logout;
-
-//ValueNotifier<List<ObservationModel>> searchList = ValueNotifier([]);
-  ValueNotifier<bool> searchResult = ValueNotifier(false);
-
-  final ValueNotifier<DataModel?> telescopeValue = ValueNotifier(null);
-  final ValueNotifier<DataModel?> detectorValue = ValueNotifier(null);
-  final ValueNotifier<DataModel?> objectValue = ValueNotifier(null);
-  final ValueNotifier<DataModel?> frameValue = ValueNotifier(null);
-
-  final bloc = injector<DashboardBloc>();
 
   DashboardScreen(
       {Key? key, required this.profileSelected, required this.logout})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final bloc = injector<DashboardBloc>();
+
+  @override
+  void initState() {
+    super.initState();
     bloc.add(const DashboardEvent.started());
+  }
+
+  ValueNotifier<bool> loading = ValueNotifier(true);
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
           primary: false,
-          padding: EdgeInsets.all(defaultPadding),
+          padding: const EdgeInsets.all(defaultPadding),
           child: Column(
             children: [
               Header(
                 title: dashboard,
                 profileSelected: () {
-                  profileSelected(dashboardIndex);
+                  widget.profileSelected(dashboardIndex);
                 },
-                logout: logout,
+                logout: widget.logout,
               ),
               const SizedBox(height: defaultPadding),
               BlocBuilder<DashboardBloc, DashboardState>(
                 bloc: bloc,
                 builder: (context, state) {
-                return state.when(init: (){
-                  return Container();
-                }, success: (telescopeList, detectorList, frameList, objectList){
-                    return Row(
+                  loading.value = false;
+                  return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
                           children: [
-                            SearchScreenHorizontal(
-                              onSearch: onSearch,
-                              detectorValue: detectorValue,
-                              frameValue: frameValue,
-                              objectValue: objectValue,
-                              telescopeValue: telescopeValue,
+                            BlocProvider.value(
+                              value: bloc,
+                              child: SearchScreenHorizontal(loading: loading,),
                             ),
-                            SizedBox(height: defaultPadding),
-                            // ValueListenableBuilder(
-                            //   valueListenable: searchList,
-                            //   builder: (context, value, child) {
-                            //     return searchList.value.length > 0
-                            //         ? Container(
-                            //             padding:
-                            //                 const EdgeInsets.all(defaultPadding),
-                            //             decoration: const BoxDecoration(
-                            //               color: serachBackground,
-                            //               borderRadius:
-                            //                   BorderRadius.all(Radius.circular(10)),
-                            //             ),
-                            //             child: SearchPart())
-                            //         : searchResult.value
-                            //             ? Row(
-                            //                 mainAxisAlignment:
-                            //                     MainAxisAlignment.center,
-                            //                 crossAxisAlignment:
-                            //                     CrossAxisAlignment.center,
-                            //                 children: const [
-                            //                   Padding(
-                            //                     padding: EdgeInsets.only(
-                            //                         top: height * 2),
-                            //                     child: Text(
-                            //                       kNotExistObservation,
-                            //                       style: TextStyle(
-                            //                         fontSize: 18,
-                            //                         fontWeight: FontWeight.w500,
-                            //                       ),
-                            //                     ),
-                            //                   ),
-                            //                 ],
-                            //               )
-                            //             : Container();
-                            //   },
-                            // ),
+                            const SizedBox(height: defaultPadding),
+                            state.when(init: () {
+                              return Container();
+                            }, success: () {
+                              return Container();
+                            }, searchLoading: () {
+                              return Container();
+                            }, searchSuccess:
+                                (List<ObservationsModel> observations) {
+                              return observations.isNotEmpty
+                                  ? Container(
+                                      padding:
+                                          const EdgeInsets.all(defaultPadding),
+                                      decoration: const BoxDecoration(
+                                        color: serachBackground,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      child: SearchPart(
+                                        observations: observations,
+                                      ))
+                                  : bloc.searchResult
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: const [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: height * 2),
+                                              child: Text(
+                                                kNotExistObservation,
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Container();
+                            }, searchFailed: () {
+                              return Container();
+                            })
                           ],
                         ),
                       ),
@@ -110,9 +118,6 @@ class DashboardScreen extends StatelessWidget {
                         const SizedBox(width: defaultPadding),
                     ],
                   );
-                
-                });
-
                 },
               )
             ],
@@ -120,14 +125,5 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  onSearch(dynamic value) {
-    // searchList.value.clear();
-    // if (value.length == 0) {
-    //   searchResult.value = true;
-    // } else
-    //   searchResult.value = false;
-    // searchList.value = value;
   }
 }

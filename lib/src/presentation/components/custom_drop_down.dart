@@ -4,12 +4,10 @@ import 'package:helix_with_clean_architecture/src/injector.dart';
 import 'package:helix_with_clean_architecture/src/presentation/dashboard/bloc/dashboard_bloc.dart';
 import 'package:provider/provider.dart';
 
-//ValueNotifier<Data?> telescopeValue = ValueNotifier(null);
-
-class TelescopeDropDown extends StatelessWidget {
+class CustomDropDown extends StatelessWidget {
   final ValueNotifier<DataModel?> valueNotifier;
   final List<DataModel> list;
-  TelescopeDropDown({
+  CustomDropDown({
     Key? key,
     required this.title, required this.valueNotifier, required this.list,
   }) : super(key: key);

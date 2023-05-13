@@ -1,3 +1,3 @@
 abstract class UseCase<T, P, S>{
-  Future<T> call({required P params, required S path});
+  Future<T> call({required P params, required S data});
 }

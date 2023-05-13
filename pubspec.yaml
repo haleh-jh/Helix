@@ -42,7 +42,7 @@ dependencies:
   flutter_svg: ^0.22.0
   fl_chart: ^0.36.1
   provider: ^6.0.0
-  data_table_2: ^2.0.3
+  data_table_2: ^2.4.2
   dio: ^4.0.6
   http: ^0.13.5
   shared_preferences: ^2.0.15

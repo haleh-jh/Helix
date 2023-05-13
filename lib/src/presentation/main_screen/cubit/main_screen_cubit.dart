@@ -1,7 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:helix_with_clean_architecture/src/core/params/user_request_params.dart';
+import 'package:helix_with_clean_architecture/src/core/resources/concretes/data_failure.dart';
+import 'package:helix_with_clean_architecture/src/injector.dart';
 import 'package:helix_with_clean_architecture/src/presentation/auth/login_screen.dart';
+import 'package:helix_with_clean_architecture/src/presentation/dashboard/bloc/dashboard_bloc.dart';
 import 'package:helix_with_clean_architecture/src/presentation/dashboard/dashboard_screen.dart';
 import 'package:helix_with_clean_architecture/src/presentation/detector/detector_screen.dart';
 import 'package:helix_with_clean_architecture/src/presentation/filter/filter_screen.dart';
@@ -63,7 +67,7 @@ class MainScreenCubit extends Cubit<MainScreenState> {
                     offstage: selectedScreenIndex != index,
                     child: child,
                   ),
-                  maintainState: false,
+                  maintainState: true,
                 ));
   }
 
@@ -73,17 +77,17 @@ class MainScreenCubit extends Cubit<MainScreenState> {
           _dashboardKey,
           dashboardIndex,
           DashboardScreen(
-              profileSelected: changeScreen,
-              logout: () {
-                // PreferenceUtils.clear();
-                // PreferenceUtils.reload();
-                // logged = false;
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => true);
-              },
-              )),
+            profileSelected: changeScreen,
+            logout: () {
+              // PreferenceUtils.clear();
+              // PreferenceUtils.reload();
+              // logged = false;
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => true);
+            },
+          )),
       _navigator(_telescopsKey, telescopsIndex, TelescopeScreen()),
       _navigator(_detectorsKey, detectorsIndex, DetectorScreen()),
       _navigator(_objectsKey, objectsIndex, ObjectScreen()),
@@ -99,6 +103,9 @@ class MainScreenCubit extends Cubit<MainScreenState> {
     print("changeScreen $index");
     _history.remove(selectedScreenIndex);
     _history.add(selectedScreenIndex);
+    if (index == dashboardIndex && _selectedScreenIndex != dashboardIndex) {
+      injector<DashboardBloc>().add(const DashboardEvent.started());
+    }
     _selectedScreenIndex = index;
     emit(MainScreenState.changeScreenState(_selectedScreenIndex));
   }
@@ -119,9 +126,21 @@ class MainScreenCubit extends Cubit<MainScreenState> {
     }
   }
 
-    void controlMenu() {
+  void controlMenu() {
     if (!_scaffoldKey.currentState!.isDrawerOpen) {
       _scaffoldKey.currentState!.openDrawer();
     }
   }
+
+  // Future<void> _getUserInfo(String token) async {
+  //   final dataState =
+  //       await _getUserUseCase(params: UserRequestParams(token: token));
+
+  //   if (dataState is DataFailure) {
+  //     emit(const AppState.error());
+  //     return;
+  //   }
+  //   emit(AppState.success(isLogged: true));
+  // }
 }
+

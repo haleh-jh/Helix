@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:helix_with_clean_architecture/src/core/utils/constants/colors.dart';
@@ -8,30 +7,25 @@ import 'package:helix_with_clean_architecture/src/data/models/data_model.dart';
 import 'package:helix_with_clean_architecture/src/domain/entity/card_info.dart';
 import 'package:helix_with_clean_architecture/src/presentation/components/custom_text_field.dart';
 import 'package:helix_with_clean_architecture/src/presentation/components/info_card.dart';
+import 'package:helix_with_clean_architecture/src/presentation/dashboard/bloc/dashboard_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
-ValueNotifier<bool> loading = ValueNotifier(false);
-
 class SearchScreenHorizontal extends StatefulWidget {
-  final Function(dynamic value) onSearch;
-  final ValueNotifier<DataModel?> telescopeValue;
-  final ValueNotifier<DataModel?> detectorValue;
-  final ValueNotifier<DataModel?> objectValue;
-  final ValueNotifier<DataModel?> frameValue;
+  final ValueNotifier<bool> loading;
   List<TextEditingController> controllers = [];
   SearchScreenHorizontal({
-    Key? key,
-    required this.onSearch,
-    required this.telescopeValue,
-    required this.detectorValue,
-    required this.objectValue,
-    required this.frameValue,
+    Key? key, required this.loading,
   }) : super(key: key);
 
   @override
   State<SearchScreenHorizontal> createState() => _SearchScreenHorizontalState();
 }
+
+late ValueNotifier<DataModel?> telescopeValue = ValueNotifier(null);
+late ValueNotifier<DataModel?> detectorValue = ValueNotifier(null);
+late ValueNotifier<DataModel?> objectValue = ValueNotifier(null);
+late ValueNotifier<DataModel?> frameValue = ValueNotifier(null);
 
 class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
   late final myProvider;
@@ -44,9 +38,12 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
   TextEditingController coordinateDecController = TextEditingController();
   TextEditingController radiusController = TextEditingController();
 
+  late final bloc;
+
   @override
   void initState() {
     super.initState();
+    bloc = context.read<DashboardBloc>();
   }
 
   @override
@@ -59,7 +56,11 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
       radiusController,
       userController
     ]);
-    print("_size: ${_size.width}");
+    //    telescopeValue = ValueNotifier(null);
+    //  detectorValue = ValueNotifier(null);
+    //  objectValue = ValueNotifier(null);
+    // frameValue = ValueNotifier(null);
+
     return Container(
       padding: const EdgeInsets.all(defaultPadding),
       decoration: const BoxDecoration(
@@ -75,10 +76,10 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
                 HorizonalSearchGridView(
                   crossAxisCount: 2,
                   childAspectRatio: (_size.width / 2) / 16.h,
-                  telescopeValue: widget.telescopeValue,
-                  detectorValue: widget.detectorValue,
-                  frameValue: widget.frameValue,
-                  objectValue: widget.objectValue,
+                  telescopeValue: telescopeValue,
+                  detectorValue: detectorValue,
+                  frameValue: frameValue,
+                  objectValue: objectValue,
                   controllers: widget.controllers,
                 ),
               ],
@@ -86,19 +87,19 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
             tablet: HorizonalSearchGridView(
               crossAxisCount: 2,
               childAspectRatio: (_size.width / 2) / 16.h,
-              telescopeValue: widget.telescopeValue,
-              detectorValue: widget.detectorValue,
-              frameValue: widget.frameValue,
-              objectValue: widget.objectValue,
+              telescopeValue: telescopeValue,
+              detectorValue: detectorValue,
+              frameValue: frameValue,
+              objectValue: objectValue,
               controllers: widget.controllers,
             ),
             desktop: HorizonalSearchGridView(
               crossAxisCount: 4,
               childAspectRatio: (_size.width / 4) / 18.h,
-              telescopeValue: widget.telescopeValue,
-              detectorValue: widget.detectorValue,
-              frameValue: widget.frameValue,
-              objectValue: widget.objectValue,
+              telescopeValue: telescopeValue,
+              detectorValue: detectorValue,
+              frameValue: frameValue,
+              objectValue: objectValue,
               controllers: widget.controllers,
             ),
           ),
@@ -127,13 +128,13 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
               Expanded(
                   flex: 3,
                   child: ValueListenableBuilder(
-                      valueListenable: loading,
+                      valueListenable: widget.loading,
                       builder: ((context, value, child) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            loading.value
-                                ? SizedBox(
+                            widget.loading.value
+                                ? const SizedBox(
                                     height: 30,
                                     width: 30,
                                     child: CircularProgressIndicator(
@@ -149,48 +150,50 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
                                                 : 1),
                                       ),
                                     ),
-                                    onPressed: () {
-                                      // searchList.value = [];
-                                      // String telescope = "";
-                                      // String detector = "";
-                                      // String object = "";
-                                      // String frame = "";
-                                      // telescope = telescopeValue.value == null
-                                      //     ? ""
-                                      //     : telescopeValue.value!.value;
-                                      // detector = detectorValue.value == null
-                                      //     ? ""
-                                      //     : detectorValue.value!.value;
-                                      // object = objectValue.value == null
-                                      //     ? ""
-                                      //     : objectValue.value!.value;
-                                      // frame = frameValue.value == null
-                                      //     ? ""
-                                      //     : frameValue.value!.value;
+                                    onPressed: () async {
+                                      String telescope = "";
+                                      String detector = "";
+                                      String object = "";
+                                      String frame = "";
+                                      telescope = telescopeValue.value == null
+                                          ? ""
+                                          : telescopeValue.value!.value;
+                                      detector = detectorValue.value == null
+                                          ? ""
+                                          : detectorValue.value!.value;
+                                      object = objectValue.value == null
+                                          ? ""
+                                          : objectValue.value!.value;
+                                      frame = frameValue.value == null
+                                          ? ""
+                                          : frameValue.value!.value;
 
-                                      // loading.value = true;
-                                      // var data = {
-                                      //   'FrameName': frame,
-                                      //   'TelescopeName': telescope,
-                                      //   'SObjectName': object,
-                                      //   'DetectorName': detector,
-                                      //   'DateOf': dateFromController.text,
-                                      //   'DateTo': dateToController.text,
-                                      //   'User': userController.text,
-                                      //   'ra': coordinateRaController.text,
-                                      //   'dec': coordinateDecController.text,
-                                      //   'radius': radiusController.text,
-                                      //   'SortByTelescope': '0',
-                                      //   'SortByFrame': '0',
-                                      //   'SortSObject': '0',
-                                      //   'SortDetector': '0',
-                                      //   'SortDate': '0'
-                                    //  };
-                                   //   search(data);
+                                      widget.loading.value = true;
+                                      var data = {
+                                        'FrameName': frame,
+                                        'TelescopeName': telescope,
+                                        'SObjectName': object,
+                                        'DetectorName': detector,
+                                        'DateOf': dateFromController.text,
+                                        'DateTo': dateToController.text,
+                                        'User': userController.text,
+                                        'ra': coordinateRaController.text,
+                                        'dec': coordinateDecController.text,
+                                        'radius': radiusController.text,
+                                        'SortByTelescope': '0',
+                                        'SortByFrame': '0',
+                                        'SortSObject': '0',
+                                        'SortDetector': '0',
+                                        'SortDate': '0'
+                                      };
+                                      await context
+                                          .read<DashboardBloc>()
+                                          .onSearch(data);
+                                      widget.loading.value = false;
                                     },
                                     icon: SvgPicture.asset(
                                         "assets/icons/Search.svg"),
-                                    label: Text("Search"),
+                                    label: const Text("Search"),
                                   ),
                           ],
                         );
@@ -200,18 +203,6 @@ class _SearchScreenHorizontalState extends State<SearchScreenHorizontal> {
         ],
       ),
     );
-  }
-
-  search(var data) async {
-    try {
-      await myProvider.search(context, data).then((value) {
-        print("tt3: ${value}}");
-        widget.onSearch(value);
-        loading.value = false;
-      });
-    } catch (e) {
-      loading.value = false;
-    }
   }
 }
 
@@ -240,7 +231,7 @@ class HorizonalSearchGridView extends StatelessWidget {
     return Column(
       children: [
         GridView.builder(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: MainObjectInfo.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -254,12 +245,11 @@ class HorizonalSearchGridView extends StatelessWidget {
               return InfoCard(
                 svgSrc: data.svgSrc!,
                 title: data.title!,
-                onTap: () async {
-                },
                 telescopeValue: telescopeValue,
                 detectorValue: detectorValue,
                 frameValue: frameValue,
                 objectValue: objectValue,
+                index: index,
               );
             }),
         const SizedBox(height: defaultPadding),
@@ -268,7 +258,7 @@ class HorizonalSearchGridView extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           childAspectRatio: childAspectRatio,
         ),
-        SizedBox(height: defaultPadding),
+        const SizedBox(height: defaultPadding),
       ],
     );
   }

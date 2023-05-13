@@ -4,32 +4,29 @@ import 'package:helix_with_clean_architecture/src/core/utils/constants/colors.da
 import 'package:helix_with_clean_architecture/src/core/utils/constants/sizes.dart';
 import 'package:helix_with_clean_architecture/src/data/models/data_model.dart';
 import 'package:helix_with_clean_architecture/src/injector.dart';
-import 'package:helix_with_clean_architecture/src/presentation/components/telescope_drop_down.dart';
+import 'package:helix_with_clean_architecture/src/presentation/components/custom_drop_down.dart';
 import 'package:helix_with_clean_architecture/src/presentation/dashboard/bloc/dashboard_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 class InfoCard extends StatelessWidget {
-  final Function() onTap;
   final ValueNotifier<DataModel?> telescopeValue;
   final ValueNotifier<DataModel?> detectorValue;
   final ValueNotifier<DataModel?> objectValue;
   final ValueNotifier<DataModel?> frameValue;
+  final String title, svgSrc;
+  final int index;
 
-  InfoCard({
+  const InfoCard({
     Key? key,
     required this.title,
     required this.svgSrc,
-    required this.onTap,
     required this.telescopeValue,
     required this.detectorValue,
     required this.objectValue,
     required this.frameValue,
+    required this.index,
   }) : super(key: key);
-
-  final String title, svgSrc;
-
-  final bloc = injector<DashboardBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,40 +53,27 @@ class InfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title.contains(typeObject.Telescope.name)) ...{
-                    InkWell(
-                      onTap: onTap,
-                      child: TelescopeDropDown(
-                          title: title,
-                          valueNotifier: telescopeValue,
-                          list: bloc.TelescopeDropDownList,),
-                    ),
-                  }
-                  // else if (title.contains(typeObject.Detector.name)) ...{
-                  //   InkWell(
-                  //     onTap: onTap,
-                  //     child: DetectorDropDown(
-                  //       title: title,
-                  //       detectorValue: detectorValue,
-                  //     ),
-                  //   ),
-                  // } else if (title.contains(typeObject.Object.name)) ...{
-                  //   InkWell(
-                  //     onTap: onTap,
-                  //     child: ObjectDropDown(
-                  //       title: title,
-                  //       objectValue: objectValue,
-                  //     ),
-                  //   ),
-                  // } else if (title.contains(typeObject.Filter.name)) ...{
-                  //   InkWell(
-                  //     onTap: onTap,
-                  //     child: FrameDropDown(
-                  //       title: title,
-                  //       frameValue: frameValue,
-                  //     ),
-                  //   ),
-                  // }
+                  CustomDropDown(
+                    title: title,
+                    valueNotifier: index == 0
+                        ? telescopeValue
+                        : index == 1
+                            ? detectorValue
+                            : index == 2
+                                ? objectValue
+                                : frameValue,
+                    list: index == 0
+                        ? context.read<DashboardBloc>().TelescopeDropDownList
+                        : index == 1
+                            ? context.read<DashboardBloc>().DetectorDropDownList
+                            : index == 2
+                                ? context
+                                    .read<DashboardBloc>()
+                                    .ObjectDropDownList
+                                : context
+                                    .read<DashboardBloc>()
+                                    .FrameDropDownList,
+                  ),
                 ],
               ),
             ),
@@ -99,5 +83,3 @@ class InfoCard extends StatelessWidget {
     );
   }
 }
-
-enum typeObject { Telescope, Detector, Object, Filter }

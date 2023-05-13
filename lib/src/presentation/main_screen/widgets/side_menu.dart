@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:helix_with_clean_architecture/src/injector.dart';
+import 'package:helix_with_clean_architecture/src/presentation/dashboard/bloc/dashboard_bloc.dart';
 import 'package:helix_with_clean_architecture/src/presentation/main_screen/main_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +14,7 @@ class SideMenu extends StatelessWidget {
     required this.onTap,
   }) : super(key: key);
 
+  final bloc = injector<DashboardBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class SideMenu extends StatelessWidget {
             svgSrc: "assets/icons/menu_dashbord.svg",
             press: () {
               onTap(dashboardIndex);
+          //     bloc.add(const DashboardEvent.started());
             },
           ),
           DrawerListTile(

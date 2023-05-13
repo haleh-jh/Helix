@@ -25,7 +25,7 @@ class SharedPrefRepositoryImpl implements SharedPrefRepository{
   Future<DataState<void>> setString({required SharedPrefSetStringParams params}) async{
      try {
       final response = await _sharedPrefService.setString(params: params);
-
+       
       return DataSuccess(response);
     } catch (e) {
       return Future.value(null);

@@ -7,5 +7,5 @@ Future<void> main() async {
 
   await di.initializeDependencies();
 
-   runApp(App());
+  runApp(App());
 }

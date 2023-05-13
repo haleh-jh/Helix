@@ -19,32 +19,38 @@ mixin _$DashboardEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
+    required TResult Function() search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
+    TResult? Function()? search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
+    TResult Function()? search,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
+    required TResult Function(_Search value) search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
+    TResult? Function(_Search value)? search,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
+    TResult Function(_Search value)? search,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -106,6 +112,7 @@ class _$_Started implements _Started {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
+    required TResult Function() search,
   }) {
     return started();
   }
@@ -114,6 +121,7 @@ class _$_Started implements _Started {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
+    TResult? Function()? search,
   }) {
     return started?.call();
   }
@@ -122,6 +130,7 @@ class _$_Started implements _Started {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
+    TResult Function()? search,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -134,6 +143,7 @@ class _$_Started implements _Started {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
+    required TResult Function(_Search value) search,
   }) {
     return started(this);
   }
@@ -142,6 +152,7 @@ class _$_Started implements _Started {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
+    TResult? Function(_Search value)? search,
   }) {
     return started?.call(this);
   }
@@ -150,6 +161,7 @@ class _$_Started implements _Started {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
+    TResult Function(_Search value)? search,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -164,38 +176,133 @@ abstract class _Started implements DashboardEvent {
 }
 
 /// @nodoc
+abstract class _$$_SearchCopyWith<$Res> {
+  factory _$$_SearchCopyWith(_$_Search value, $Res Function(_$_Search) then) =
+      __$$_SearchCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$_SearchCopyWithImpl<$Res>
+    extends _$DashboardEventCopyWithImpl<$Res, _$_Search>
+    implements _$$_SearchCopyWith<$Res> {
+  __$$_SearchCopyWithImpl(_$_Search _value, $Res Function(_$_Search) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$_Search implements _Search {
+  const _$_Search();
+
+  @override
+  String toString() {
+    return 'DashboardEvent.search()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$_Search);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() started,
+    required TResult Function() search,
+  }) {
+    return search();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? started,
+    TResult? Function()? search,
+  }) {
+    return search?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? started,
+    TResult Function()? search,
+    required TResult orElse(),
+  }) {
+    if (search != null) {
+      return search();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Started value) started,
+    required TResult Function(_Search value) search,
+  }) {
+    return search(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Started value)? started,
+    TResult? Function(_Search value)? search,
+  }) {
+    return search?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Started value)? started,
+    TResult Function(_Search value)? search,
+    required TResult orElse(),
+  }) {
+    if (search != null) {
+      return search(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Search implements DashboardEvent {
+  const factory _Search() = _$_Search;
+}
+
+/// @nodoc
 mixin _$DashboardState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)
-        success,
+    required TResult Function() success,
+    required TResult Function() searchLoading,
+    required TResult Function(List<ObservationsModel> observations)
+        searchSuccess,
+    required TResult Function() searchFailed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)?
-        success,
+    TResult? Function()? success,
+    TResult? Function()? searchLoading,
+    TResult? Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult? Function()? searchFailed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)?
-        success,
+    TResult Function()? success,
+    TResult Function()? searchLoading,
+    TResult Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult Function()? searchFailed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -203,18 +310,27 @@ mixin _$DashboardState {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) init,
     required TResult Function(_Success value) success,
+    required TResult Function(_SearchLoading value) searchLoading,
+    required TResult Function(_SearchSuccess value) searchSuccess,
+    required TResult Function(_SearchFailed value) searchFailed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? init,
     TResult? Function(_Success value)? success,
+    TResult? Function(_SearchLoading value)? searchLoading,
+    TResult? Function(_SearchSuccess value)? searchSuccess,
+    TResult? Function(_SearchFailed value)? searchFailed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? init,
     TResult Function(_Success value)? success,
+    TResult Function(_SearchLoading value)? searchLoading,
+    TResult Function(_SearchSuccess value)? searchSuccess,
+    TResult Function(_SearchFailed value)? searchFailed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -276,12 +392,11 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)
-        success,
+    required TResult Function() success,
+    required TResult Function() searchLoading,
+    required TResult Function(List<ObservationsModel> observations)
+        searchSuccess,
+    required TResult Function() searchFailed,
   }) {
     return init();
   }
@@ -290,12 +405,10 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)?
-        success,
+    TResult? Function()? success,
+    TResult? Function()? searchLoading,
+    TResult? Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult? Function()? searchFailed,
   }) {
     return init?.call();
   }
@@ -304,12 +417,10 @@ class _$_Initial implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)?
-        success,
+    TResult Function()? success,
+    TResult Function()? searchLoading,
+    TResult Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult Function()? searchFailed,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -323,6 +434,9 @@ class _$_Initial implements _Initial {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) init,
     required TResult Function(_Success value) success,
+    required TResult Function(_SearchLoading value) searchLoading,
+    required TResult Function(_SearchSuccess value) searchSuccess,
+    required TResult Function(_SearchFailed value) searchFailed,
   }) {
     return init(this);
   }
@@ -332,6 +446,9 @@ class _$_Initial implements _Initial {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? init,
     TResult? Function(_Success value)? success,
+    TResult? Function(_SearchLoading value)? searchLoading,
+    TResult? Function(_SearchSuccess value)? searchSuccess,
+    TResult? Function(_SearchFailed value)? searchFailed,
   }) {
     return init?.call(this);
   }
@@ -341,6 +458,9 @@ class _$_Initial implements _Initial {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? init,
     TResult Function(_Success value)? success,
+    TResult Function(_SearchLoading value)? searchLoading,
+    TResult Function(_SearchSuccess value)? searchSuccess,
+    TResult Function(_SearchFailed value)? searchFailed,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -359,12 +479,6 @@ abstract class _$$_SuccessCopyWith<$Res> {
   factory _$$_SuccessCopyWith(
           _$_Success value, $Res Function(_$_Success) then) =
       __$$_SuccessCopyWithImpl<$Res>;
-  @useResult
-  $Res call(
-      {List<DataModel> telescopeList,
-      List<DataModel> detectorList,
-      List<DataModel> frameList,
-      List<DataModel> objectList});
 }
 
 /// @nodoc
@@ -373,157 +487,64 @@ class __$$_SuccessCopyWithImpl<$Res>
     implements _$$_SuccessCopyWith<$Res> {
   __$$_SuccessCopyWithImpl(_$_Success _value, $Res Function(_$_Success) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? telescopeList = null,
-    Object? detectorList = null,
-    Object? frameList = null,
-    Object? objectList = null,
-  }) {
-    return _then(_$_Success(
-      null == telescopeList
-          ? _value._telescopeList
-          : telescopeList // ignore: cast_nullable_to_non_nullable
-              as List<DataModel>,
-      null == detectorList
-          ? _value._detectorList
-          : detectorList // ignore: cast_nullable_to_non_nullable
-              as List<DataModel>,
-      null == frameList
-          ? _value._frameList
-          : frameList // ignore: cast_nullable_to_non_nullable
-              as List<DataModel>,
-      null == objectList
-          ? _value._objectList
-          : objectList // ignore: cast_nullable_to_non_nullable
-              as List<DataModel>,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$_Success implements _Success {
-  const _$_Success(
-      final List<DataModel> telescopeList,
-      final List<DataModel> detectorList,
-      final List<DataModel> frameList,
-      final List<DataModel> objectList)
-      : _telescopeList = telescopeList,
-        _detectorList = detectorList,
-        _frameList = frameList,
-        _objectList = objectList;
-
-  final List<DataModel> _telescopeList;
-  @override
-  List<DataModel> get telescopeList {
-    if (_telescopeList is EqualUnmodifiableListView) return _telescopeList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_telescopeList);
-  }
-
-  final List<DataModel> _detectorList;
-  @override
-  List<DataModel> get detectorList {
-    if (_detectorList is EqualUnmodifiableListView) return _detectorList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_detectorList);
-  }
-
-  final List<DataModel> _frameList;
-  @override
-  List<DataModel> get frameList {
-    if (_frameList is EqualUnmodifiableListView) return _frameList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_frameList);
-  }
-
-  final List<DataModel> _objectList;
-  @override
-  List<DataModel> get objectList {
-    if (_objectList is EqualUnmodifiableListView) return _objectList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_objectList);
-  }
+  const _$_Success();
 
   @override
   String toString() {
-    return 'DashboardState.success(telescopeList: $telescopeList, detectorList: $detectorList, frameList: $frameList, objectList: $objectList)';
+    return 'DashboardState.success()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_Success &&
-            const DeepCollectionEquality()
-                .equals(other._telescopeList, _telescopeList) &&
-            const DeepCollectionEquality()
-                .equals(other._detectorList, _detectorList) &&
-            const DeepCollectionEquality()
-                .equals(other._frameList, _frameList) &&
-            const DeepCollectionEquality()
-                .equals(other._objectList, _objectList));
+        (other.runtimeType == runtimeType && other is _$_Success);
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_telescopeList),
-      const DeepCollectionEquality().hash(_detectorList),
-      const DeepCollectionEquality().hash(_frameList),
-      const DeepCollectionEquality().hash(_objectList));
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$_SuccessCopyWith<_$_Success> get copyWith =>
-      __$$_SuccessCopyWithImpl<_$_Success>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)
-        success,
+    required TResult Function() success,
+    required TResult Function() searchLoading,
+    required TResult Function(List<ObservationsModel> observations)
+        searchSuccess,
+    required TResult Function() searchFailed,
   }) {
-    return success(telescopeList, detectorList, frameList, objectList);
+    return success();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)?
-        success,
+    TResult? Function()? success,
+    TResult? Function()? searchLoading,
+    TResult? Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult? Function()? searchFailed,
   }) {
-    return success?.call(telescopeList, detectorList, frameList, objectList);
+    return success?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(
-            List<DataModel> telescopeList,
-            List<DataModel> detectorList,
-            List<DataModel> frameList,
-            List<DataModel> objectList)?
-        success,
+    TResult Function()? success,
+    TResult Function()? searchLoading,
+    TResult Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult Function()? searchFailed,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(telescopeList, detectorList, frameList, objectList);
+      return success();
     }
     return orElse();
   }
@@ -533,6 +554,9 @@ class _$_Success implements _Success {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) init,
     required TResult Function(_Success value) success,
+    required TResult Function(_SearchLoading value) searchLoading,
+    required TResult Function(_SearchSuccess value) searchSuccess,
+    required TResult Function(_SearchFailed value) searchFailed,
   }) {
     return success(this);
   }
@@ -542,6 +566,9 @@ class _$_Success implements _Success {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? init,
     TResult? Function(_Success value)? success,
+    TResult? Function(_SearchLoading value)? searchLoading,
+    TResult? Function(_SearchSuccess value)? searchSuccess,
+    TResult? Function(_SearchFailed value)? searchFailed,
   }) {
     return success?.call(this);
   }
@@ -551,6 +578,9 @@ class _$_Success implements _Success {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? init,
     TResult Function(_Success value)? success,
+    TResult Function(_SearchLoading value)? searchLoading,
+    TResult Function(_SearchSuccess value)? searchSuccess,
+    TResult Function(_SearchFailed value)? searchFailed,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -561,17 +591,408 @@ class _$_Success implements _Success {
 }
 
 abstract class _Success implements DashboardState {
-  const factory _Success(
-      final List<DataModel> telescopeList,
-      final List<DataModel> detectorList,
-      final List<DataModel> frameList,
-      final List<DataModel> objectList) = _$_Success;
+  const factory _Success() = _$_Success;
+}
 
-  List<DataModel> get telescopeList;
-  List<DataModel> get detectorList;
-  List<DataModel> get frameList;
-  List<DataModel> get objectList;
+/// @nodoc
+abstract class _$$_SearchLoadingCopyWith<$Res> {
+  factory _$$_SearchLoadingCopyWith(
+          _$_SearchLoading value, $Res Function(_$_SearchLoading) then) =
+      __$$_SearchLoadingCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$_SearchLoadingCopyWithImpl<$Res>
+    extends _$DashboardStateCopyWithImpl<$Res, _$_SearchLoading>
+    implements _$$_SearchLoadingCopyWith<$Res> {
+  __$$_SearchLoadingCopyWithImpl(
+      _$_SearchLoading _value, $Res Function(_$_SearchLoading) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$_SearchLoading implements _SearchLoading {
+  const _$_SearchLoading();
+
+  @override
+  String toString() {
+    return 'DashboardState.searchLoading()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$_SearchLoading);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function() success,
+    required TResult Function() searchLoading,
+    required TResult Function(List<ObservationsModel> observations)
+        searchSuccess,
+    required TResult Function() searchFailed,
+  }) {
+    return searchLoading();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function()? success,
+    TResult? Function()? searchLoading,
+    TResult? Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult? Function()? searchFailed,
+  }) {
+    return searchLoading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function()? success,
+    TResult Function()? searchLoading,
+    TResult Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult Function()? searchFailed,
+    required TResult orElse(),
+  }) {
+    if (searchLoading != null) {
+      return searchLoading();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) init,
+    required TResult Function(_Success value) success,
+    required TResult Function(_SearchLoading value) searchLoading,
+    required TResult Function(_SearchSuccess value) searchSuccess,
+    required TResult Function(_SearchFailed value) searchFailed,
+  }) {
+    return searchLoading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? init,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_SearchLoading value)? searchLoading,
+    TResult? Function(_SearchSuccess value)? searchSuccess,
+    TResult? Function(_SearchFailed value)? searchFailed,
+  }) {
+    return searchLoading?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? init,
+    TResult Function(_Success value)? success,
+    TResult Function(_SearchLoading value)? searchLoading,
+    TResult Function(_SearchSuccess value)? searchSuccess,
+    TResult Function(_SearchFailed value)? searchFailed,
+    required TResult orElse(),
+  }) {
+    if (searchLoading != null) {
+      return searchLoading(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SearchLoading implements DashboardState {
+  const factory _SearchLoading() = _$_SearchLoading;
+}
+
+/// @nodoc
+abstract class _$$_SearchSuccessCopyWith<$Res> {
+  factory _$$_SearchSuccessCopyWith(
+          _$_SearchSuccess value, $Res Function(_$_SearchSuccess) then) =
+      __$$_SearchSuccessCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<ObservationsModel> observations});
+}
+
+/// @nodoc
+class __$$_SearchSuccessCopyWithImpl<$Res>
+    extends _$DashboardStateCopyWithImpl<$Res, _$_SearchSuccess>
+    implements _$$_SearchSuccessCopyWith<$Res> {
+  __$$_SearchSuccessCopyWithImpl(
+      _$_SearchSuccess _value, $Res Function(_$_SearchSuccess) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? observations = null,
+  }) {
+    return _then(_$_SearchSuccess(
+      null == observations
+          ? _value._observations
+          : observations // ignore: cast_nullable_to_non_nullable
+              as List<ObservationsModel>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_SearchSuccess implements _SearchSuccess {
+  const _$_SearchSuccess(final List<ObservationsModel> observations)
+      : _observations = observations;
+
+  final List<ObservationsModel> _observations;
+  @override
+  List<ObservationsModel> get observations {
+    if (_observations is EqualUnmodifiableListView) return _observations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_observations);
+  }
+
+  @override
+  String toString() {
+    return 'DashboardState.searchSuccess(observations: $observations)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_SearchSuccess &&
+            const DeepCollectionEquality()
+                .equals(other._observations, _observations));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_observations));
+
   @JsonKey(ignore: true)
-  _$$_SuccessCopyWith<_$_Success> get copyWith =>
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_SearchSuccessCopyWith<_$_SearchSuccess> get copyWith =>
+      __$$_SearchSuccessCopyWithImpl<_$_SearchSuccess>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function() success,
+    required TResult Function() searchLoading,
+    required TResult Function(List<ObservationsModel> observations)
+        searchSuccess,
+    required TResult Function() searchFailed,
+  }) {
+    return searchSuccess(observations);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function()? success,
+    TResult? Function()? searchLoading,
+    TResult? Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult? Function()? searchFailed,
+  }) {
+    return searchSuccess?.call(observations);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function()? success,
+    TResult Function()? searchLoading,
+    TResult Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult Function()? searchFailed,
+    required TResult orElse(),
+  }) {
+    if (searchSuccess != null) {
+      return searchSuccess(observations);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) init,
+    required TResult Function(_Success value) success,
+    required TResult Function(_SearchLoading value) searchLoading,
+    required TResult Function(_SearchSuccess value) searchSuccess,
+    required TResult Function(_SearchFailed value) searchFailed,
+  }) {
+    return searchSuccess(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? init,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_SearchLoading value)? searchLoading,
+    TResult? Function(_SearchSuccess value)? searchSuccess,
+    TResult? Function(_SearchFailed value)? searchFailed,
+  }) {
+    return searchSuccess?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? init,
+    TResult Function(_Success value)? success,
+    TResult Function(_SearchLoading value)? searchLoading,
+    TResult Function(_SearchSuccess value)? searchSuccess,
+    TResult Function(_SearchFailed value)? searchFailed,
+    required TResult orElse(),
+  }) {
+    if (searchSuccess != null) {
+      return searchSuccess(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SearchSuccess implements DashboardState {
+  const factory _SearchSuccess(final List<ObservationsModel> observations) =
+      _$_SearchSuccess;
+
+  List<ObservationsModel> get observations;
+  @JsonKey(ignore: true)
+  _$$_SearchSuccessCopyWith<_$_SearchSuccess> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$_SearchFailedCopyWith<$Res> {
+  factory _$$_SearchFailedCopyWith(
+          _$_SearchFailed value, $Res Function(_$_SearchFailed) then) =
+      __$$_SearchFailedCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$_SearchFailedCopyWithImpl<$Res>
+    extends _$DashboardStateCopyWithImpl<$Res, _$_SearchFailed>
+    implements _$$_SearchFailedCopyWith<$Res> {
+  __$$_SearchFailedCopyWithImpl(
+      _$_SearchFailed _value, $Res Function(_$_SearchFailed) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$_SearchFailed implements _SearchFailed {
+  const _$_SearchFailed();
+
+  @override
+  String toString() {
+    return 'DashboardState.searchFailed()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$_SearchFailed);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function() success,
+    required TResult Function() searchLoading,
+    required TResult Function(List<ObservationsModel> observations)
+        searchSuccess,
+    required TResult Function() searchFailed,
+  }) {
+    return searchFailed();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function()? success,
+    TResult? Function()? searchLoading,
+    TResult? Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult? Function()? searchFailed,
+  }) {
+    return searchFailed?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function()? success,
+    TResult Function()? searchLoading,
+    TResult Function(List<ObservationsModel> observations)? searchSuccess,
+    TResult Function()? searchFailed,
+    required TResult orElse(),
+  }) {
+    if (searchFailed != null) {
+      return searchFailed();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) init,
+    required TResult Function(_Success value) success,
+    required TResult Function(_SearchLoading value) searchLoading,
+    required TResult Function(_SearchSuccess value) searchSuccess,
+    required TResult Function(_SearchFailed value) searchFailed,
+  }) {
+    return searchFailed(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? init,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_SearchLoading value)? searchLoading,
+    TResult? Function(_SearchSuccess value)? searchSuccess,
+    TResult? Function(_SearchFailed value)? searchFailed,
+  }) {
+    return searchFailed?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? init,
+    TResult Function(_Success value)? success,
+    TResult Function(_SearchLoading value)? searchLoading,
+    TResult Function(_SearchSuccess value)? searchSuccess,
+    TResult Function(_SearchFailed value)? searchFailed,
+    required TResult orElse(),
+  }) {
+    if (searchFailed != null) {
+      return searchFailed(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SearchFailed implements DashboardState {
+  const factory _SearchFailed() = _$_SearchFailed;
 }

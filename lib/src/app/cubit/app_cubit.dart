@@ -29,7 +29,7 @@ class AppCubit extends Cubit<AppState> {
   Future<void> _checkLogginUser() async {
     final token = await _getStringUseCase(
         params: const SharedPrefStringRequestParams(key: 'token'));
-
+    print("token: $token");
     if (token is DataFailure || token.data!.isEmpty) {
       emit(const AppState.success(isLogged: false));
     } else {
@@ -45,6 +45,6 @@ class AppCubit extends Cubit<AppState> {
       emit(const AppState.error());
       return;
     }
-    emit(AppState.success(isLogged: true));
+    emit(const AppState.success(isLogged: true));
   }
 }

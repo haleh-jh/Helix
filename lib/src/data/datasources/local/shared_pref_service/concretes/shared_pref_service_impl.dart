@@ -20,6 +20,7 @@ class SharedPrefServiceImpl implements SharedPrefService {
   @override
   Future<void> setString({required SharedPrefSetStringParams params}) async{
    final isSuccess = await _preferences.setString(params.key, params.value);
+   _preferences.reload();
    if(!isSuccess) throw Exception(kSharedPrefCouldNotSetValue);
   }
 }

@@ -37,7 +37,7 @@ class App extends StatelessWidget {
                               builder: (context, constraint) {
                                 return state.when(
                                   success: (isLogged) {
-                                    //  if (!isLogged) return LoginScreen();
+                                    if (!isLogged) return LoginScreen();
                                     return MainScreen();
                                   },
                                   error: () {

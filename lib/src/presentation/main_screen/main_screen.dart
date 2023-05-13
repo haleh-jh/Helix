@@ -24,8 +24,6 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-final bloc = injector<MainScreenCubit>();
-
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
@@ -33,6 +31,8 @@ class _MainScreenState extends State<MainScreen> {
     return const Body();
   }
 }
+
+final bloc = injector<MainScreenCubit>();
 
 class Body extends StatefulWidget {
   const Body({
